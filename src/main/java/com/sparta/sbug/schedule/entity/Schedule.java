@@ -18,7 +18,7 @@ public class Schedule {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId
+    private Long userId;
 
     @Column(nullable = false)
     private String content;

@@ -38,3 +38,4 @@ out/
 
 ### Vim ###
 *.vim
+*.swp
