@@ -27,9 +27,14 @@ public class Thread {
     private LocalDateTime modifiedAt;
 
     @ManyToOne
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "channel_id")
     private Channel channel;
+
+    public Thread(User user, Channel channel) {
+        this.user = user;
+        this.channel = channel;
+    }
 }
