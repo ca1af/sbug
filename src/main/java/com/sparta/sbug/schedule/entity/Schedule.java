@@ -1,32 +1,42 @@
-package com.sparta.sbug.comment;
+package com.sparta.sbug.schedule.entity;
 
-import com.sparta.sbug.emoji.entity.Emoji;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+//import org.checkerframework.checker.units.qual.C;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Comment {
+@NoArgsConstructor
+@Table(name = "schedule")
+public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
+    private Long userId
+
+    @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    private LocalDateTime date;
+    
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "comment_id")
-    private Set<Emoji> emojis = new LinkedHashSet<>();
+    @Column(nullable = false)
+    @Enumerated
+    private ScheduleStatus status;
+
+    @Column
+    private LocalDateTime doneAt;
+
 }
