@@ -1,15 +1,13 @@
 package com.sparta.sbug.thread;
 
+import com.sparta.sbug.channel.Channel;
+import com.sparta.sbug.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
 
-import javax.xml.stream.events.Comment;
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,8 +27,9 @@ public class Thread {
     private LocalDateTime modifiedAt;
 
     @ManyToOne
-    @JoinColumn(name = "Comment_id")
-    private
-
-
+    @JoinColumn(name = "comment_id")
+    private User user;
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Channel channel;
 }
