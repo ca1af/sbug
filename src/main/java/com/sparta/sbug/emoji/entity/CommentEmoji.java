@@ -1,14 +1,17 @@
 package com.sparta.sbug.emoji.entity;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import com.sparta.sbug.comment.Comment;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@DiscriminatorValue("Comment")
+@DiscriminatorValue("COMMENT")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentEmoji extends Emoji{
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 }

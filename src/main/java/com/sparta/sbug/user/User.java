@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
 
 import java.time.LocalDateTime;
 
@@ -18,16 +17,13 @@ public class User {
     private Long id;
     @Column(nullable = false)
     private String email;
-
     @Column(nullable = false)
     private String password;
-
     @Column(nullable = false)
     private String nickname;
-
-//    @Column(nullable = false)
-//    @Enumerated
-//    private
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRole userRole;
     @Column(nullable = false)
     private LocalDateTime registerDate;
 }
