@@ -1,33 +1,32 @@
-package com.sparta.sbug.user;
+package com.sparta.sbug.comment;
 
+import com.sparta.sbug.emoji.entity.Emoji;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "users")
-public class User {
+@Getter
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(nullable = false)
-    private String email;
 
     @Column(nullable = false)
-    private String password;
+    private String content;
 
     @Column(nullable = false)
-    private String nickname;
+    private LocalDateTime createdAt;
 
-//    @Column(nullable = false)
-//    @Enumerated
-//    private
     @Column(nullable = false)
-    private LocalDateTime registerDate;
+    private LocalDateTime modifiedAt;
+
+    @OneToMany(mappedBy = "comment_id")
+    private Set<Emoji> emojis = new LinkedHashSet<>();
 }

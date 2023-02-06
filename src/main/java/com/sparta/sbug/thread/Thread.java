@@ -1,4 +1,4 @@
-package com.sparta.sbug.user;
+package com.sparta.sbug.thread;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,28 +6,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.checkerframework.checker.units.qual.C;
 
+import javax.xml.stream.events.Comment;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "users")
-public class User {
+@Getter
+public class Thread {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(nullable = false)
-    private String email;
 
     @Column(nullable = false)
-    private String password;
+    private String content;
 
     @Column(nullable = false)
-    private String nickname;
+    private LocalDateTime createdAt;
 
-//    @Column(nullable = false)
-//    @Enumerated
-//    private
     @Column(nullable = false)
-    private LocalDateTime registerDate;
+    private LocalDateTime modifiedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "Comment_id")
+    private
+
+
 }
