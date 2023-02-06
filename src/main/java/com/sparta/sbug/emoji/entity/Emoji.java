@@ -1,6 +1,6 @@
 package com.sparta.sbug.emoji.entity;
 
-import com.sparta.sbug.user.User;
+import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 

@@ -1,7 +1,7 @@
 package com.sparta.sbug.thread;
 
 import com.sparta.sbug.channel.Channel;
-import com.sparta.sbug.user.User;
+import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
