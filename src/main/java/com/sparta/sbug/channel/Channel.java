@@ -14,7 +14,6 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Channel {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

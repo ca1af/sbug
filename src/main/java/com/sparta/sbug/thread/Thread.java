@@ -1,7 +1,7 @@
 package com.sparta.sbug.thread;
 
 import com.sparta.sbug.channel.Channel;
-import com.sparta.sbug.user.User;
+import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,10 +26,10 @@ public class Thread {
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "comment_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
-    @ManyToOne
-    @JoinColumn(name = "comment_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "channel_id")
     private Channel channel;
 }
