@@ -1,4 +1,4 @@
-package com.sparta.sbug.comment;
+package com.sparta.sbug.comment.entity;
 
 import com.sparta.sbug.emoji.entity.Emoji;
 import jakarta.persistence.*;
