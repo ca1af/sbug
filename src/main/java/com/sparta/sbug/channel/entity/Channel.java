@@ -1,12 +1,11 @@
-package com.sparta.sbug.channel;
+package com.sparta.sbug.channel.entity;
 
-import com.sparta.sbug.thread.Thread;
+import com.sparta.sbug.thread.entity.Thread;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
