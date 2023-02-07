@@ -1,16 +1,19 @@
 package com.sparta.sbug.schedule.entity;
 
+import com.sparta.sbug.common.entity.Timestamp;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+//import org.checkerframework.checker.units.qual.C;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Schedule {
+@Table(name = "schedule")
+public class Schedule extends Timestamp {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -23,12 +26,6 @@ public class Schedule {
 
     @Column(nullable = false)
     private LocalDateTime date;
-    
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime modifiedAt;
 
     @Column(nullable = false)
     @Enumerated

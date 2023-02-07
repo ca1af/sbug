@@ -1,18 +1,18 @@
 package com.sparta.sbug.user.entity;
 
+import com.sparta.sbug.common.entity.Timestamp;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
-public class User {
+public class User extends Timestamp {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -25,8 +25,6 @@ public class User {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole;
-    @Column(nullable = false)
-    private LocalDateTime registerDate;
     @Builder
     public User(String email, String password, String nickname) {
         this.email = email;
