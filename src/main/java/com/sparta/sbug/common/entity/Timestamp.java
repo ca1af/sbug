@@ -23,17 +23,4 @@ public class Timestamp {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    /**
-    * 생성 시간을 기록하는 메소드
-    * */
-    public void recordCreatedAt() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    /**
-     * 수정 시간을 갱신하는 메소드
-     */
-    public void updateModifiedAt() {
-        this.modifiedAt = LocalDateTime.now();
-    }
 }
