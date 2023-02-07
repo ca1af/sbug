@@ -1,6 +1,5 @@
 package com.sparta.sbug.user.entity;
 
-import com.sparta.sbug.userchatroom.entity.UserChatRoom;
 import com.sparta.sbug.common.entity.Timestamp;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -9,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -40,8 +38,6 @@ public class User extends Timestamp {
         this.nickname = nickname;
     }
 
-    @OneToMany(mappedBy = "user")
-    Set<UserChatRoom> userChatRooms = new LinkedHashSet<>();
     public void updateUser(String nickname, String password){
         this.nickname = nickname;
         this.password = password;
