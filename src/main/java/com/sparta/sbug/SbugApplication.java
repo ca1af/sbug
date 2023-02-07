@@ -15,18 +15,4 @@ public class SbugApplication {
 		SpringApplication.run(SbugApplication.class, args);
 	}
 
-	@Bean
-	public WebMvcConfigurer corsConfigurer(){
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-						.allowedMethods("GET","POST","PUT","DELETE","OPTIONS","HEAD")
-						.exposedHeaders("Authorization");
-				WebMvcConfigurer.super.addCorsMappings(registry);
-			}
-		};
-
-	}
-
 }

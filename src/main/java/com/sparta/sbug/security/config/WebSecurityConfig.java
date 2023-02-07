@@ -77,5 +77,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 //        http.exceptionHandling().accessDeniedPage("/api/user/forbidden");
         return http.build();
     }
-
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedMethods("GET","POST","PUT","DELETE","OPTIONS","HEAD")
+                .exposedHeaders("Authorization");
+        WebMvcConfigurer.super.addCorsMappings(registry);
+    }
 }
