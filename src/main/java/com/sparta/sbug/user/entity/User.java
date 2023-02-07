@@ -1,5 +1,7 @@
 package com.sparta.sbug.user.entity;
 
+import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.userchatroom.entity.UserChatRoom;
 import com.sparta.sbug.common.entity.Timestamp;
 import jakarta.persistence.*;
@@ -27,7 +29,7 @@ public class User extends Timestamp {
     private String nickname;
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private UserRole userRole;
+    private UserRole userRole = UserRole.USER;
     @Builder
     public User(String email, String password, String nickname) {
         this.email = email;
@@ -37,8 +39,17 @@ public class User extends Timestamp {
 
     @OneToMany(mappedBy = "user")
     Set<UserChatRoom> userChatRooms = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "user")
+    Set<Channel> channels = new LinkedHashSet<>();
     public void updateUser(String nickname, String password){
         this.nickname = nickname;
         this.password = password;
+    }
+    public void setUserRole(UserRole role){
+        this.userRole = role;
+    }
+    //연관관계 편의 매서드
+    public void addChannel(Channel channel) {
+        this.channels.add(channel);
     }
 }
