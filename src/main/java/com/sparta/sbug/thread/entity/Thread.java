@@ -1,19 +1,18 @@
-package com.sparta.sbug.comment;
+package com.sparta.sbug.thread.entity;
 
-import com.sparta.sbug.emoji.entity.Emoji;
+import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Comment {
+public class Thread {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -27,6 +26,10 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "comment_id")
-    private Set<Emoji> emojis = new LinkedHashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "channel_id")
+    private Channel channel;
 }

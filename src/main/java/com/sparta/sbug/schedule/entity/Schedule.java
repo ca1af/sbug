@@ -1,7 +1,5 @@
-package com.sparta.sbug.thread;
+package com.sparta.sbug.schedule.entity;
 
-import com.sparta.sbug.channel.Channel;
-import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,26 +8,33 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Thread {
+@NoArgsConstructor
+public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    private LocalDateTime date;
+    
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "channel_id")
-    private Channel channel;
+    @Column(nullable = false)
+    @Enumerated
+    private ScheduleStatus status;
+
+    @Column
+    private LocalDateTime doneAt;
+
 }
