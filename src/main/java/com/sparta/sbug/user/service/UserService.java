@@ -2,6 +2,7 @@ package com.sparta.sbug.user.service;
 
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
+import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
 
 public interface UserService {
@@ -13,5 +14,5 @@ public interface UserService {
 
     String myPage();
 
-    void update();
+    void update(User user, UserUpdateDto dto);
 }
