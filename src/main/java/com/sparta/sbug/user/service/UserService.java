@@ -5,6 +5,9 @@ import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface UserService {
     String signup(SignUpRequestDto requestDto);
 
@@ -12,7 +15,9 @@ public interface UserService {
 
     String unregister(User user);
 
-    String myPage();
+    Optional<User> getUser(String email);
 
     void update(User user, UserUpdateDto dto);
+
+    List<User> getUsers();
 }

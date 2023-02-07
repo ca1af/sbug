@@ -1,5 +1,6 @@
 package com.sparta.sbug.user.entity;
 
+import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.common.entity.Timestamp;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -38,11 +40,20 @@ public class User extends Timestamp {
         this.nickname = nickname;
     }
 
-    public void updateUser(String nickname, String password){
+    @OneToMany(mappedBy = "user")
+    Set<Channel> channels = new LinkedHashSet<>();
+
+    public void updateUser(String nickname, String password) {
         this.nickname = nickname;
         this.password = password;
     }
-    public void setUserRole(UserRole role){
+
+    public void setUserRole(UserRole role) {
         this.userRole = role;
+    }
+
+    //연관관계 편의 매서드
+    public void addChannel(Channel channel) {
+        this.channels.add(channel);
     }
 }
