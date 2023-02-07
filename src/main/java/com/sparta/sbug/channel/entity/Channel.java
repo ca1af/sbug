@@ -19,14 +19,17 @@ public class Channel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column(nullable = false)
     private String channelName;
+
     @OneToMany(mappedBy = "channel")
     private Set<Thread> threads = new LinkedHashSet<>();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
     private String adminEmail;
+
     @Builder
     public Channel(User user, String adminEmail, String channelName) {
         this.user = user;
@@ -34,8 +37,8 @@ public class Channel {
         this.channelName = channelName;
     }
 
-    public void updateChannel(Channel channel, User user, ChannelRequestDto dto){
-        this.channelName =  dto.getChannelName();
+    public void updateChannel(Channel channel, User user, ChannelRequestDto dto) {
+        this.channelName = dto.getChannelName();
     }
 
     // 연관관계 편의 매서드
