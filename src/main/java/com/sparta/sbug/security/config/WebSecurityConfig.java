@@ -55,7 +55,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/h2-console").permitAll()
                 .requestMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
                 .requestMatchers("/api/products/**").hasAnyAuthority("ROLE_SELLER")
-                .anyRequest().authenticated()//인증이 되어야 한다는 이야기이다.
+                .anyRequest().permitAll()//authenticated()//인증이 되어야 한다는 이야기이다.
                 //.anonymous() : 인증되지 않은 사용자도 접근할 수 있다.
                 // JWT 인증/인가를 사용하기 위한 설정
                 .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);

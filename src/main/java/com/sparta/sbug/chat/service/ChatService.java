@@ -6,22 +6,26 @@ import java.util.List;
 
 public interface ChatService {
 
+
     /**
-     * 해당 채팅방의 메세지를 모두 찾아 반환하는 메소드
-     * @param chatRoomId
+     * 주고 받은 메세지를 조회하는 메서드
+     *
+     * @param myUserId       : 내 아이디
+     * @param theOtherUserId : 상대방 아이디
      */
-    List<ChatResponseDto> getAllMessageInChatRoom(Long chatRoomId);
-
+    List<ChatResponseDto> getAllExchangedMessage(Long myUserId, Long theOtherUserId);
 
     /**
-     * 메세지를 작성하는 메서드
-     * @param chatRoomId
+     * 메세지를 전송하는 메서드
+     *
+     * @param receiverId
      * @param message
      */
-    void sendMessage(Long chatRoomId, String message);
+    void sendMessage(Long receiverId, String message);
 
     /**
      * 메세지를 수정하는 메서드
+     *
      * @param messageId
      * @param message
      */
@@ -29,8 +33,9 @@ public interface ChatService {
 
     /**
      * 메세지를 삭제하는 메서드
-     * @param id
+     *
+     * @param messageId
      */
-    void deleteMessage(Long id);
+    void deleteMessage(Long messageId);
 
 }

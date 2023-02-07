@@ -1,6 +1,7 @@
 package com.sparta.sbug.chat.entity;
 
 import com.sparta.sbug.common.entity.Timestamp;
+import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.userchatroom.entity.UserChatRoom;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -42,6 +43,14 @@ public class Chat extends Timestamp {
             @JoinColumn(name = "user_id", referencedColumnName = "user_id")}
     )
     private UserChatRoom userChatRoom;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private User receiver;
+
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     /**
      * 연관관계 편의 메소드
