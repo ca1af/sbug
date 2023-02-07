@@ -31,7 +31,7 @@ public class User extends Timestamp {
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private UserRole userRole;
+    private UserRole userRole = UserRole.USER;
 
     @Builder
     public User(String email, String password, String nickname) {
@@ -45,5 +45,8 @@ public class User extends Timestamp {
     public void updateUser(String nickname, String password){
         this.nickname = nickname;
         this.password = password;
+    }
+    public void setUserRole(UserRole role){
+        this.userRole = role;
     }
 }

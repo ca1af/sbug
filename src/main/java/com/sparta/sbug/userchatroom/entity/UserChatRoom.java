@@ -1,5 +1,4 @@
 package com.sparta.sbug.userchatroom.entity;
-
 import com.sparta.sbug.chatroom.entity.ChatRoom;
 import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
