@@ -1,22 +1,16 @@
 package com.sparta.sbug.user.entity;
 
-<<<<<<< HEAD
 import com.sparta.sbug.userchatroom.entity.UserChatRoom;
-=======
 import com.sparta.sbug.common.entity.Timestamp;
->>>>>>> 77e04a5a7ab1e66f195ac2c9c8de8a9e7f7f60a8
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-<<<<<<< HEAD
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
-=======
->>>>>>> 77e04a5a7ab1e66f195ac2c9c8de8a9e7f7f60a8
 
 @Entity
 @Getter
@@ -41,14 +35,11 @@ public class User extends Timestamp {
         this.password = password;
         this.nickname = nickname;
     }
-<<<<<<< HEAD
 
     @OneToMany(mappedBy = "user")
     Set<UserChatRoom> userChatRooms = new LinkedHashSet<>();
-=======
     public void updateUser(String nickname, String password){
         this.nickname = nickname;
         this.password = password;
     }
->>>>>>> 77e04a5a7ab1e66f195ac2c9c8de8a9e7f7f60a8
 }
