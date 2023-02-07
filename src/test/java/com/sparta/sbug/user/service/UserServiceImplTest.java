@@ -27,7 +27,6 @@ class UserServiceImplTest {
 
     @Test
     void login() {
-        User user1 = userSample;
     }
 
     @Test
