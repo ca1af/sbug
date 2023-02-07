@@ -3,7 +3,12 @@ package com.sparta.sbug.schedule.repository;
 import com.sparta.sbug.schedule.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.Optional;
 
-public interface ScheduleRepository extends JpaRepository {
+public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+    Optional<Schedule> findById(Long scheduleId);
+    Page<Schedule> findAllByUserId(Long userId, Pageable pageable);
 }

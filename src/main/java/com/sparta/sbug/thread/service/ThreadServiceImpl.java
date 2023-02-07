@@ -4,6 +4,7 @@ import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.thread.dto.ThreadRequestDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
+import com.sparta.sbug.channel.repository.ChannelRepository;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
