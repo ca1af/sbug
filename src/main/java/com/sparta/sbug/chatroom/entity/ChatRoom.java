@@ -1,6 +1,6 @@
 package com.sparta.sbug.chatroom.entity;
 
-import com.sparta.sbug.userChatRoom.entity.UserChatRoom;
+import com.sparta.sbug.userchatroom.entity.UserChatRoom;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
