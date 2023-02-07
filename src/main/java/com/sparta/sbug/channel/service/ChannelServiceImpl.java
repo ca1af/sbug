@@ -18,6 +18,14 @@ import java.util.Set;
 public class ChannelServiceImpl implements ChannelService {
     private final ChannelRepository channelRepository;
     private final UserServiceImpl userService;
+
+    @Override
+    public Channel getChannel(Long channelId) {
+        return channelRepository.findById(channelId).orElseThrow(
+                () -> new IllegalArgumentException("채널이 없습니다")
+        );
+    }
+
     @Override
     public String createChannel(User user, ChannelRequestDto dto) {
         Channel channel = Channel.builder().user(user).adminEmail(user.getEmail()).channelName(dto.getChannelName()).build();
