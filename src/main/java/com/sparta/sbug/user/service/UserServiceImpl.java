@@ -3,6 +3,7 @@ package com.sparta.sbug.user.service;
 import com.sparta.sbug.security.jwt.JwtUtil;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
+import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
 import io.jsonwebtoken.security.SecurityException;
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update() {
-
+    public void update(User user, UserUpdateDto dto) {
+        user.updateUser(dto.getNickname(), dto.getPassword());
     }
 }
