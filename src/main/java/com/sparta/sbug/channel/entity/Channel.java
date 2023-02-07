@@ -16,6 +16,7 @@ public class Channel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @OneToMany(mappedBy = "channel")
     private Set<Thread> threads = new LinkedHashSet<>();
 }
