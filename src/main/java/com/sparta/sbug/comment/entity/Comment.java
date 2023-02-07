@@ -1,7 +1,7 @@
 package com.sparta.sbug.comment.entity;
 
 import com.sparta.sbug.common.entity.Timestamp;
-import com.sparta.sbug.emoji.entity.Emoji;
+import com.sparta.sbug.emoji.entity.CommentEmoji;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,6 +21,6 @@ public class Comment extends Timestamp {
     @Column(nullable = false)
     private String content;
 
-    @OneToMany(mappedBy = "comment_id")
-    private Set<Emoji> emojis = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "comment")
+    private Set<CommentEmoji> emojis = new LinkedHashSet<>();
 }
