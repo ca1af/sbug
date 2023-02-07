@@ -1,7 +1,7 @@
 package com.sparta.sbug.thread.service;
 
 import com.sparta.sbug.channel.entity.Channel;
-import com.sparta.sbug.channel.service.ChannelService;
+import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.thread.dto.ThreadRequestDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
@@ -15,14 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class ThreadServiceImpl implements ThreadService {
 
     private final ThreadRepository threadRepository;
-    private final ChannelService channelService;
+    private final ChannelServiceImpl channelService;
 
 
     //Thread 생성
     @Override
     @Transactional
     public String createThread(Long channelId, ThreadRequestDto threadRequestDto, User user) {
-        Channel channel = channelService.getChannel(channelId);
+        Channel channel = channelService.getChannel(channelId);// getChannel() 매서드에서 exception 처리
         Thread thread = new Thread(channel,user, threadRequestDto.getContent());
         threadRepository.save(thread);
         return "channelName/thread/{id}";
@@ -42,7 +42,7 @@ public class ThreadServiceImpl implements ThreadService {
     @Override
     @Transactional
     public String deleteThread(Long threadId, User user){
-        Thread thread = threadRepository.findByIdAndUser(threadId, user).orElseThrow(); // exception처리
+        Thread thread = threadRepository.findByIdAndUser(threadId, user).orElseThrow(); // exception 처리
         threadRepository.delete(thread);
         return "channelName/home";
     }

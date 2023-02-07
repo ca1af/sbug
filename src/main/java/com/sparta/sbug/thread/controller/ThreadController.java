@@ -24,7 +24,6 @@ public class ThreadController {
         return threadService.createThread(channelId, threadRequestDto, userDetails.getUser());
     }
 
-
     // Thread 수정
     @PatchMapping("/api/channel/threads{threadId}")
     public String editThread(
@@ -34,7 +33,6 @@ public class ThreadController {
     {
         return threadService.editThread(threadId, threadRequestDto,userDetails.getUser());
     }
-
 
     // Tread 삭제
     @DeleteMapping("/api/channel/threads{threadId}")
