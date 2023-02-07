@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-public class UpdateScheduleDto {
+public class ScheduleRequestDto {
     private final String content;
     private final LocalDateTime date;
 }

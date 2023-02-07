@@ -3,7 +3,7 @@ package com.sparta.sbug.schedule.service;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.schedule.entity.Schedule;
 import com.sparta.sbug.schedule.repository.ScheduleRepository;
-import com.sparta.sbug.schedule.dto.UpdateScheduleDto;
+import com.sparta.sbug.schedule.dto.ScheduleRequestDto;
 import com.sparta.sbug.schedule.dto.ScheduleResponseDto;
 
 import org.springframework.stereotype.Service;
@@ -22,23 +22,23 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     //일정 등록
     @Override
-    public void registerSchedule(UpdateScheduleDto updateDto, User user) {
+    public void registerSchedule(ScheduleRequestDto requestDto, User user) {
         Schedule newSchedule = Schedule.builder()
             .user(user)
-            .content(updateDto.getContent())
-            .date(updateDto.getDate())
+            .content(requestDto.getContent())
+            .date(requestDto.getDate())
             .build();
         scheduleRepository.save(newSchedule);
     }
 
     //일정 수정
     @Override
-    public void updateSchedule(Long scheduleId, UpdateScheduleDto updateDto, Long userId){
+    public void updateSchedule(ScheduleRequestDto requestDto, Long scheduleId, Long userId){
         Schedule foundSchedule = scheduleRepository.findById(scheduleId).orElseThrow(
             () -> new IllegalStateException("일정을 찾을 수 없습니다.")
         );
         if (foundSchedule.getUser().getId() == userId) {
-            foundSchedule.updateSchedule(updateDto.getContent(), updateDto.getDate());
+            foundSchedule.updateSchedule(requestDto.getContent(), requestDto.getDate());
             scheduleRepository.save(foundSchedule);
         }
     }
