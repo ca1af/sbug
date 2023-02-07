@@ -1,6 +1,6 @@
 package com.sparta.sbug.emoji.entity;
 
-import com.sparta.sbug.comment.Comment;
+import com.sparta.sbug.comment.entity.Comment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
