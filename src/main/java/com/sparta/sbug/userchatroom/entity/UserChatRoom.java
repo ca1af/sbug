@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 // jpa
 @Entity
-@IdClass(UserChatRoomId.class)
+//@IdClass(UserChatRoomId.class)
 public class UserChatRoom {
     /**
      * 생성자

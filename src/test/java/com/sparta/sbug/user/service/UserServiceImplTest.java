@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Member;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,16 +15,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserServiceImplTest {
     @Autowired
     UserRepository userRepository;
+
+    static User userSample = User.builder().email("email").password("password").nickname("nickname").build();
+
     @Test
     void signup() {
-        User user = User.builder().email("email").password("password").nickname("nickname").build();
-        Optional<User> saveUser = Optional.of(userRepository.save(user));
+        Optional<User> saveUser = Optional.of(userRepository.save(userSample));
         Optional<User> foundUser = userRepository.findByEmail("email");
         assertEquals(saveUser,foundUser);
     }
 
     @Test
     void login() {
+        User user1 = userSample;
     }
 
     @Test
