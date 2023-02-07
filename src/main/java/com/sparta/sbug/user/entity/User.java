@@ -1,5 +1,6 @@
 package com.sparta.sbug.user.entity;
 
+import com.sparta.sbug.userchatroom.entity.UserChatRoom;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -33,4 +36,7 @@ public class User {
         this.password = password;
         this.nickname = nickname;
     }
+
+    @OneToMany(mappedBy = "user")
+    Set<UserChatRoom> userChatRooms = new LinkedHashSet<>();
 }

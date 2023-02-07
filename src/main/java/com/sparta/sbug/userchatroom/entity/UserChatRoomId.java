@@ -1,4 +1,4 @@
-package com.sparta.sbug.userChatRoom.entity;
+package com.sparta.sbug.userchatroom.entity;
 
 import lombok.AccessLevel;
 import lombok.Getter;
