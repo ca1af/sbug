@@ -22,6 +22,9 @@ public class UserController {
     public String signup(@RequestBody SignUpRequestDto requestDto){
         return userService.signup(requestDto);
     }
+    // 리턴값은 성공/실패 정보를 줄 수 있는. HTTP통신답게...
+    // ResponseEntity<> 사용 권장 (200 / 400 등) / -> 간단한 건 status 만 줘도 될 듯.
+    // Json 타입의 데이터 필요하면 Body 에 << DTo 형식으로 주면 될 듯.
     @PostMapping("/api/user/login")
     public String login(@RequestBody LoginRequestDto requestDto){
         return userService.login(requestDto);
