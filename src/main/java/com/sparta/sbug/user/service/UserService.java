@@ -1,7 +1,9 @@
 package com.sparta.sbug.user.service;
 
+import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
+import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
 
@@ -19,7 +21,13 @@ public interface UserService {
 
     void update(User user, UserUpdateDto dto);
 
-    List<User> getUsers();
-
+    List<UserResponseDto> getUsers();
+    
+    UserResponseDto myPage(User user);
+    
+    UserResponseDto getUser(Long id);
+    
+    List<ChannelResponseDto> getMyChannels(User user);
+    
     User getUserById(Long userId);
 }
