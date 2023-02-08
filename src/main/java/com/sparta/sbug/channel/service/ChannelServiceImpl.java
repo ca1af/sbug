@@ -79,13 +79,11 @@ public class ChannelServiceImpl implements ChannelService {
     @Transactional(readOnly = true)
     public List<ThreadResponseDto> getThreads(Channel channel) {
         QThread thread = QThread.thread;
-        QChannel qChannel = QChannel.channel;
         List<Thread> fetch = queryFactory
-                .select(thread)
-                .from(thread)
-                .join(qChannel)
-                .on(thread.channel.channelName.eq(channel.getChannelName()))
-                .where(thread.channel.channelName.eq(channel.getChannelName()))
+                .selectFrom(thread)
+                .join(thread.channel)
+                .on(thread.channel.id.eq(channel.getId()))
+                .where(thread.channel.id.eq(channel.getId()))
                 .fetch();
         return fetch.stream().map(ThreadResponseDto::of).collect(Collectors.toList());
     }

@@ -72,10 +72,11 @@ class ChannelServiceImplTest {
 
         savedUser1.addChannel(savedChannel);
         savedUser2.addChannel(savedChannel);
+
         savedUser3.addChannel(savedChannel2);
 
         Thread thread = new Thread(savedChannel, savedUser1, "안녕하세요");
-        Thread thread2 = new Thread(savedChannel, savedUser1, "안녕하세요2");
+        Thread thread2 = new Thread(savedChannel2, savedUser1, "안녕하세요2");
 
         Thread savedThread = threadRepository.save(thread);
         Thread savedThread2 = threadRepository.save(thread2);
@@ -110,14 +111,12 @@ class ChannelServiceImplTest {
         );
 
         QThread qThread = QThread.thread;
-        QChannel qChannel = QChannel.channel;
 
         List<Thread> fetch = queryFactory
-                .select(qThread)
-                .from(qThread)
+                .selectFrom(qThread)
                 .join(qThread.channel)
-                .on(qThread.channel.channelName.eq(channel.getChannelName()))
-                .where(qThread.channel.channelName.eq(channel.getChannelName()))
+                .on(qThread.channel.id.eq(channel.getId()))
+                .where(qThread.channel.id.eq(channel.getId()))
                 .fetch();
 
         List<ThreadResponseDto> collect = fetch.stream().map(ThreadResponseDto::of).toList();
