@@ -20,4 +20,6 @@ public interface UserService {
     void update(User user, UserUpdateDto dto);
 
     List<User> getUsers();
+
+    User getUserById(Long userId);
 }
