@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 // lombok
 @RequiredArgsConstructor
@@ -96,16 +97,6 @@ public class ChatServiceImpl implements ChatService {
 
     public List<ChatResponseDto> getDtoListFromEntities(Page<Chat> pageChats) {
         List<Chat> chats = pageChats.getContent();
-        List<ChatResponseDto> chatResponseDtoList = new ArrayList<>();
-        for (Chat chat : chats) {
-            ChatResponseDto chatResponseDto = ChatResponseDto.builder()
-                    .id(chat.getId())
-                    .sender(chat.getSender().getNickname())
-                    .message(chat.getMessage())
-                    .receiver(chat.getReceiver().getNickname())
-                    .status(chat.getStatus().toString()).build();
-            chatResponseDtoList.add(chatResponseDto);
-        }
-        return chatResponseDtoList;
+        return chats.stream().map(ChatResponseDto::of).collect(Collectors.toList());
     }
 }
