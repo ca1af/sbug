@@ -1,9 +1,11 @@
 package com.sparta.sbug.user.controller;
 
+import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.security.jwt.JwtUtil;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
+import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserServiceImpl;
@@ -24,9 +26,6 @@ public class UserController {
     public String signup(@RequestBody SignUpRequestDto requestDto){
         return userService.signup(requestDto);
     }
-    // 리턴값은 성공/실패 정보를 줄 수 있는. HTTP통신답게...
-    // ResponseEntity<> 사용 권장 (200 / 400 등) / -> 간단한 건 status 만 줘도 될 듯.
-    // Json 타입의 데이터 필요하면 Body 에 << DTo 형식으로 주면 될 듯.
     @PostMapping("/api/user/login")
     public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response){
         String token = userService.login(requestDto);
@@ -43,7 +42,15 @@ public class UserController {
         return "updated";
     }
     @GetMapping("/api/users")
-    public List<User> getUsers(){
+    public List<UserResponseDto> getUsers(){
         return userService.getUsers();
+    }
+    @GetMapping("/api/user/mypage")
+    public UserResponseDto myPage(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.myPage(userDetails.getUser());
+    }
+    @GetMapping("/api/user/channel")
+    public List<ChannelResponseDto> getMyChannels(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.getMyChannels(userDetails.getUser());
     }
 }
