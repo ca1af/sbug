@@ -5,7 +5,6 @@ import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.thread.dto.ThreadRequestDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
-import com.sparta.sbug.channel.repository.ChannelRepository;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,6 +45,12 @@ public class ThreadServiceImpl implements ThreadService {
         Thread thread = threadRepository.findByIdAndUser(threadId, user).orElseThrow(); // exception 처리
         threadRepository.delete(thread);
         return "channelName/home";
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Thread findThreadById(Long id) {
+        return threadRepository.findById(id).orElseThrow();
     }
 
 }
