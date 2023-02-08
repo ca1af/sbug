@@ -53,9 +53,8 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new SecurityException("사용자를 찾을수 없습니다.");
         }
-        jwtUtil.createToken(user.getEmail(), user.getUserRole());
 
-        return "homepage";
+        return jwtUtil.createToken(user.getEmail(), user.getUserRole());
     }
 
     @Override
