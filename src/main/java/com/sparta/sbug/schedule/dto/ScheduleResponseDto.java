@@ -14,10 +14,14 @@ import java.time.LocalDateTime;
 public class ScheduleResponseDto {
 
     private final Long scheduleId;
+
     private final String content;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime date;
+
     private final ScheduleStatus status;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime doneAt;
 
@@ -28,7 +32,9 @@ public class ScheduleResponseDto {
         this.status = schedule.getStatus();
         this.doneAt = schedule.getDoneAt();
     }
-    public static Page<ScheduleResponseDto> toDtoList(Page<Schedule> mySchedules) {
+    public static Page<ScheduleResponseDto> toDtoList(
+        Page<Schedule> mySchedules
+    ) {
         return mySchedules.map(ScheduleResponseDto::new);
     }
 }

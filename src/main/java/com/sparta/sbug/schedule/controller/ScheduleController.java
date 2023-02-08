@@ -23,14 +23,21 @@ public class ScheduleController {
 
     //일정 등록
     @PostMapping("/user/schedule")
-    public String registerSchedule(@RequestBody ScheduleRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String registerSchedule(
+        @RequestBody ScheduleRequestDto requestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         scheduleService.registerSchedule(requestDto, userDetails.getUser());
         return "/user/schedule";
     }
 
     //일정 수정
     @PutMapping("/user/schedule/{id}")
-    public String updateSchedule(@RequestBody ScheduleRequestDto requestDto, @PathVariable Long scheduleId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String updateSchedule(
+        @RequestBody ScheduleRequestDto requestDto,
+        @PathVariable Long scheduleId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Long userId = userDetails.getUser().getId();
         scheduleService.updateSchedule(requestDto, scheduleId, userId);
         return "/user/schedule";
@@ -38,7 +45,10 @@ public class ScheduleController {
 
     //일정 삭제
     @DeleteMapping("/user/schedule/{id}")
-    public String deleteSchedule(@PathVariable Long scheduleId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String deleteSchedule(
+        @PathVariable Long scheduleId, 
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Long userId = userDetails.getUser().getId();
         scheduleService.deleteSchedule(scheduleId, userId);
         return "/user/schedule";
@@ -46,7 +56,10 @@ public class ScheduleController {
 
     //내 일정 조회 
     @GetMapping("/user/schedule")
-    public Page<ScheduleResponseDto> getMySchedules(Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Page<ScheduleResponseDto> getMySchedules(
+        Pageable pageable,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         User user = userDetails.getUser();
         return scheduleService.getMySchedules(pageable, user);
     }
@@ -59,9 +72,9 @@ public class ScheduleController {
     //기간내 일정 조회
     @GetMapping("/user/schedule/period")
     public Page<ScheduleResponseDto> getPeriodSchedules(
-    Pageable pageable,
-    @RequestBody PeriodRequestDto periodDto,
-    @AuthenticationPrincipal UserDetailsImpl userDetails
+        Pageable pageable,
+        @RequestBody PeriodRequestDto periodDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         User user = userDetails.getUser();
         return scheduleService.getPeriodSchedules(pageable, user, periodDto);

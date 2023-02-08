@@ -16,7 +16,11 @@ public interface ScheduleService {
     //일정 등록
     void registerSchedule(ScheduleRequestDto requestDto, User user);
     //일정 수정
-    void updateSchedule(ScheduleRequestDto requestDto,Long scheduleId , Long userId);
+    void updateSchedule(
+        ScheduleRequestDto requestDto,
+        Long scheduleId,
+        Long userId
+    );
     //일정 삭제
     void deleteSchedule(Long scheduleId, Long userId);
     //내 일정 조회
