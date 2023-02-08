@@ -1,9 +1,11 @@
 package com.sparta.sbug.schedule.entity;
 
 import com.sparta.sbug.common.entity.Timestamp;
+import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 
@@ -15,8 +17,9 @@ public class Schedule extends Timestamp {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "user_id")
+    private User user;
 
     @Column(nullable = false)
     private String content;
@@ -30,5 +33,16 @@ public class Schedule extends Timestamp {
 
     @Column
     private LocalDateTime doneAt;
+
+    @Builder
+    public Schedule(User user, String content, LocalDateTime date) {
+        this.user = user;
+        this.content = content;
+        this.date = date;
+    }
+    public void updateSchedule(String content, LocalDateTime date) {
+        this.content = content;
+        this.date = date;
+    }
 
 }
