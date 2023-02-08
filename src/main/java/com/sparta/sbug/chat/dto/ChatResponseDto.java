@@ -1,7 +1,6 @@
 package com.sparta.sbug.chat.dto;
 
 import com.sparta.sbug.chat.entity.Chat;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +25,7 @@ public class ChatResponseDto {
         this.receiver = chat.getReceiver().getNickname();
         this.status = chat.getStatus().toString();
     }
+
     public static ChatResponseDto of(Chat chat){
         return new ChatResponseDto(chat);
     }
