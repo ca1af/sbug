@@ -4,6 +4,7 @@ import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.schedule.service.ScheduleService;
 import com.sparta.sbug.schedule.dto.ScheduleRequestDto;
 import com.sparta.sbug.schedule.dto.ScheduleResponseDto;
+import com.sparta.sbug.schedule.dto.PeriodRequestDto;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -55,5 +56,14 @@ public class ScheduleController {
     public ScheduleResponseDto getSchedule(@PathVariable Long scheduleId) {
         return scheduleService.getSchedule(scheduleId);
     }
-    
+    //기간내 일정 조회
+    @GetMapping("/user/schedule/period")
+    public Page<ScheduleResponseDto> getPeriodSchedules(
+    Pageable pageable,
+    @RequestBody PeriodRequestDto periodDto,
+    @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        User user = userDetails.getUser();
+        return scheduleService.getPeriodSchedules(pageable, user, periodDto);
+    }
 }

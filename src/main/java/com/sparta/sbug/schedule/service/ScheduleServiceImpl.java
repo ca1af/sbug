@@ -5,6 +5,7 @@ import com.sparta.sbug.schedule.entity.Schedule;
 import com.sparta.sbug.schedule.repository.ScheduleRepository;
 import com.sparta.sbug.schedule.dto.ScheduleRequestDto;
 import com.sparta.sbug.schedule.dto.ScheduleResponseDto;
+import com.sparta.sbug.schedule.dto.PeriodRequestDto;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +36,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     //일정 수정
     @Override
-    public void updateSchedule(ScheduleRequestDto requestDto, Long scheduleId, Long userId){
+    public void updateSchedule(
+        ScheduleRequestDto requestDto,
+        Long scheduleId,
+        Long userId
+    ) {
         Schedule foundSchedule = scheduleRepository.findById(scheduleId).orElseThrow(
             () -> new IllegalStateException("일정을 찾을 수 없습니다.")
         );
@@ -64,6 +71,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         return responseDtoList;
     }
 
+
     //일정 상세 조회
     @Override
     public ScheduleResponseDto getSchedule(Long scheduleId) {
@@ -72,6 +80,19 @@ public class ScheduleServiceImpl implements ScheduleService {
         );
         ScheduleResponseDto responseDto = new ScheduleResponseDto(foundSchedule);
         return responseDto;
+    }
+    //기간내 일정 조회
+    @Override
+    public Page<ScheduleResponseDto> getPeriodSchedules(
+        Pageable pageable,
+        User user,
+        PeriodRequestDto periodDto
+    ) {
+        LocalDateTime startDate = periodDto.getStartDate();
+        LocalDateTime endDate = periodDto.getEndDate();
+        Page<Schedule> periodSchedules = scheduleRepository.findAllByDateBetween(startDate, endDate, pageable);
+        Page<ScheduleResponseDto> responseDtoList = ScheduleResponseDto.toDtoList(periodSchedules);
+        return responseDtoList;
     }
 }
 
