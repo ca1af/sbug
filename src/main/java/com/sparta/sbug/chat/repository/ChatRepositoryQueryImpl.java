@@ -43,7 +43,7 @@ public class ChatRepositoryQueryImpl implements ChatRepositoryQuery {
      * 특정 유저가 자신에게 온 아직 읽지 않은 메세지들의 개수를 구하는 메서드
      */
     @Override
-    public Long countByReceiverIdAndStatus(Long id, ChatStatus status, Pageable pageable) {
+    public Long countByReceiverIdAndStatus(Long id, ChatStatus status) {
         JPAQuery<Long> query = jpaQueryFactory.select(chat.count())
                 .from(chat)
                 .where(

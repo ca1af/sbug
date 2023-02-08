@@ -8,6 +8,7 @@ import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.entity.UserRole;
 import com.sparta.sbug.user.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,7 +155,7 @@ class ChatServiceImplTest {
 
         // when
         System.out.println("======================= test query start! =======================");
-        var count = chatService.countNewMessages(savedUser2, pageDto);
+        var count = chatService.countNewMessages(savedUser2);
 
         // then
         assert count == 2;

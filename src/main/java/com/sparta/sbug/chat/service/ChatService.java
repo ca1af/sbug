@@ -46,5 +46,5 @@ public interface ChatService {
     /**
      * 읽지 않은 메세지를 찾는 메서드
      */
-    Long countNewMessages(User user, PageDto pageDto);
+    Long countNewMessages(User user);
 }

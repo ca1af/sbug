@@ -69,8 +69,8 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional(readOnly = true)
-    public Long countNewMessages(User user, PageDto pageDto) {
-        return chatRepository.countByReceiverIdAndStatus(user.getId(), ChatStatus.NEW, pageDto.toPageable());
+    public Long countNewMessages(User user) {
+        return chatRepository.countByReceiverIdAndStatus(user.getId(), ChatStatus.NEW);
     }
 
     @Transactional(readOnly = true)
@@ -98,7 +98,7 @@ public class ChatServiceImpl implements ChatService {
         List<Chat> chats = pageChats.getContent();
         List<ChatResponseDto> chatResponseDtoList = new ArrayList<>();
         for (Chat chat : chats) {
-            ChatResponseDto chatResponseDto =  ChatResponseDto.builder()
+            ChatResponseDto chatResponseDto = ChatResponseDto.builder()
                     .id(chat.getId())
                     .sender(chat.getSender().getNickname())
                     .message(chat.getMessage())
