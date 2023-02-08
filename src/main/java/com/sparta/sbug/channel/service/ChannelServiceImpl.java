@@ -1,8 +1,14 @@
 package com.sparta.sbug.channel.service;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.sbug.channel.dto.ChannelRequestDto;
 import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.channel.entity.QChannel;
 import com.sparta.sbug.channel.repository.ChannelRepository;
+import com.sparta.sbug.thread.dto.ThreadResponseDto;
+import com.sparta.sbug.thread.entity.QThread;
+import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -19,6 +26,7 @@ import java.util.Set;
 public class ChannelServiceImpl implements ChannelService {
     private final ChannelRepository channelRepository;
     private final UserServiceImpl userService;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public Channel getChannel(Long channelId) {
@@ -69,8 +77,17 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Thread> getThreads(Channel channel) {
-        return null;
+    public List<ThreadResponseDto> getThreads(Channel channel) {
+        QThread thread = QThread.thread;
+        QChannel qChannel = QChannel.channel;
+        List<Thread> fetch = queryFactory
+                .select(thread)
+                .from(thread)
+                .join(qChannel)
+                .on(thread.channel.channelName.eq(channel.getChannelName()))
+                .where(thread.channel.channelName.eq(channel.getChannelName()))
+                .fetch();
+        return fetch.stream().map(ThreadResponseDto::of).collect(Collectors.toList());
     }
     // threadService 쪽에서 getAllThread 만들어서
     // threadService 를 의존하는 형태로 가야 할 것 같아요. <

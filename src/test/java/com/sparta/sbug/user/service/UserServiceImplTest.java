@@ -1,5 +1,7 @@
 package com.sparta.sbug.user.service;
 
+import com.sparta.sbug.channel.entity.QChannel;
+import com.sparta.sbug.user.entity.QUser;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -39,5 +41,10 @@ class UserServiceImplTest {
 
     @Test
     void update() {
+    }
+
+    @Test
+    void getMyChannels() {
+
     }
 }
