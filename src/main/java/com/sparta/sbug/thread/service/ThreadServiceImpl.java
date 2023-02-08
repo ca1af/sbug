@@ -1,7 +1,7 @@
 package com.sparta.sbug.thread.service;
 
 import com.sparta.sbug.channel.entity.Channel;
-import com.sparta.sbug.channel.repository.ChannelRepository;
+import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.thread.dto.ThreadRequestDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
@@ -15,15 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class ThreadServiceImpl implements ThreadService {
 
     private final ThreadRepository threadRepository;
-    private final ChannelRepository channelRepository;
+    private final ChannelServiceImpl channelService;
 
 
     //Thread 생성
     @Override
     @Transactional
     public String creatThread(Long channelId, ThreadRequestDto threadRequestDto, User user) {
-        Channel channel = channelRepository.findById(channelId).orElseThrow(
-        () -> new IllegalArgumentException("채널이 존재하지 않습니다.")); // exception 처리
+        Channel channel = channelService.getChannel(channelId);
+        // exception 처리 할 필요 없습니다. getChannel 매서드에서 이미 처리됩니다.
         Thread thread = new Thread(channel,user, threadRequestDto.getContent());
         threadRepository.save(thread);
         return "channelName/thread/{id}";

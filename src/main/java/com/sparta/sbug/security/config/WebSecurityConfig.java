@@ -66,7 +66,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
         // 403 Error 처리, 인증과는 별개로 추가적인 권한이 충족되지 않는 경우
         http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
-
 //                .formLogin().failureHandler();
 //                http.exceptionHandling().accessDeniedHandler(new AccessDeniedHandlerImpl());
 //        http.formLogin().loginPage("/api/user/login-page").permitAll();
