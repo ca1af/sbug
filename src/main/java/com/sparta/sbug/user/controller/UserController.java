@@ -4,6 +4,7 @@ import com.sparta.sbug.security.jwt.JwtUtil;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
+import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserServiceImpl;
@@ -43,7 +44,11 @@ public class UserController {
         return "updated";
     }
     @GetMapping("/api/users")
-    public List<User> getUsers(){
+    public List<UserResponseDto> getUsers(){
         return userService.getUsers();
+    }
+    @GetMapping("/api/user/mypage")
+    public UserResponseDto myPage(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.myPage(userDetails.getUser());
     }
 }

@@ -28,6 +28,8 @@ public class ChannelServiceImpl implements ChannelService {
     private final UserServiceImpl userService;
     private final JPAQueryFactory queryFactory;
 
+
+
     @Override
     public Channel getChannel(Long channelId) {
         return channelRepository.findById(channelId).orElseThrow(

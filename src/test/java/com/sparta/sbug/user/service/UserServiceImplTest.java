@@ -47,4 +47,9 @@ class UserServiceImplTest {
     void getMyChannels() {
 
     }
+
+    @Test
+    void testGetMyChannels() {
+
+    }
 }

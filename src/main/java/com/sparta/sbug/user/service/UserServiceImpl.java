@@ -7,6 +7,7 @@ import com.sparta.sbug.channel.entity.QChannel;
 import com.sparta.sbug.security.jwt.JwtUtil;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
+import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.QUser;
 import com.sparta.sbug.user.entity.User;
@@ -82,8 +83,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDto> getUsers() {
+        return userRepository.findAll().stream().map(UserResponseDto::of).collect(Collectors.toList());
+    }
+
+    @Override
+    public UserResponseDto myPage(User user) {
+        User user1 = userRepository.findById(user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("유저가 없습니다")
+        );
+        return UserResponseDto.of(user1);
     }
 
     public List<ChannelResponseDto> getMyChannels(){
