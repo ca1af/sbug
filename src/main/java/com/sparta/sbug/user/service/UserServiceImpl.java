@@ -94,15 +94,26 @@ public class UserServiceImpl implements UserService {
         );
         return UserResponseDto.of(user1);
     }
+    @Override
+    public UserResponseDto getUser(Long id){
+        User findUser = userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("선택한 유저가 없습니다.")
+        );
+        return UserResponseDto.of(findUser);
+    }
 
-    public List<ChannelResponseDto> getMyChannels(){
+
+    @Override
+    public List<ChannelResponseDto> getMyChannels(User user){
         QChannel qChannel = QChannel.channel;
         QUser qUser = QUser.user;
+
         List<Channel> channels = queryFactory
                 .selectFrom(qChannel)
                 .join(qUser)
-                .on(qUser.channels.contains(qChannel))
+                .on(qChannel.user.eq(user))
                 .fetch();
         return channels.stream().map(ChannelResponseDto::of).collect(Collectors.toList());
     }
+    // 요청한 유자가 가진 채널의 목록을 조회
 }
