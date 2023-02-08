@@ -22,9 +22,8 @@ public class ThreadServiceImpl implements ThreadService {
     //Thread 생성
     @Override
     @Transactional
-    public String creatThread(Long channelId, ThreadRequestDto threadRequestDto, User user) {
-        Channel channel = channelService.getChannel(channelId);
-        // exception 처리 할 필요 없습니다. getChannel 매서드에서 이미 처리됩니다.
+    public String createThread(Long channelId, ThreadRequestDto threadRequestDto, User user) {
+        Channel channel = channelService.getChannel(channelId);// getChannel() 매서드에서 exception 처리
         Thread thread = new Thread(channel,user, threadRequestDto.getContent());
         threadRepository.save(thread);
         return "channelName/thread/{id}";
@@ -44,7 +43,7 @@ public class ThreadServiceImpl implements ThreadService {
     @Override
     @Transactional
     public String deleteThread(Long threadId, User user){
-        Thread thread = threadRepository.findByIdAndUser(threadId, user).orElseThrow(); // exception처리
+        Thread thread = threadRepository.findByIdAndUser(threadId, user).orElseThrow(); // exception 처리
         threadRepository.delete(thread);
         return "channelName/home";
     }
