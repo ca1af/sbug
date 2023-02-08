@@ -9,6 +9,6 @@ public interface ChatRepositoryQuery {
 
     Page<Chat> findExchangedMessages(Long userId1, Long userId2, Pageable pageable);
 
-    Long countByReceiverIdAndStatus(Long id, ChatStatus status, Pageable pageable);
+    Long countByReceiverIdAndStatus(Long id, ChatStatus status);
 
 }
