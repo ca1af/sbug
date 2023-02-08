@@ -1,11 +1,13 @@
 package com.sparta.sbug.user.controller;
 
+import com.sparta.sbug.security.jwt.JwtUtil;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,8 +28,10 @@ public class UserController {
     // ResponseEntity<> 사용 권장 (200 / 400 등) / -> 간단한 건 status 만 줘도 될 듯.
     // Json 타입의 데이터 필요하면 Body 에 << DTo 형식으로 주면 될 듯.
     @PostMapping("/api/user/login")
-    public String login(@RequestBody LoginRequestDto requestDto){
-        return userService.login(requestDto);
+    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response){
+        String token = userService.login(requestDto);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        return "Success";
     }
     @DeleteMapping("/api/user/unregister")
     public String unregister(@AuthenticationPrincipal UserDetailsImpl userDetails) {
