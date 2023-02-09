@@ -1,10 +1,13 @@
 package com.sparta.sbug.comment.dto;
 
+import com.sparta.sbug.comment.entity.Comment;
+import com.sparta.sbug.emoji.entity.CommentEmoji;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 // lombok
 @Getter
@@ -15,36 +18,31 @@ public class CommentResponseDto {
     private LocalDateTime createdAt;
     private Long userId;
     private String username;
-    private List<String> usersOfEmoji1 = new ArrayList<>();
-    private List<String> usersOfEmoji2 = new ArrayList<>();
-    private List<String> usersOfEmoji3 = new ArrayList<>();
-    private List<String> usersOfEmoji4 = new ArrayList<>();
+    private final List<String> usersOfEmoji1 = new ArrayList<>();
+    private final List<String> usersOfEmoji2 = new ArrayList<>();
+    private final List<String> usersOfEmoji3 = new ArrayList<>();
+    private final List<String> usersOfEmoji4 = new ArrayList<>();
 
-    @Builder
-    public CommentResponseDto(Long id, String content, LocalDateTime createdAt, Long userId, String username,
-                              List<String> usersOfEmoji1, List<String> usersOfEmoji2, List<String> usersOfEmoji3,
-                              List<String> usersOfEmoji4) {
-        this.id = id;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.userId = userId;
-        this.username = username;
+    private CommentResponseDto(Comment comment) {
+        this.id = comment.getId();
+        this.content = comment.getContent();
+        this.createdAt = comment.getCreatedAt();
+        this.userId = comment.getUser().getId();
+        this.username = comment.getUser().getNickname();
+
+        Set<CommentEmoji> emojis = comment.getEmojis();
+        for (CommentEmoji emoji : emojis) {
+            switch (emoji.getEmojiType()) {
+                case Emoji1 -> usersOfEmoji1.add(emoji.getUser().getNickname());
+                case Emoji2 -> usersOfEmoji2.add(emoji.getUser().getNickname());
+                case Emoji3 -> usersOfEmoji3.add(emoji.getUser().getNickname());
+                case Emoji4 -> usersOfEmoji4.add(emoji.getUser().getNickname());
+            }
+        }
     }
 
-    public void addUserToEmoji1(String username) {
-        usersOfEmoji1.add(username);
-    }
-
-    public void addUserToEmoji2(String username) {
-        usersOfEmoji2.add(username);
-    }
-
-    public void addUserToEmoji3(String username) {
-        usersOfEmoji3.add(username);
-    }
-
-    public void addUserToEmoji4(String username) {
-        usersOfEmoji4.add(username);
+    public static CommentResponseDto of(Comment comment) {
+        return new CommentResponseDto(comment);
     }
 
 }

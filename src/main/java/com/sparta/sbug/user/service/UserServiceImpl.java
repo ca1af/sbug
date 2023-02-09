@@ -116,4 +116,10 @@ public class UserServiceImpl implements UserService {
         return channels.stream().map(ChannelResponseDto::of).collect(Collectors.toList());
     }
     // 요청한 유자가 가진 채널의 목록을 조회
+
+    @Override
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow();
+    }
+    
 }

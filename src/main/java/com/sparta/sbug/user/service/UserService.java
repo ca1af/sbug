@@ -22,7 +22,12 @@ public interface UserService {
     void update(User user, UserUpdateDto dto);
 
     List<UserResponseDto> getUsers();
+    
     UserResponseDto myPage(User user);
+    
     UserResponseDto getUser(Long id);
+    
     List<ChannelResponseDto> getMyChannels(User user);
+    
+    User getUserById(Long userId);
 }

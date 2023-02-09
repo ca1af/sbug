@@ -37,8 +37,8 @@ public class Channel {
         this.channelName = channelName;
     }
 
-    public void updateChannel(Channel channel, User user, ChannelRequestDto dto) {
-        this.channelName = dto.getChannelName();
+    public void updateChannel(Channel channel, User user, String channelName) {
+        this.channelName = channelName;
     }
 
     // 연관관계 편의 매서드
