@@ -1,0 +1,118 @@
+@charset "utf-8";
+
+.cf:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+
+body {
+    background: #0d1117;
+    font: 14px/20px "Lato", Arial, sans-serif;
+    padding: 40px 0;
+    color: white;
+}
+
+#container {
+    max-width: 1920px;
+    margin: 0 auto;
+    width: 90%;
+    height: 800px;
+    background: #444753;
+    border-radius: 5px;
+    padding: 20px;
+    display: flex;
+}
+
+
+
+#container .menu {
+    width: 200px;
+    /* border: 1px solid #000; */
+    min-height: 200px;
+    margin: 0;
+    padding: 0;
+}
+/* 검색 */
+#container .menu .search {
+    position: relative;
+    font-size: 20px;
+    border-radius: 3px;
+    border: none;
+    color: white;
+    background: #6A6C75;
+    width: 200px;
+    font-size: 20px;
+    padding: 4px;
+    margin-bottom: 20px;
+    
+}
+#container .menu div {
+}
+#container .menu .search:focus {
+    color: white;
+    padding-left: 8px;
+}
+#container .menu .search::placeholder {
+    color: #8a8c96;
+}
+#container .menu .search:focus::placeholder{
+    color: white;
+}
+/* 검색끝 */
+
+
+/* 회원메뉴 */
+#container .menu .menubtn {
+    width:100%;
+    /* border: 1px solid red; */
+    margin-bottom: 10px;
+}
+#container .menu .menubtn button{
+    width: 95px;
+    min-width: 95px;
+    margin: 2.5px;
+    background-color: #8a8c96;
+    padding: 5px;
+    border: none;
+    float: left;
+    border-radius: 3px
+    
+}
+
+/* 회원메뉴끝 */
+
+/* 유저리스트 시작 */
+#container .member {
+    width: 200px;
+    border: 1px solid #000;
+    height: 500px;
+}
+
+#container .member .list {
+
+}
+#container .member .list ul {
+    width: 200px;
+}
+#container .member .list .username {
+    font-size: 18px;
+    float: left;
+    margin-top: 12px;
+    margin-left: 12px;
+    border: 1px solid #000;
+}
+#container .member .list .userimage {
+    width: 50px;
+    height: 50px;
+    border-radius: 32px;
+    border: 1px solid red;
+    float: left;
+    overflow: hidden;
+}
+
+
+/* 유저리스트목록 끝 */
