@@ -21,9 +21,9 @@ public class ThreadEmojiServiceImpl implements ThreadEmojiService {
 
     // ThreadEmoji 생성
     @Override
-    public String createThreadEmoji(Long threadId, EmojiRequestDto emojiRequestDto, User user){
+    public String createThreadEmoji(Long threadId, String emojiType, User user){
         Thread thread = threadService.getThread(threadId);
-        ThreadEmoji threadEmoji = new ThreadEmoji(emojiRequestDto.getEmojiType(), user, thread);
+        ThreadEmoji threadEmoji = new ThreadEmoji(emojiType, user, thread);
         threadEmojiRepository.save(threadEmoji);
         return "channelName/thread/{id}";
     }

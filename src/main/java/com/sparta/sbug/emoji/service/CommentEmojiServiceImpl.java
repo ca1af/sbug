@@ -23,9 +23,9 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
 
     // CommentEmoji 생성
     @Override
-    public String createCommentEmoji(Long commentId, EmojiRequestDto emojiRequestDto, User user){
+    public String createCommentEmoji(Long commentId, String emojiType, User user){
         Comment comment = commentService.getComment(commentId);
-        CommentEmoji commentEmoji = new CommentEmoji(emojiRequestDto.getEmojiType(), user, comment);
+        CommentEmoji commentEmoji = new CommentEmoji(emojiType, user, comment);
         commentEmojiRepository.save(commentEmoji);
         return "channelName/thread/{id}";
     }
