@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
             throw new SecurityException("사용자를 찾을수 없습니다.");
         }
 
-        return jwtUtil.createToken(user.getEmail(), user.getUserRole());
+        return jwtUtil.createToken(user.getEmail(), user.getId(), user.getUserRole());
     }
 
     @Override

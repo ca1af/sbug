@@ -21,17 +21,13 @@ public class ChatRepositoryQueryImpl implements ChatRepositoryQuery {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    /**
-     * 두 유저가 주고 받는 메세지를 찾는 메서드
-     * Page 객체로 반환하기 위해 데이터를 불러오는 메서드와 함께 전체 데이터 개수를 세는 쿼리가 한 번 더 실행됩니다.
-     */
     @Override
-    public Page<Chat> findExchangedMessages(Long userId1, Long userId2, Pageable pageable) {
-        JPAQuery<Chat> query = buildQueryForSelectExchangedMessages(chat, userId1, userId2)
+    public Page<Chat> findMessagesInChatRoom(Long roomId, Pageable pageable) {
+        JPAQuery<Chat> query = buildQueryForSelectExchangedMessages(chat, roomId)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
-        JPAQuery<Long> countQuery = buildQueryForSelectExchangedMessages(Wildcard.count, userId1, userId2);
+        JPAQuery<Long> countQuery = buildQueryForSelectExchangedMessages(Wildcard.count, roomId);
 
         List<Chat> chats = query.fetch();
         long totalSize = countQuery.fetch().get(0);
@@ -39,9 +35,7 @@ public class ChatRepositoryQueryImpl implements ChatRepositoryQuery {
         return PageableExecutionUtils.getPage(chats, pageable, () -> totalSize);
     }
 
-    /**
-     * 특정 유저가 자신에게 온 아직 읽지 않은 메세지들의 개수를 구하는 메서드
-     */
+
     @Override
     public Long countByReceiverIdAndStatus(Long id, ChatStatus status) {
         JPAQuery<Long> query = jpaQueryFactory.select(chat.count())
@@ -56,13 +50,11 @@ public class ChatRepositoryQueryImpl implements ChatRepositoryQuery {
      * 주고 받은 메세지를 찾는 쿼리를 제작하는 메서드
      * 두 유저 서로가 서로의 수신자 혹은 발신자인 데이터를 찾는 쿼리
      */
-    private <T> JPAQuery<T> buildQueryForSelectExchangedMessages(Expression<T> expr, Long userId1, Long userId2) {
+    private <T> JPAQuery<T> buildQueryForSelectExchangedMessages(Expression<T> expr, Long roomId) {
         return jpaQueryFactory.select(expr)
                 .from(chat)
                 .where(
-                        (chat.receiver.id.eq(userId1).and(chat.sender.id.eq(userId2))).or(
-                                chat.receiver.id.eq(userId2).and(chat.sender.id.eq(userId1))
-                        )
+                        chat.room.id.eq(roomId)
                 );
     }
 }

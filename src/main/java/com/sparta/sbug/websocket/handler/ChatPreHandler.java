@@ -15,24 +15,25 @@ public class ChatPreHandler implements ChannelInterceptor {
 
     private final JwtUtil jwtUtil;
 
+    // 전송 받은 메세지에서 JWT 토큰을 검증하는 메서드
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
 
-//        // 헤더 토큰 열기
-//        String authorizationHeader = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
-//
-//        // 토큰 자르기
-//        if(authorizationHeader == null || authorizationHeader.equals("null")) {
-//            throw new MessageDeliveryException("메세지: 토큰 없음");
-//        }
-//
-//        String token = authorizationHeader.substring("Bearer ".length());
-//
-//        // 토큰 인증
-//        if (!jwtUtil.validateToken(token, null)) {
-//            throw new MessageDeliveryException("메세지 토큰 예외");
-//        }
+        // 헤더 토큰 열기
+        String authorizationHeader = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
+
+        // 토큰 자르기
+        if(authorizationHeader == null || authorizationHeader.equals("null")) {
+            throw new MessageDeliveryException("메세지: 토큰 없음");
+        }
+
+        String token = authorizationHeader.substring("Bearer ".length());
+
+        // 토큰 인증
+        if (!jwtUtil.validateToken(token, null)) {
+            throw new MessageDeliveryException("메세지 토큰 예외");
+        }
 
         return message;
     }
