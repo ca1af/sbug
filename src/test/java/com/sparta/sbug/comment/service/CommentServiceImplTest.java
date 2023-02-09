@@ -8,26 +8,20 @@ import com.sparta.sbug.comment.repository.CommentRepository;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
-import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.entity.UserRole;
 import com.sparta.sbug.user.repository.UserRepository;
-import com.sparta.sbug.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Rollback(value = false)
@@ -70,8 +64,8 @@ class CommentServiceImplTest {
                 .channelName("channel").build();
 
         Channel savedChannel = channelRepository.save(channel);
-        savedUser1.addChannel(savedChannel);
-        savedUser2.addChannel(savedChannel);
+        savedUser1.joinChannel(savedChannel);
+        savedUser2.joinChannel(savedChannel);
 
         this.channel = savedChannel;
         this.user1 = savedUser1;

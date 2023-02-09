@@ -1,10 +1,8 @@
 package com.sparta.sbug.channel.service;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.sbug.channel.dto.ChannelRequestDto;
 import com.sparta.sbug.channel.entity.Channel;
-import com.sparta.sbug.channel.entity.QChannel;
 import com.sparta.sbug.channel.repository.ChannelRepository;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.entity.QThread;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,8 +25,6 @@ public class ChannelServiceImpl implements ChannelService {
     private final UserServiceImpl userService;
     private final JPAQueryFactory queryFactory;
 
-
-
     @Override
     public Channel getChannel(Long channelId) {
         return channelRepository.findById(channelId).orElseThrow(
@@ -38,10 +33,10 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public String createChannel(User user, ChannelRequestDto dto) {
-        Channel channel = Channel.builder().user(user).adminEmail(user.getEmail()).channelName(dto.getChannelName()).build();
+    public String createChannel(User user, String channelName) {
+        Channel channel = Channel.builder().user(user).adminEmail(user.getEmail()).channelName(channelName).build();
         channelRepository.save(channel);
-        user.addChannel(channel);
+        user.joinChannel(channel);
         return "created";
     }
 
@@ -55,7 +50,7 @@ public class ChannelServiceImpl implements ChannelService {
         // 초대를 보낸 유저가 가진 채널들입니다.
         if(channels.contains(channel)){
             // 초대를 보낸 유저가 가진 채널 중 초대할 채널이 있는지 확인합니다.
-            requester.addChannel(channel);
+            requester.joinChannel(channel);
             // 그 후 초대할 사람의 채널 목록에 채널을 추가합니다.
         }
         return "added";
@@ -67,19 +62,25 @@ public class ChannelServiceImpl implements ChannelService {
         }
     }
     @Override
-    public void updateChannelName(Channel channel, User user, ChannelRequestDto dto) {
+    public void updateChannelName(Channel channel, User user, String channelName) {
         channelAdminChecker(channel,user);
-        channel.updateChannel(channel,user,dto);
+        channel.updateChannel(channel,user,channelName);
     }
     @Override
-    public void deleteChannel(Channel channel, User user) {
+    public void deleteChannel(User user, Long id) {
+        Channel channel = channelRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("찾는 채널이 없습니다.")
+        );
         channelAdminChecker(channel,user);
         channelRepository.delete(channel);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ThreadResponseDto> getThreads(Channel channel) {
+    public List<ThreadResponseDto> getThreads(Long id) {
+        Channel channel = channelRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("채널이 없습니다.")
+        );
         QThread thread = QThread.thread;
         List<Thread> fetch = queryFactory
                 .selectFrom(thread)

@@ -78,6 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void update(User user, UserUpdateDto dto) {
         user.updateUser(dto.getNickname(), dto.getPassword());
     }
