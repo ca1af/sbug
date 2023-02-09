@@ -1,37 +1,37 @@
 package com.sparta.sbug.emoji.controller;
 
-import com.sparta.sbug.emoji.dto.EmojiRequestDto;
 import com.sparta.sbug.emoji.service.ThreadEmojiServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/channel")
+@RequestMapping("/api/channel/threads")
 public class ThreadEmojiController {
     private final ThreadEmojiServiceImpl threadEmojiService;
 
-    // api/channel/threads/{id}/emoji?type={emojiType}
+    // api/channel/threads/{id}/emoji?emojiType={emojiType}
 
     // ThreadEmoji 생성
-    @PostMapping("/threads{id}")
+    @PostMapping("/{threadId}/emoji")
     public String createThreadEmoji(
-            @PathVariable Long id,
-            @RequestBody EmojiRequestDto emojiRequestDto,
+            @PathVariable Long threadId,
+            @RequestParam(name = "emoji-type") String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return threadEmojiService.createThreadEmoji(id, emojiRequestDto, userDetails.getUser());
+        return threadEmojiService.createThreadEmoji(threadId, emojiType, userDetails.getUser());
     }
 
 
     // ThreadEmoji 삭제
-    @DeleteMapping("/threads{id}")
+    @DeleteMapping("/{emojiId}/emoji")
     public String deleteThreadEmoji(
-        @PathVariable Long id,
+        @PathVariable Long emojiId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return threadEmojiService.deleteThreadEmoji(id, userDetails.getUser());
+        return threadEmojiService.deleteThreadEmoji(emojiId, userDetails.getUser());
     }
 }

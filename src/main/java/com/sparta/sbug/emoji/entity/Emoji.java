@@ -21,8 +21,8 @@ public abstract class Emoji {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Emoji(EmojiType emojiType, User user){
-        this.emojiType = emojiType;
+    public Emoji(String emojiType, User user){
+        this.emojiType = EmojiType.valueOf(emojiType);
         this.user = user;
     }
 }

@@ -1,6 +1,5 @@
 package com.sparta.sbug.emoji.controller;
 
-import com.sparta.sbug.emoji.dto.EmojiRequestDto;
 import com.sparta.sbug.emoji.service.CommentEmojiServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -9,29 +8,29 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/channel")
+@RequestMapping("/api/channel/threads/comments")
 public class CommentEmojiController {
     private final CommentEmojiServiceImpl commentEmojiService;
 
- //   api/channel/threads/comments/{id}/emoji?type={emojiType}
+ //  api/channel/threads{threadId}/comments/{commentId}/emoji?emojiType={emojiType}
 
     // CommentEmoji 생성
-    @PostMapping("/threads/comments/{id}")
+    @PostMapping("/{commentId}/emoji")
     public String createCommentEmoji(
-            @PathVariable Long id,
-            @RequestBody EmojiRequestDto emojiRequestDto,
+            @PathVariable Long commentId,
+            @RequestParam(name = "emoji-type") String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return commentEmojiService.createCommentEmoji(id, emojiRequestDto, userDetails.getUser());
+        return commentEmojiService.createCommentEmoji(commentId, emojiType,userDetails.getUser());
     }
 
 
     // CommentEmoji 삭제
-    @DeleteMapping("/threads/comments/{id}")
+    @DeleteMapping("/{emojiId}/emoji")
     public String deleteCommentEmoji(
-            @PathVariable Long id,
+            @PathVariable Long emojiId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return commentEmojiService.deleteCommentEmoji(id, userDetails.getUser());
+        return commentEmojiService.deleteCommentEmoji(emojiId, userDetails.getUser());
     }
 }

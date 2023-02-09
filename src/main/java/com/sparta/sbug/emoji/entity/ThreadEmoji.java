@@ -17,7 +17,7 @@ public class ThreadEmoji extends Emoji{
     private Thread thread;
 
 
-    public ThreadEmoji(EmojiType emojiType, User user, Thread thread){
+    public ThreadEmoji(String emojiType, User user, Thread thread){
         super(emojiType, user);
         this.thread = thread;
     }

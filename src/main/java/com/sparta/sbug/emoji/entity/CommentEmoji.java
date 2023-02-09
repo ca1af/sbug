@@ -17,7 +17,7 @@ public class CommentEmoji extends Emoji{
     private Comment comment;
 
 
-    public CommentEmoji(EmojiType emojiType, User user, Comment comment){
+    public CommentEmoji(String emojiType, User user, Comment comment){
         super(emojiType, user);
         this.comment = comment;
     }
