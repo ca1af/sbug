@@ -51,29 +51,27 @@ public class TestDataDB {
 
             User user2 = User.builder().email("user2").password(password2).nickname("루피").build();
             user2.setUserRole(UserRole.USER);
-            User savedUser2 = userRepository.save(user2);
+            userRepository.save(user2);
 
             User user3 = User.builder().email("user3").password(password3).nickname("펭구").build();
             user2.setUserRole(UserRole.USER);
-            User savedUser3 = userRepository.save(user2);
+            userRepository.save(user2);
 
             Channel channel = Channel.builder()
-                    .user(savedUser1)
                     .adminEmail(savedUser1.getEmail())
                     .channelName("channel").build();
 
+//            channel.joinChannel(savedUser1);
+
             Channel channel2 = Channel.builder()
-                    .user(savedUser1)
                     .adminEmail(savedUser1.getEmail())
                     .channelName("channel2").build();
+
+//            channel2.joinChannel(savedUser1);
 
             Channel savedChannel = channelRepository.save(channel);
             Channel savedChannel2 = channelRepository.save(channel2);
 
-            savedUser1.joinChannel(savedChannel);
-            savedUser2.joinChannel(savedChannel);
-
-            savedUser3.joinChannel(savedChannel2);
 
             Thread thread = new Thread(savedChannel, savedUser1, "안녕하세요");
             Thread thread2 = new Thread(savedChannel2, savedUser1, "안녕하세요2");

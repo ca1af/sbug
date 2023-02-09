@@ -1,7 +1,9 @@
 package com.sparta.sbug.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.common.entity.Timestamp;
+import com.sparta.sbug.userchannel.enttiy.UserChannel;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,15 +35,13 @@ public class User extends Timestamp {
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole = UserRole.USER;
 
+
     @Builder
     public User(String email, String password, String nickname) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
     }
-
-    @OneToMany(mappedBy = "user")
-    Set<Channel> channels = new LinkedHashSet<>();
 
     public void updateUser(String nickname, String password) {
         this.nickname = nickname;
@@ -52,11 +52,4 @@ public class User extends Timestamp {
         this.userRole = role;
     }
 
-    //연관관계 편의 매서드
-    public void joinChannel(Channel channel) {
-        this.channels.add(channel);
-    }
-    public void leaveChannel(Channel channel){
-        this.channels.remove(channel);
-    }
 }

@@ -6,6 +6,7 @@ import com.sparta.sbug.channel.entity.QChannel;
 import com.sparta.sbug.user.entity.QUser;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
+import com.sparta.sbug.userchannel.enttiy.QUserChannel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,12 +54,14 @@ class UserServiceImplTest {
         User user = User.builder().email("email").password("password").nickname("nickname").build();
         userRepository.save(user);
 
-        QChannel qChannel = QChannel.channel;
-        QUser qUser = QUser.user;
-        List<Channel> channels = queryFactory
-                .selectFrom(qChannel)
-                .join(qUser)
-                .on(qChannel.user.eq(user))
+        var qChannel = QChannel.channel;
+        var qUser = QUser.user;
+        var qUserChannel = QUserChannel.userChannel;
+
+        List<Channel> fetch = queryFactory
+                .select(qChannel)
+                .from(qUserChannel)
+                .where(qUserChannel.user.id.eq(user.getId()))
                 .fetch();
         // contain 은 같은 값이 많을 때만 시도해보자. <<
     }
