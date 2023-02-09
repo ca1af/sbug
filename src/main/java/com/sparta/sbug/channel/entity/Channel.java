@@ -1,8 +1,9 @@
 package com.sparta.sbug.channel.entity;
 
-import com.sparta.sbug.channel.dto.ChannelRequestDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
+import com.sparta.sbug.userchannel.enttiy.UserChannel;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -25,14 +26,11 @@ public class Channel {
 
     @OneToMany(mappedBy = "channel")
     private Set<Thread> threads = new LinkedHashSet<>();
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+
     private String adminEmail;
 
     @Builder
-    public Channel(User user, String adminEmail, String channelName) {
-        this.user = user;
+    public Channel(String adminEmail, String channelName) {
         this.adminEmail = adminEmail;
         this.channelName = channelName;
     }

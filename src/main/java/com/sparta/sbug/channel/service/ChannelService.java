@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface ChannelService {
     Channel getChannel(Long channelId);
-    String createChannel(User user, String channelName);
-    String inviteUser(User user, Channel channel, String email);
-    void updateChannelName(Channel channel, User user, String channelName);
-    public void deleteChannel(User user, Long id);
+    void createChannel(User user, String channelName);
+    String inviteUser(User user, Long id, String email);
+    void updateChannelName(Long id, User user, String channelName);
+    Long deleteChannel(User user, Long id);
     List<ThreadResponseDto> getThreads(Long id);
 }

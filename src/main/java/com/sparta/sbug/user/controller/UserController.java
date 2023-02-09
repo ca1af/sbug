@@ -1,6 +1,7 @@
 package com.sparta.sbug.user.controller;
 
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
+import com.sparta.sbug.security.dto.JwtDto;
 import com.sparta.sbug.security.jwt.JwtUtil;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.user.dto.LoginRequestDto;
@@ -28,8 +29,8 @@ public class UserController {
     }
     @PostMapping("/api/user/login")
     public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response){
-        String token = userService.login(requestDto);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        JwtDto token = userService.login(requestDto);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token.getAccessToken());
         return "Success";
     }
     @DeleteMapping("/api/user/unregister")
