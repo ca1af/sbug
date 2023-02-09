@@ -53,7 +53,10 @@ public class User extends Timestamp {
     }
 
     //연관관계 편의 매서드
-    public void addChannel(Channel channel) {
+    public void joinChannel(Channel channel) {
         this.channels.add(channel);
+    }
+    public void leaveChannel(Channel channel){
+        this.channels.remove(channel);
     }
 }

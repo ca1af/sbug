@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,7 +36,7 @@ public class ChannelServiceImpl implements ChannelService {
     public String createChannel(User user, String channelName) {
         Channel channel = Channel.builder().user(user).adminEmail(user.getEmail()).channelName(channelName).build();
         channelRepository.save(channel);
-        user.addChannel(channel);
+        user.joinChannel(channel);
         return "created";
     }
 
@@ -51,7 +50,7 @@ public class ChannelServiceImpl implements ChannelService {
         // 초대를 보낸 유저가 가진 채널들입니다.
         if(channels.contains(channel)){
             // 초대를 보낸 유저가 가진 채널 중 초대할 채널이 있는지 확인합니다.
-            requester.addChannel(channel);
+            requester.joinChannel(channel);
             // 그 후 초대할 사람의 채널 목록에 채널을 추가합니다.
         }
         return "added";
