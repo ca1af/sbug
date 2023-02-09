@@ -17,6 +17,14 @@ public class ThreadServiceImpl implements ThreadService {
     private final ThreadRepository threadRepository;
     private final ChannelServiceImpl channelService;
 
+    // Thread 찾는 메소드
+    @Override
+    @Transactional
+    public Thread getThread(Long threadId) {
+        return threadRepository.findById(threadId).orElseThrow(
+                () -> new IllegalArgumentException("쓰레드가 없습니다")
+        );
+    }
 
     //Thread 생성
     @Override

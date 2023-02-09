@@ -5,6 +5,9 @@ import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 
 public interface ThreadService {
+
+    Thread getThread(Long threadId);
+
     String createThread(Long channelId, ThreadRequestDto threadRequestDto, User user);
 
     String editThread(Long ThreadId, ThreadRequestDto threadRequestDto, User user);
