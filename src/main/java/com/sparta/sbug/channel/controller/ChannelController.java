@@ -21,26 +21,26 @@ public class ChannelController {
     private final ChannelServiceImpl channelService;
     private final UserChannelUpperLayerService userChannelUpperLayerService;
 
-    @GetMapping("/channel/{id}")
-    public String getChannel(@PathVariable Long id) {
+    @GetMapping("/channels/{id}")
+    public String channel(@PathVariable Long id) {
         Channel channel = channelService.getChannelById(id);
         return channel.getChannelName();
     }
 
     @GetMapping("/user/channels")
-    public List<ChannelResponseDto> getAllMyChannel(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public List<ChannelResponseDto> allMyChannel(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userChannelUpperLayerService.getChannelsByUserId(userDetails.getUser().getId());
     }
 
-    @PostMapping("/channel/create")
-    public String createChannel(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ChannelRequestDto requestDto) {
+    @PostMapping("/channesl/create")
+    public String channel(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ChannelRequestDto requestDto) {
         userChannelUpperLayerService.createChannelAndUserChannelForRequester(userDetails.getUser(), requestDto.getChannelName());
         return "home";
         // 특정 쓰레드로 가고 싶을 때는... 쓰레드 ID 같은 걸 줘서 프론트가 조회하게.. 프론트가 어떻게 받게 할 것인지 고민해야 함
         // 프론트와 서버를 분리해야함! (API 서버와 웹 서버와 프론트의 관점)
     }
 
-    @PostMapping("/channel/{channelId}/invite")
+    @PostMapping("/channels/{channelId}/invite")
     public String inviteUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
                              @RequestBody ChannelDto.InvitationRequest requestDto,
                              @PathVariable Long channelId) {
@@ -50,7 +50,7 @@ public class ChannelController {
     }
 
     @PatchMapping("/channels/{channelId}/update")
-    public String updateChannelName(@PathVariable Long channelId,
+    public String channelName(@PathVariable Long channelId,
                                     @AuthenticationPrincipal UserDetailsImpl userDetails,
                                     @RequestBody ChannelDto.ChannelRequest requestDto) {
         channelService.updateChannelName(channelId, userDetails.getUser(), requestDto.getChannelName());
@@ -58,7 +58,7 @@ public class ChannelController {
     }
 
     @DeleteMapping("/channels/{channelId}/delete")
-    public String deleteChannel(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public String channel(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                 @PathVariable Long channelId) {
         userChannelUpperLayerService.deleteChannelAndDependentUserChannel(userDetails.getUser(), channelId);
         return "redirect home";

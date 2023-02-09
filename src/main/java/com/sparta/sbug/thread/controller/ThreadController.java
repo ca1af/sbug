@@ -13,14 +13,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
-@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+@RequestMapping("/api/channels")
 public class ThreadController {
     private final ThreadServiceImpl threadService;
 
    // Thread 작성
-    @PostMapping("/channels/{channelId}/thread")
-    public String createThread(
+    @PostMapping("/{channelId}/thread")
+    public String thread(
             @PathVariable Long channelId,
             @RequestBody ThreadRequestDto threadRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -29,8 +28,8 @@ public class ThreadController {
     }
 
     // Thread 수정
-    @PatchMapping("/channel/threads/{threadId}")
-    public String editThread(
+    @PatchMapping("/threads/{threadId}")
+    public String tread(
             @PathVariable Long threadId,
             @RequestBody ThreadRequestDto threadRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails)
@@ -39,8 +38,8 @@ public class ThreadController {
     }
 
     // Tread 삭제
-    @DeleteMapping("/channel/threads/{threadId}")
-    public String deleteThread(
+    @DeleteMapping("/threads/{threadId}")
+    public String thread(
             @PathVariable Long threadId,
             @AuthenticationPrincipal UserDetailsImpl userDetails)
     {
@@ -48,8 +47,8 @@ public class ThreadController {
     }
 
     // 각 Thread에 대한 Comment 조회
-    @GetMapping("/channel/threads/{threadId}")
-    public List<CommentResponseDto> getComments(
+    @GetMapping("/threads/{threadId}")
+    public List<CommentResponseDto> comments(
             @PathVariable Long threadId){
         return threadService.getComments(threadId);
     }

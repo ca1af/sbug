@@ -15,8 +15,8 @@ public class CommentEmojiController {
  //  api/channel/threads{threadId}/comments/{commentId}/emoji?emojiType={emojiType}
 
     // CommentEmoji 생성
-    @PostMapping("/{commentId}/emoji")
-    public String createCommentEmoji(
+    @PostMapping("/{commentId}")
+    public String commentEmoji(
             @PathVariable Long commentId,
             @RequestParam(name = "emoji-type") String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -26,8 +26,8 @@ public class CommentEmojiController {
 
 
     // CommentEmoji 삭제
-    @DeleteMapping("/{emojiId}/emoji")
-    public String deleteCommentEmoji(
+    @DeleteMapping("/{emojiId}")
+    public String commentEmoji(
             @PathVariable Long emojiId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {

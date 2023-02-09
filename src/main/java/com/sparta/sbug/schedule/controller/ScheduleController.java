@@ -17,13 +17,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/users/schedules")
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
     //일정 등록
-    @PostMapping("/user/schedule")
-    public String registerSchedule(
+    @PostMapping("")
+    public String schedule(
         @RequestBody ScheduleRequestDto requestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -32,31 +32,31 @@ public class ScheduleController {
     }
 
     //일정 수정
-    @PutMapping("/user/schedule/{id}")
-    public String updateSchedule(
+    @PutMapping("/{id}")
+    public String schedule(
         @RequestBody ScheduleRequestDto requestDto,
-        @PathVariable Long scheduleId,
+        @PathVariable Long id,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         Long userId = userDetails.getUser().getId();
-        scheduleService.updateSchedule(requestDto, scheduleId, userId);
+        scheduleService.updateSchedule(requestDto, id, userId);
         return "/user/schedule";
     }
 
     //일정 삭제
-    @DeleteMapping("/user/schedule/{id}")
-    public String deleteSchedule(
-        @PathVariable Long scheduleId, 
+    @DeleteMapping("/{id}")
+    public String schedule(
+        @PathVariable Long id,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         Long userId = userDetails.getUser().getId();
-        scheduleService.deleteSchedule(scheduleId, userId);
+        scheduleService.deleteSchedule(id, userId);
         return "/user/schedule";
     }
 
     //내 일정 조회 
-    @GetMapping("/user/schedule")
-    public Page<ScheduleResponseDto> getMySchedules(
+    @GetMapping("")
+    public Page<ScheduleResponseDto> mySchedules(
         Pageable pageable,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -65,12 +65,12 @@ public class ScheduleController {
     }
 
     //일정 상세 조회
-    @GetMapping("/user/schedule/{id}")
-    public ScheduleResponseDto getSchedule(@PathVariable Long scheduleId) {
-        return scheduleService.getSchedule(scheduleId);
+    @GetMapping("/{id}")
+    public ScheduleResponseDto schedule(@PathVariable Long id) {
+        return scheduleService.getSchedule(id);
     }
     //기간내 일정 조회
-    @GetMapping("/user/schedule/period")
+    @GetMapping("/period")
     public Page<ScheduleResponseDto> getPeriodSchedules(
         Pageable pageable,
         @RequestBody PeriodRequestDto periodDto,
