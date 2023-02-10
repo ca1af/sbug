@@ -28,25 +28,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImpl userDetailsImpl;
     @Value("${jwt.secret.key}")
     private String key;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = request.getHeader("Authorization");
 
-        if (Objects.isNull(accessToken)){
-            // 예외 처리
-            throw new IllegalArgumentException("토큰이 없습니다");
-        }
-        if (!this.validateToken(accessToken)){
-            String rtk = request.getHeader("RTK");
-            if(rtk == null || validateToken(rtk)){
-                response.sendRedirect("/login");
-                /**
-                 * 로그인 요청으로 리다이렉트 시켜야한다.
-                 */
-            } else {
-                response.sendRedirect("/account/reissue");
+        if (!Objects.isNull(accessToken)) {
+            if (!this.validateToken(accessToken)) {
+                String rtk = request.getHeader("RTK");
+                if (rtk == null || validateToken(rtk)) {
+                    response.sendRedirect("/login");
+                    /**
+                     * 로그인 요청으로 리다이렉트 시켜야한다.
+                     */
+                } else {
+                    response.sendRedirect("/account/reissue");
+                }
             }
-        }
 
             String atk = accessToken.substring(7);
             // try 들어가기 전에 토큰 밸리데이션 로직 필요함.
@@ -66,6 +64,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                  */
                 response.sendRedirect("");
             }
+        }
 
         filterChain.doFilter(request, response);
     }
@@ -88,6 +87,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         return false;
     }
+
     public void jwtExceptionHandler(HttpServletResponse response, String msg, int statusCode) {
         response.setStatus(statusCode);
         response.setContentType("application/json");
