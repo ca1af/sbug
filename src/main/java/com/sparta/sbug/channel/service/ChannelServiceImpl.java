@@ -38,7 +38,7 @@ public class ChannelServiceImpl implements ChannelService {
     public void updateChannelName(Long channelId, User user, String channelName) {
         Channel channel = getChannelById(channelId);
         validateUserIsChannelAdmin(channel, user);
-        channel.updateChannel(channel, user, channelName);
+        channel.updateChannel(channelName);
     }
 
     @Override
