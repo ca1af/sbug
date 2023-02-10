@@ -54,33 +54,33 @@ public class ScheduleControllerTest {
     @BeforeEach
     public void init() {
 
-        ScheduleRequestDto request = new ScheduleRequestDto(
+        request = new ScheduleRequestDto(
             "팀 최종 프로젝트 미팅",
             LocalDateTime.now()
         );
 
-        long scheduleId = 1L;
-        long userId = 39201L;
+        scheduleId = 1L;
+        userId = 39201L;
 
-        Pageable pageable = PageRequest.of(3, 3);
+        pageable = PageRequest.of(3, 3);
 
-        User user = User.builder()
+        user = User.builder()
             .email("123")
             .password("123")
             .nickname("123")
             .build();
 
-        UserDetailsImpl userDetails =
+        userDetails =
             new UserDetailsImpl(user, "123");
 
-        Schedule schedule = Schedule.builder()
+        schedule = Schedule.builder()
             .user(user)
             .content("123")
             .date(LocalDateTime.now())
             .build();
 
 
-        PeriodRequestDto periodDto = new PeriodRequestDto(
+        periodDto = new PeriodRequestDto(
             LocalDateTime.now(),
             LocalDateTime.now().plus(3, ChronoUnit.DAYS)
         );
@@ -88,7 +88,7 @@ public class ScheduleControllerTest {
 
     @Test
     @DisplayName("registerSchedule() Controller Test")
-    void registerSchedule() {
+    public void registerSchedule() {
 
         //given
         doNothing().when(scheduleService).registerSchedule(
@@ -100,13 +100,13 @@ public class ScheduleControllerTest {
         String redirect = scheduleController.registerSchedule(
             request,
             userDetails
-        )
+        );
         //then
 
         //scheduleService.registerSchedule()이 한번 호출되는가?
         verify(scheduleService, times(1)).registerSchedule(
-            any(ScheduleRequestDto.class),
-            any(User.class)
+            request,
+            user
         );
 
         //redirect url이 제대로 반환되는가?
@@ -115,15 +115,20 @@ public class ScheduleControllerTest {
     
     @Test
     @DisplayName("updateSchedule() Controller Test")
-    void updateSchedule() {
+    public void updateSchedule() {
 
         //given
+        doNothing().when(scheduleService).updateSchedule(
+            request,
+            scheduleId,
+            userId
+        );
 
         //when
         String redirect = scheduleController.updateSchedule(
             request,
             scheduleId,
-            any(UserDetailsImpl.class)
+            userDetails
         );
 
         //then
@@ -141,14 +146,14 @@ public class ScheduleControllerTest {
 
     @Test
     @DisplayName("deleteSchedule() Controller Test")
-    void deleteSchedule() {
+    public void deleteSchedule() {
 
         //given 
 
         //when
         String redirect = scheduleController.deleteSchedule(
             scheduleId,
-            any(UserDetailsImpl.class)
+            userDetails
         );
 
         //then
@@ -166,7 +171,7 @@ public class ScheduleControllerTest {
 
     @Test
     @DisplayName("getMySchedules() Controller Test")
-    void getMySchedules() {
+    public void getMySchedules() {
 
         //given
 
@@ -202,7 +207,7 @@ public class ScheduleControllerTest {
 
     @Test
     @DisplayName("getSchedule() Controller Test")
-    void getSchedule() {
+    public void getSchedule() {
 
         //given
         ScheduleResponseDto resultStub = new ScheduleResponseDto(
@@ -223,7 +228,7 @@ public class ScheduleControllerTest {
 
     @Test
     @DisplayName("getPeriodSchedules() Controller Test")
-    void getPeriodSchedules() {
+    public void getPeriodSchedules() {
 
         //given
 
@@ -250,7 +255,7 @@ public class ScheduleControllerTest {
             = scheduleController.getPeriodSchedules(
                 pageable,
                 periodDto,
-                userDetailsImpl
+                userDetails
             );
 
         //then
