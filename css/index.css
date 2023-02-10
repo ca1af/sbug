@@ -8,34 +8,50 @@
     clear: both;
     height: 0;
   }
+.space {
+    width: 0.5%;
+    background-color: #41434b;
+    border-radius: 12px;
+    margin-left: 13.5px;
+    margin-right: 13.5px;
+    box-shadow: 2px 2px 4px #2c2e33;
+}
 
 body {
+    width: 100%;
+    height: 100%;
+    min-width: 1200px;
     background: #0d1117;
     font: 14px/20px "Lato", Arial, sans-serif;
-    padding: 40px 0;
+    margin: 0 auto;
+    padding: 35px;
     color: white;
 }
 
 #container {
-    max-width: 1920px;
     margin: 0 auto;
-    width: 90%;
-    height: 800px;
+    width: 100%;
+    height: 850px;
     background: #444753;
     border-radius: 5px;
-    padding: 20px;
+    padding: 25px;
     display: flex;
+    border:none;
 }
-
 
 
 #container .menu {
-    width: 200px;
-    /* border: 1px solid #000; */
-    min-height: 200px;
+    width: 180px;
+    height: 25%;
     margin: 0;
     padding: 0;
 }
+/* ------------------------------------- */
+#section-one-menumember {
+    max-width: 180px;
+}
+
+
 /* 검색 */
 #container .menu .search {
     position: relative;
@@ -44,13 +60,11 @@ body {
     border: none;
     color: white;
     background: #6A6C75;
-    width: 200px;
+    width: 180px;
     font-size: 20px;
     padding: 4px;
-    margin-bottom: 20px;
+    margin-bottom: 8%;
     
-}
-#container .menu div {
 }
 #container .menu .search:focus {
     color: white;
@@ -68,15 +82,16 @@ body {
 /* 회원메뉴 */
 #container .menu .menubtn {
     width:100%;
-    /* border: 1px solid red; */
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+
 }
 #container .menu .menubtn button{
-    width: 95px;
-    min-width: 95px;
-    margin: 2.5px;
+    width: 85px;
+    font-size: 12px;
+    font-weight: bold;
     background-color: #8a8c96;
     padding: 5px;
+    margin: 2.5px;
     border: none;
     float: left;
     border-radius: 3px
@@ -87,32 +102,101 @@ body {
 
 /* 유저리스트 시작 */
 #container .member {
-    width: 200px;
-    border: 1px solid #000;
-    height: 500px;
+    width: 180px;
+    height: 75%;
+    max-height: 75%;
+    /* border: 1px solid red; */
 }
 
 #container .member .list {
+    
+    border-radius: 4px;
 
 }
 #container .member .list ul {
-    width: 200px;
+    
+    margin-bottom: 4px;
+    background-color: #555763;
+    border-radius: 4px;
+}
+
+#container .member .list .userimage {
+    padding-left: 10px;
+    width: 45px;
+    height: 45px;
+    border-radius: 32px;
+    float: left;
+    overflow: hidden;
+    border: 3px solid rgba(59, 133, 122, 0.849);
 }
 #container .member .list .username {
     font-size: 18px;
     float: left;
     margin-top: 12px;
     margin-left: 12px;
-    border: 1px solid #000;
 }
-#container .member .list .userimage {
-    width: 50px;
-    height: 50px;
-    border-radius: 32px;
-    border: 1px solid red;
-    float: left;
-    overflow: hidden;
-}
-
-
 /* 유저리스트목록 끝 */
+
+
+
+/* ------------------------------------- */
+#section-two-channellist {
+    width: 180px;
+}
+/* 채널리스트 시작*/
+.channelbox {
+    /* width: 185px; */
+    height: 100%;
+    color: white;
+    /* border: 1px solid #000; */
+}
+/* 채널리스트 끝*/
+
+
+
+
+
+/* ------------------------------------- */
+#section-three-chatroom{
+    width: 76%;
+    border-radius: 8px;
+    background-color: white;
+    color: red;
+    
+}
+/* 채팅방 시작 */
+
+
+/* 채팅내역 */
+.chatlist {
+    height: 90%;
+    border: 2px solid red;
+    margin-bottom: 4%;
+    padding: 10px;
+}
+/* 채팅내역 끝 */
+
+/* 채팅보내기 */
+.chatsend {
+    height: 5%;
+    /* background-color: red; */
+    border: 2px solid purple;
+}
+.chatsend .messagewriter {
+    width: 100%;
+    height: 100%;
+}
+.chatsend #message {
+    float:left;
+    width: 90%;
+    height: 100%;
+}
+.chatsend #sendmessagebtn {
+    float:right;
+    width: 10%;
+    height: 100%;
+}
+/* 채팅보내기 끝 */
+
+
+/* 채팅방 끝 */

@@ -10,19 +10,21 @@
     <script src="./js/jquery-3.3.1.min.js"></script>
     <script src="./js/user.js"></script>
     <script src="./js/channel.js"></script>
+    <script src="./js/chat.js"></script>
     <script>
         $(document).ready(function () {
             getUserMe();
             // 회원이미지조회가 allmember에 userlist 기입전에 데이터를 받아야함어야함 추가되면 삭제할것
             allMember();
-            // 테스트1
+            getChannelList();
+
         });
     </script>
 </head>
 <body>
     <div id="container">
-        <!-- 섹션 시작 -->
-        <section id="section-one-menu&member">
+        <!-- 회원&메뉴 섹션 시작 -->
+        <section id="section-one-menumember">
             <article class="menu">
                 <div class="searchbox">
                     <input type="text" class="search" placeholder="search" value=""/>
@@ -31,7 +33,7 @@
                     <button onclick="">회원정보조회</button>
                     <button onclick="deleteMember()">회원탈퇴</button>
                     <button onclick="location.href='updatemember.html'">회원정보수정</button>
-                    <button onclick="">채널생성</button>
+                    <button onclick="createChannel()">채널생성</button>
                     <button onclick="">채널초대</button>
                     <button onclick="">ㅇㅇㅇㅇ</button>
                 </div>
@@ -52,16 +54,42 @@
                 </div>
             </article>
         </section>
-        <!-- 섹션 끝 -->
-        <!-- 섹션 시작 -->
+        <!-- 회원&메뉴 선택 섹션 끝 -->
+
+        <div class="space"></div>
+
+        <!-- 채널 섹션 시작 -->
         <section id="section-two-channellist">
             <article class="channelbox">
-                <div class="channelbox">
+                <div class="">
                     asdf
                 </div>
             </article>
         </section>
-        <!-- 섹션 끝 -->
+        <!-- 채널 섹션 끝 -->
+
+        <div class="space"></div>
+
+        <!-- 채팅방섹션 시작 -->
+        <section id="section-three-chatroom">
+            <!-- 채팅내역 시작-->
+            <article class="chatlist">
+
+            </article>
+            <!-- 채팅내역 끝-->
+
+            
+            <!-- 채팅 쓰기 시작-->
+            <article class="chatsend cf">
+                <div class="messagewriter">
+                    <input type="text" id="message"></input>
+                    <button id="sendmessagebtn" onclick="createComment(5)">Send</button>
+                </div>
+            </article>
+            <!-- 채팅 쓰기 끝 -->
+
+        </section>
+        <!-- 채팅방섹션 끝 -->
 
     </div>
     

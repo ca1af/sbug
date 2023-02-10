@@ -5,13 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/login.css">
 </head>
 <body>
-    <input type="text" id="updateEmail">
-    <input type="text" id="updateNickname" placeholder="닉네임">
-    <input type="password" id="updatePassword" placeholder="비밀번호">
-    <input type="button" onclick="updateMember()" value="수정">
+    <div id="wrap" class="form">
+        <section class="login-box">
+            <div class="user-box">
+                <input type="text" id="updateNickname">
+                <label>Email</label>
+            </div>
+            <div class="user-box">
+                <input type="password" id="updatePassword">
+                <label>Password</label>
+            </div>
+            <div class="singinbtn">
+                <button onclick="updateMember()">회원정보 변경</a></button>
+            </div>
+        </section>
+    </div>
 </body>
 </html>
-<script src="./js/jquery-3.3.1.min.js"></script>
 <script src="./js/user.js"></script>
+<script src="./js/jquery-3.3.1.min.js"></script>

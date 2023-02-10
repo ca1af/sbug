@@ -75,15 +75,14 @@ function updateMember() {
     },
     
     "data": JSON.stringify({
-      "email": $('#updateEmail').val(),
-      "password":$('#updatePassword').val(),
-      "nickname": $('#updateNickname').val()
+      "nickname": $('#updateNick  name').val(),
+      "password":$('#updatePassword').val()
     })
   }
   $.ajax(settings).done(function(response){
     console.log(response);
-    console.log("정보수정완료");
-    console.log(response.nickname);
+    // console.log("정보수정완료");
+    // console.log(response.nickname);
     // location.href="./login.html"
   });
 }
@@ -104,26 +103,8 @@ function deleteMember(){
     })
 	  };
 	  $.ajax(settings).done(function (response) {
-		console.log(response);		
-  });
-}
-// 채널개설 //완성안된듯?
-function createChannel(){
-	var settings = {
-		"url": "http://localhost:8080/api/channel/create?name={channelName}",
-		"method": "POST",
-		"timeout": 0,
-		"headers": {
-      "Content-Type": "application/json",
-		  "Authorization": localStorage.getItem('accessToken')
-		},
-    "data": JSON.stringify({
-      // "email": $('#signInEmail').val(),
-      // "password": $('#signInPassword').val()
-    })
-	  };
-	  $.ajax(settings).done(function (response) {
-		console.log(response);		
+		console.log(response);
+    alert("회원탈퇴");
   });
 }
 
