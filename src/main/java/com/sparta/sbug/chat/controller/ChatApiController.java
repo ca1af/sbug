@@ -20,7 +20,6 @@ public class ChatApiController {
 
     private final ChatService chatService;
 
-
     /**
      * PageDto에 따라 메세지를 불러오는 함수입니다.
      * 프론트에서 "더보기"를 선택해 다음 페이지를 불러올 때 호출될 것이라고 생각됩니다.
