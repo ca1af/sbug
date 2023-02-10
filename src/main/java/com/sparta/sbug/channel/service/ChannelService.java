@@ -32,8 +32,8 @@ public interface ChannelService {
     /**
      * 채널 삭제
      *
-     * @param user      : 요청자
      * @param channelId : 삭제할 채널 ID
+     * @param user      : 요청자
      */
-    void deleteChannel(User user, Long channelId);
+    void deleteChannel(Long channelId, User user);
 }

@@ -45,7 +45,7 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
     @Override
     @Transactional
     public void deleteChannelAndDependentUserChannel(User user, Long channelId) {
-        channelService.deleteChannel(user, channelId);
+        channelService.deleteChannel(channelId, user);
         userChannelService.deleteUserChannelsAboutChannel(channelId);
     }
 

@@ -43,9 +43,8 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     @Transactional
-    public void deleteChannel(User user, Long channelId) {
+    public void deleteChannel(Long channelId, User user) {
         Channel channel = getChannelById(channelId);
-        // 상위 서비스에서 딜리트 호출하고, UserChannel 도 삭제. <
         validateUserIsChannelAdmin(channel, user);
         channelRepository.delete(channel);
     }
