@@ -44,7 +44,7 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         String token = authorizationHeader.substring("Bearer ".length());
 
-        // 토큰 인증
+//         토큰 인증
 //        if (!jwtProvider.validateToken(token, null)) {
 //            throw new MessageDeliveryException("메세지 토큰 예외");
 //        }

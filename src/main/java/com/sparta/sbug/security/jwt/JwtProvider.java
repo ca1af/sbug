@@ -24,6 +24,7 @@ public class JwtProvider {
 
     private final RedisDao redisDao;
     private final ObjectMapper objectMapper;
+    public static final String Bearer = "Bearer ";
 
     @Value("${jwt.secret.key}")
     private String key;
@@ -55,8 +56,8 @@ public class JwtProvider {
         TokenWithEmail rtkTokenWithEmail = TokenWithEmail.rtk(
                 userResponseDto.getEmail());
 
-        String atk = createToken(atkTokenWithEmail, atkTime);
-        String rtk = createToken(rtkTokenWithEmail, rtkTime);
+        String atk = Bearer + createToken(atkTokenWithEmail, atkTime);
+        String rtk = Bearer + createToken(rtkTokenWithEmail, rtkTime);
         redisDao.setValues(userResponseDto.getEmail(), rtk, Duration.ofMillis(rtkTime));
         return new TokenResponse(atk, rtk);
     }
@@ -66,7 +67,7 @@ public class JwtProvider {
         Claims claims = Jwts.claims()
                 .setSubject(subjectStr);
         Date date = new Date();
-        return Jwts.builder()
+        return Bearer + Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + tokenLive))

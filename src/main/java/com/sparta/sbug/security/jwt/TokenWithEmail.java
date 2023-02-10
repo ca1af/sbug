@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 public class TokenWithEmail {
     private final String email;
-
     private final String type;
 
     private TokenWithEmail(String email, String type) {
