@@ -26,12 +26,14 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doNothing;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+@ExtendWith(MockitoExtension.class)
 public class ScheduleControllerTest {
 
     @Mock
@@ -40,27 +42,70 @@ public class ScheduleControllerTest {
     @InjectMocks
     private ScheduleController scheduleController;
 
-    @Test
-    @DisplayName("registerSchedule() Controller Test")
-    void registerSchedule() {
+    private ScheduleRequestDto request;
+    private long scheduleId;
+    private long userId;
+    private Pageable pageable;
+    private User user;
+    private UserDetailsImpl userDetails;
+    private Schedule schedule;
+    private PeriodRequestDto periodDto;
 
-        //given
+    @BeforeEach
+    public void init() {
+
         ScheduleRequestDto request = new ScheduleRequestDto(
             "팀 최종 프로젝트 미팅",
             LocalDateTime.now()
         );
 
+        long scheduleId = 1L;
+        long userId = 39201L;
+
+        Pageable pageable = PageRequest.of(3, 3);
+
+        User user = User.builder()
+            .email("123")
+            .password("123")
+            .nickname("123")
+            .build();
+
+        UserDetailsImpl userDetails =
+            new UserDetailsImpl(user, "123");
+
+        Schedule schedule = Schedule.builder()
+            .user(user)
+            .content("123")
+            .date(LocalDateTime.now())
+            .build();
+
+
+        PeriodRequestDto periodDto = new PeriodRequestDto(
+            LocalDateTime.now(),
+            LocalDateTime.now().plus(3, ChronoUnit.DAYS)
+        );
+    }
+
+    @Test
+    @DisplayName("registerSchedule() Controller Test")
+    void registerSchedule() {
+
+        //given
+        doNothing().when(scheduleService).registerSchedule(
+            any(ScheduleRequestDto.class),
+            any(User.class)
+        );
+
         //when scheduleController.registerSchedule()이 호출되었을 때..
         String redirect = scheduleController.registerSchedule(
             request,
-            any(UserDetailsImpl.class)
-        );
-
+            userDetails
+        )
         //then
 
         //scheduleService.registerSchedule()이 한번 호출되는가?
         verify(scheduleService, times(1)).registerSchedule(
-            request,
+            any(ScheduleRequestDto.class),
             any(User.class)
         );
 
@@ -73,12 +118,6 @@ public class ScheduleControllerTest {
     void updateSchedule() {
 
         //given
-        ScheduleRequestDto request = new ScheduleRequestDto(
-            "팀 최종 프로젝트 미팅",
-            LocalDateTime.now()
-        );
-        long scheduleId = 1L;
-        long userId = 39201L;
 
         //when
         String redirect = scheduleController.updateSchedule(
@@ -105,8 +144,6 @@ public class ScheduleControllerTest {
     void deleteSchedule() {
 
         //given 
-        long scheduleId = 1L;
-        long userId = 2323L;
 
         //when
         String redirect = scheduleController.deleteSchedule(
@@ -132,14 +169,6 @@ public class ScheduleControllerTest {
     void getMySchedules() {
 
         //given
-        Pageable pageable = PageRequest.of(3, 3);
-        User user = User.builder()
-            .email("123")
-            .password("123")
-            .nickname("123")
-            .build();
-        UserDetailsImpl userDetailsImpl =
-            new UserDetailsImpl(user, "123");
 
         //비어있는 변수 result를 만든다
         Optional<Integer> result = Optional.empty();
@@ -160,7 +189,7 @@ public class ScheduleControllerTest {
         Page<ScheduleResponseDto> response
             = scheduleController.getMySchedules(
                 pageable,
-                userDetailsImpl
+                userDetails
             );
 
         //then
@@ -176,23 +205,10 @@ public class ScheduleControllerTest {
     void getSchedule() {
 
         //given
-        long scheduleId = 123L;
-
-        User user  = User.builder()
-            .email("123")
-            .password("123")
-            .nickname("123")
-            .build();
-
-        Schedule schedule = Schedule.builder()
-            .user(user)
-            .content("123")
-            .date(LocalDateTime.now())
-            .build();
-
         ScheduleResponseDto resultStub = new ScheduleResponseDto(
             schedule
         );
+
 
         when(scheduleService.getSchedule(scheduleId))
             .thenReturn(resultStub);
@@ -210,21 +226,7 @@ public class ScheduleControllerTest {
     void getPeriodSchedules() {
 
         //given
-        Pageable pageable = PageRequest.of(3, 3);
 
-        User user = User.builder()
-            .email("123")
-            .password("123")
-            .nickname("123")
-            .build();
-
-        UserDetailsImpl userDetailsImpl =
-            new UserDetailsImpl(user, "123");
-
-        PeriodRequestDto periodDto = new PeriodRequestDto(
-            LocalDateTime.now(),
-            LocalDateTime.now().plus(3, ChronoUnit.DAYS)
-        );
 
 
         //비어있는 변수 result를 만든다
