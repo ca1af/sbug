@@ -2,6 +2,7 @@ package com.sparta.sbug.schedule.controller;
 
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
+import com.sparta.sbug.schedule.entity.Schedule;
 import com.sparta.sbug.schedule.service.ScheduleService;
 import com.sparta.sbug.schedule.dto.ScheduleRequestDto;
 import com.sparta.sbug.schedule.dto.ScheduleResponseDto;
@@ -131,13 +132,13 @@ public class ScheduleControllerTest {
 
         //given
         Pageable pageableStub = PageRequest.of(3, 3);
-        User userStub = User.builder()
+        User user = User.builder()
             .email("123")
             .password("123")
             .nickname("123")
             .build();
         UserDetailsImpl userDetailsImplStub =
-            new UserDetailsImpl(userStub, "123");
+            new UserDetailsImpl(user, "123");
 
         //비어있는 변수 resultStub을 만든다
         Optional<Integer> resultStub = Optional.empty();
@@ -174,10 +175,33 @@ public class ScheduleControllerTest {
     void getSchedule() {
 
         //given
+        long scheduleId = 123L;
+
+        User user  = User.builder()
+            .email("123")
+            .password("123")
+            .nickname("123")
+            .build();
+
+        Schedule schedule = Schedule.builder()
+            .user(user)
+            .content("123")
+            .date(LocalDateTime.now())
+            .build();
+
+        ScheduleResponseDto resultStub = new ScheduleResponseDto(
+            schedule
+        );
+
+        when(scheduleService.getSchedule(scheduleId))
+            .thenReturn(resultStub);
 
         //when
+        ScheduleResponseDto response
+            = scheduleController.getSchedule(scheduleId);
 
         //then
+        assertThat(response).isSameAs(resultStub);
     }
 
     @Test
