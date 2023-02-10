@@ -23,7 +23,6 @@ import java.util.Objects;
 public class JwtProvider {
 
     private final RedisDao redisDao;
-    private final ObjectMapper objectMapper;
     public static final String Bearer = "Bearer ";
 
     @Value("${jwt.secret.key}")
@@ -57,7 +56,7 @@ public class JwtProvider {
         return new TokenResponse(atk, rtk);
     }
 
-    private String createToken(String email, Long tokenLive) throws JsonProcessingException {
+    private String createToken(String email, Long tokenLive) {
         //String subjectStr = objectMapper.writeValueAsString(email);
         Claims claims = Jwts.claims()
                 .setSubject(email);
@@ -70,10 +69,8 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String getSubject(String atk) throws JsonProcessingException {
-        String subjectStr = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(atk).getBody().getSubject();
-        //return objectMapper.readValue(subjectStr, TokenWithEmail.class);
-        return subjectStr;
+    public String getSubject(String atk) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(atk).getBody().getSubject();
     }
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();

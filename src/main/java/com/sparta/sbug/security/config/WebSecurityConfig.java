@@ -56,7 +56,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeHttpRequests()
-                .requestMatchers("/chats").permitAll()
+                .requestMatchers("/stomp/**").permitAll()
+                .requestMatchers("/chat/**").permitAll()
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/api/user/**").permitAll()
                 .requestMatchers("/h2-console").permitAll()
