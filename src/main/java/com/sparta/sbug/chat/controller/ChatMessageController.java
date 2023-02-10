@@ -5,7 +5,7 @@ import com.sparta.sbug.chat.dto.ChatResponseDto;
 import com.sparta.sbug.chat.service.ChatService;
 import com.sparta.sbug.chatroom.entity.ChatRoom;
 import com.sparta.sbug.chatroom.service.ChatRoomService;
-import com.sparta.sbug.security.jwt.JwtUtil;
+import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserService;
 import io.jsonwebtoken.Claims;
@@ -26,7 +26,7 @@ public class ChatMessageController {
     private final UserService userService;
     private final ChatRoomService chatRoomService;
     private final SimpMessagingTemplate template;
-    private final JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
 
     /**
      * 클라이언트(유저)가 보낸 메세지를 받아 처리하는 메소드입니다.
@@ -42,13 +42,13 @@ public class ChatMessageController {
      * @param requestDto : 방 ID, 수신자 ID, 메세지 내용
      * @param rawToken   : Header의 Authorization의 값
      */
-    @MessageMapping("/chat/message")
+    @MessageMapping("/chat")
     public void message(ChatRequestDto requestDto, @Header("Authorization") String rawToken) {
         // receiver
         User receiver = userService.getUserById(requestDto.getReceiverId());
 
         // sender
-        Claims info = jwtUtil.getUserInfoFromToken(rawToken.substring(7));
+        Claims info = jwtProvider.getUserInfoFromToken(rawToken.substring(7));
         User sender = userService.getUserById(info.get("id", Long.class));
 
         // room

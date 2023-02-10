@@ -8,6 +8,7 @@ import com.sparta.sbug.upperlayerservice.UserChannelUpperLayerService;
 import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,8 @@ public class ChannelController {
     public String createChannel(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ChannelRequestDto requestDto) {
         userChannelUpperLayerService.createChannelAndUserChannelForRequester(userDetails.getUser(), requestDto.getChannelName());
         return "home";
+        // 특정 쓰레드로 가고 싶을 때는... 쓰레드 ID 같은 걸 줘서 프론트가 조회하게.. 프론트가 어떻게 받게 할 것인지 고민해야 함
+        // 프론트와 서버를 분리해야함! (API 서버와 웹 서버와 프론트의 관점)
     }
 
     @PostMapping("/channel/{channelId}/invite")

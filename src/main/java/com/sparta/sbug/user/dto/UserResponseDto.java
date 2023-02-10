@@ -6,10 +6,12 @@ import lombok.Getter;
 
 @Getter
 public class UserResponseDto {
+    Long userId;
     String email;
     String nickname;
 
     private UserResponseDto(User user){
+        this.userId = getUserId();
         this.email = user.getEmail();
         this.nickname = user.getNickname();
     }

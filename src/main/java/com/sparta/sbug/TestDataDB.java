@@ -46,7 +46,7 @@ public class TestDataDB {
             User user2 = User.builder().email("user2").password(getEncode("password2")).nickname("루피")
                     .build();
             userRepository.save(user2);
-
+            
             User user3 = User.builder().email("user3").password(getEncode("password3")).nickname("펭구")
                     .build();
             User savedUser3 = userRepository.save(user3);
