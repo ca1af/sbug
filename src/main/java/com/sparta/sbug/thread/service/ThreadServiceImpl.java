@@ -38,7 +38,7 @@ public class ThreadServiceImpl implements ThreadService {
     @Override
     @Transactional
     public String createThread(Long channelId, ThreadRequestDto threadRequestDto, User user) {
-        Channel channel = channelService.getChannel(channelId);// getChannel() 매서드에서 exception 처리
+        Channel channel = channelService.getChannelById(channelId);// getChannel() 매서드에서 exception 처리
         Thread thread = new Thread(channel,user, threadRequestDto.getContent());
         threadRepository.save(thread);
         return "Success";

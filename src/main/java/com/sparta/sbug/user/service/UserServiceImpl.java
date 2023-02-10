@@ -4,7 +4,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.entity.QChannel;
-import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final JwtProvider jwtProvider;
     private final JPAQueryFactory queryFactory;
     @Override
     public String signup(SignUpRequestDto requestDto) {
