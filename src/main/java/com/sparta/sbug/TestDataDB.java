@@ -55,7 +55,7 @@ public class TestDataDB {
 
             User user3 = User.builder().email("user3").password(password3).nickname("펭구").build();
             user2.setUserRole(UserRole.USER);
-            userRepository.save(user2);
+            userRepository.save(user3);
 
             Channel channel = Channel.builder()
                     .adminEmail(savedUser1.getEmail())

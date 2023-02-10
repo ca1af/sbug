@@ -1,7 +1,6 @@
 package com.sparta.sbug.user.service;
 
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
-import com.sparta.sbug.security.dto.JwtDto;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
@@ -9,12 +8,11 @@ import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     String signup(SignUpRequestDto requestDto);
 
-    JwtDto login(LoginRequestDto requestDto);
+    UserResponseDto login(LoginRequestDto requestDto);
 
     String unregister(User user);
 

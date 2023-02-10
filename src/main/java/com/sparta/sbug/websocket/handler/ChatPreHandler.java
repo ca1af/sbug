@@ -1,6 +1,6 @@
 package com.sparta.sbug.websocket.handler;
 
-import com.sparta.sbug.security.jwt.JwtUtil;
+import com.sparta.sbug.security.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
@@ -19,7 +19,7 @@ import java.util.Objects;
 @Component
 public class ChatPreHandler implements ChannelInterceptor {
 
-    private final JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
     private static final Map<String, String> sessions = new HashMap<>();
 
     // 전송 받은 메세지에서 JWT 토큰을 검증하는 메서드
@@ -44,13 +44,13 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         String token = authorizationHeader.substring("Bearer ".length());
 
-        // 토큰 인증
-        if (!jwtUtil.validateToken(token, null)) {
-            throw new MessageDeliveryException("메세지 토큰 예외");
-        }
+//         토큰 인증
+//        if (!jwtProvider.validateToken(token, null)) {
+//            throw new MessageDeliveryException("메세지 토큰 예외");
+//        }
 
         if (Objects.requireNonNull(headerAccessor.getMessageType()).equals(SimpMessageType.CONNECT)) {
-            Claims info = jwtUtil.getUserInfoFromToken(token);
+            Claims info = jwtProvider.getUserInfoFromToken(token);
             var email = info.getSubject();
             var sessionId = headerAccessor.getSessionId();
             sessions.put(sessionId, email);
