@@ -1,14 +1,16 @@
 package com.sparta.sbug.security.dto;
 
+import io.jsonwebtoken.Jwt;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @NoArgsConstructor
 public class JwtDto {
-    private String grantType;
+    private String grantType; // BEARER
     private String accessToken;
     private String refreshToken;
     private Long refreshTokenExpirationTime;

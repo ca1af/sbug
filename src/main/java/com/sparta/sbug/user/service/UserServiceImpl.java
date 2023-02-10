@@ -5,7 +5,7 @@ import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.entity.QChannel;
 import com.sparta.sbug.security.dto.JwtDto;
-import com.sparta.sbug.security.jwt.JwtUtil;
+import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
     private final JPAQueryFactory queryFactory;
     @Override
     public String signup(SignUpRequestDto requestDto) {
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public JwtDto login(LoginRequestDto requestDto) {
+    public UserResponseDto login(LoginRequestDto requestDto) {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
 
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
             throw new SecurityException("사용자를 찾을수 없습니다.");
         }
         
-        return jwtUtil.createToken(user.getEmail(), user.getId(), user.getUserRole());
+        return UserResponseDto.of(user);
     }
 
     @Override

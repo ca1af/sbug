@@ -1,8 +1,10 @@
 package com.sparta.sbug.user.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.security.dto.JwtDto;
-import com.sparta.sbug.security.jwt.JwtUtil;
+import com.sparta.sbug.security.dto.TokenResponse;
+import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
@@ -20,17 +22,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserServiceImpl userService;
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/api/user/sign-up")
     public String signup(@RequestBody SignUpRequestDto requestDto){
         return userService.signup(requestDto);
     }
     @PostMapping("/api/user/login")
-    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response){
-        JwtDto token = userService.login(requestDto);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token.getAccessToken());
-        response.addHeader(JwtUtil.REFRESH_TOKEN, token.getRefreshToken());
-        return "Success";
+    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) throws JsonProcessingException {
+        UserResponseDto responseDto = userService.login(requestDto);
+        TokenResponse tokensByLogin = jwtProvider.createTokensByLogin(responseDto);
+        response.addHeader("Authorization", tokensByLogin.getAtk());
+        return "ok";
     }
     @DeleteMapping("/api/user/unregister")
     public String unregister(@AuthenticationPrincipal UserDetailsImpl userDetails) {

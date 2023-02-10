@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface UserService {
     String signup(SignUpRequestDto requestDto);
 
-    JwtDto login(LoginRequestDto requestDto);
+    UserResponseDto login(LoginRequestDto requestDto);
 
     String unregister(User user);
 
