@@ -1,7 +1,8 @@
-package com.sparta.sbug.channel.service;
+package com.sparta.sbug.upperlayerservice;
 
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserService;
 import com.sparta.sbug.userchannel.enttiy.UserChannel;
@@ -66,7 +67,7 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
     public void exitChannel(User user, Long id) {
         Channel channel = channelService.getChannelById(id);
         // 요청자가 채널에 속해있는지 확인하는 과정은 아래 메서드 안에서 진행됩니다.
-        userChannelService.deleteUserChannelAboutUser(user, channel);
+        userChannelService.deleteUserChannelByUserAndChannel(user, channel);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
         }
 
         User user = userService.getUser(email);
-        userChannelService.deleteUserChannelAboutUser(user, channel);
+        userChannelService.deleteUserChannelByUserAndChannel(user, channel);
     }
 
 }

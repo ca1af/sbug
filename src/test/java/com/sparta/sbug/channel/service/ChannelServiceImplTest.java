@@ -1,9 +1,7 @@
 package com.sparta.sbug.channel.service;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.repository.ChannelRepository;
-import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -16,15 +14,13 @@ import java.util.Optional;
 @SpringBootTest
 class ChannelServiceImplTest {
 
-    @Autowired
-    ThreadRepository threadRepository;
+    // Repository
     @Autowired
     UserRepository userRepository;
     @Autowired
     ChannelRepository channelRepository;
-    @Autowired
-    JPAQueryFactory queryFactory;
 
+    // Service
     @Autowired
     ChannelService channelService;
 

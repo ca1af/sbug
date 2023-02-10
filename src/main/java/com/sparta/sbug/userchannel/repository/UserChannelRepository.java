@@ -16,6 +16,10 @@ public interface UserChannelRepository extends JpaRepository<UserChannel, Long> 
     @Modifying(clearAutomatically = true)
     void deleteAllByChannelId(@Param("channelId") Long channelId);
 
+    @Query("delete from UserChannel uc where uc.user.id = :userId")
+    @Modifying(clearAutomatically = true)
+    void deleteAllByUserId(@Param("userId") Long userId);
+
     Optional<UserChannel> findByUserAndChannel(User user, Channel channel);
 
     boolean existsByUserAndChannel(User user, Channel channel);

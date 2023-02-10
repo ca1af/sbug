@@ -27,9 +27,12 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
-    public void createUserChannel(User user, Channel channel) {
+    public Long createUserChannel(User user, Channel channel) {
+        if (userChannelRepository.findByUserAndChannel(user, channel).isPresent()) {
+            throw new IllegalArgumentException("중복된 리소스가 존재합니다.");
+        }
         UserChannel userChannel = UserChannel.builder().user(user).channel(channel).build();
-        userChannelRepository.save(userChannel);
+        return userChannelRepository.save(userChannel).getId();
     }
 
     @Override
@@ -39,7 +42,12 @@ public class UserChannelServiceImpl implements UserChannelService {
     }
 
     @Override
-    public void deleteUserChannelAboutUser(User user, Channel channel) {
+    public void deleteUserChannelsAboutUser(Long userId) {
+        userChannelRepository.deleteAllByUserId(userId);
+    }
+
+    @Override
+    public void deleteUserChannelByUserAndChannel(User user, Channel channel) {
         UserChannel userChannel = userChannelRepository.findByUserAndChannel(user, channel).orElseThrow(
                 () -> new NoSuchElementException("찾는 유저 채널이 없습니다.")
         );

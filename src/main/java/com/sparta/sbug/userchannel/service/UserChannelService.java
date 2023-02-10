@@ -20,7 +20,7 @@ public interface UserChannelService {
      * @param user    : 사용자
      * @param channel : 채널
      */
-    void createUserChannel(User user, Channel channel);
+    Long createUserChannel(User user, Channel channel);
 
     /**
      * 채널에 종속된 사용자-채널을 삭제합니다.
@@ -30,12 +30,19 @@ public interface UserChannelService {
     void deleteUserChannelsAboutChannel(Long channelId);
 
     /**
+     * 사용자에 종속된 사용자-채널을 삭제합니다.
+     *
+     * @param userId : 사용자
+     */
+    void deleteUserChannelsAboutUser(Long userId);
+
+    /**
      * 특정 사용자와 채널에 대한 사용자-채널을 삭제합니다.
      *
      * @param user    : 사용자
      * @param channel : 채널
      */
-    void deleteUserChannelAboutUser(User user, Channel channel);
+    void deleteUserChannelByUserAndChannel(User user, Channel channel);
 
     /**
      * 특정 사용자가 채널에 속해있는지 확인합니다.

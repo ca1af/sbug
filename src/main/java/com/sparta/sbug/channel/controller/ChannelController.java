@@ -4,7 +4,7 @@ import com.sparta.sbug.channel.dto.ChannelDto;
 import com.sparta.sbug.channel.dto.ChannelRequestDto;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
-import com.sparta.sbug.channel.service.UserChannelUpperLayerService;
+import com.sparta.sbug.upperlayerservice.UserChannelUpperLayerService;
 import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;

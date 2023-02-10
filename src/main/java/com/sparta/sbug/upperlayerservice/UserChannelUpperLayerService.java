@@ -1,4 +1,4 @@
-package com.sparta.sbug.channel.service;
+package com.sparta.sbug.upperlayerservice;
 
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.user.entity.User;
