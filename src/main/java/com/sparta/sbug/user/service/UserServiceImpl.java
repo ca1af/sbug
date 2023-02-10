@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.entity.QChannel;
+import com.sparta.sbug.security.dto.JwtDto;
 import com.sparta.sbug.security.jwt.JwtUtil;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
@@ -12,6 +13,8 @@ import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.QUser;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
+import com.sparta.sbug.userchannel.enttiy.QUserChannel;
+import com.sparta.sbug.userchannel.enttiy.UserChannel;
 import io.jsonwebtoken.security.SecurityException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(LoginRequestDto requestDto) {
+    public JwtDto login(LoginRequestDto requestDto) {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
 
@@ -62,7 +65,6 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new SecurityException("사용자를 찾을수 없습니다.");
         }
-
         return jwtUtil.createToken(user.getEmail(), user.getUserRole());
     }
 
@@ -73,13 +75,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUser(String email) {
-        return userRepository.findByEmail(email);
+    public User getUser(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new IllegalArgumentException("유저를 찾을 수 없습니다.")
+        );
     }
 
     @Override
+    @Transactional
     public void update(User user, UserUpdateDto dto) {
-        user.updateUser(dto.getNickname(), dto.getPassword());
+        User user1 = userRepository.findById(user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("유저를 찾을 수 없습니다.")
+        );
+        user1.updateUser(dto.getNickname(), dto.getPassword());
     }
 
     @Override
@@ -105,15 +113,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<ChannelResponseDto> getMyChannels(User user){
-        QChannel qChannel = QChannel.channel;
-        QUser qUser = QUser.user;
+        var qChannel = QChannel.channel;
+        var qUserChannel = QUserChannel.userChannel;
 
-        List<Channel> channels = queryFactory
-                .selectFrom(qChannel)
-                .join(qUser)
-                .on(qChannel.user.eq(user))
+        List<Channel> fetch = queryFactory
+                .select(qChannel)
+                .from(qUserChannel)
+                .where(qUserChannel.user.id.eq(user.getId()))
                 .fetch();
-        return channels.stream().map(ChannelResponseDto::of).collect(Collectors.toList());
+
+        return fetch.stream().map(ChannelResponseDto::of).collect(Collectors.toList());
     }
     // 요청한 유자가 가진 채널의 목록을 조회
 

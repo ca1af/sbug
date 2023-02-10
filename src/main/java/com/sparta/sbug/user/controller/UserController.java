@@ -1,16 +1,15 @@
 package com.sparta.sbug.user.controller;
 
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
+import com.sparta.sbug.security.dto.JwtDto;
 import com.sparta.sbug.security.jwt.JwtUtil;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
-import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +27,8 @@ public class UserController {
     }
     @PostMapping("/api/user/login")
     public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response){
-        String token = userService.login(requestDto);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        JwtDto token = userService.login(requestDto);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token.getAccessToken());
         return "Success";
     }
     @DeleteMapping("/api/user/unregister")

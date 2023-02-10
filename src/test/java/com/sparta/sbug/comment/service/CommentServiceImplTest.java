@@ -8,26 +8,20 @@ import com.sparta.sbug.comment.repository.CommentRepository;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
-import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.entity.UserRole;
 import com.sparta.sbug.user.repository.UserRepository;
-import com.sparta.sbug.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Rollback(value = false)
@@ -53,36 +47,6 @@ class CommentServiceImplTest {
     private Thread thread;
     private PageDto pageDto = PageDto.builder().currentPage(1).size(5).sortBy("createdAt").build();
 
-    @BeforeEach
-    @Transactional
-    public void createUser() {
-        User user1 = User.builder().email("user1").password("password1").nickname("뽀로로").build();
-        user1.setUserRole(UserRole.USER);
-        User savedUser1 = userRepository.save(user1);
-
-        User user2 = User.builder().email("user2").password("password2").nickname("루피").build();
-        user2.setUserRole(UserRole.USER);
-        User savedUser2 = userRepository.save(user2);
-
-        Channel channel = Channel.builder()
-                .user(savedUser1)
-                .adminEmail(savedUser1.getEmail())
-                .channelName("channel").build();
-
-        Channel savedChannel = channelRepository.save(channel);
-        savedUser1.addChannel(savedChannel);
-        savedUser2.addChannel(savedChannel);
-
-        this.channel = savedChannel;
-        this.user1 = savedUser1;
-        this.user2 = savedUser2;
-
-        Thread thread = new Thread(this.channel, this.user1, "안녕하세요");
-        Thread savedThread = threadRepository.save(thread);
-
-        this.channel.addThread(savedThread);
-        this.thread = savedThread;
-    }
 
     @Test
     @DisplayName("Comment: Get All Comments In Thread")

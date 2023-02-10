@@ -1,5 +1,6 @@
 package com.sparta.sbug.security.jwt;
 
+import com.sparta.sbug.security.dto.JwtDto;
 import com.sparta.sbug.security.userDetails.UserDetailsServiceImpl;
 import com.sparta.sbug.user.entity.UserRole;
 import io.jsonwebtoken.*;
@@ -7,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +28,11 @@ import java.util.Date;
 public class JwtUtil {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";
+
     private static final String BEARER_PREFIX = "Bearer ";
     private static final long TOKEN_TIME = 60 * 60 * 1000L;
+    private static final long REFRESH_TOKEN_EXPIRATION_TIME = 14 * 24 * 60 * 60 * 1000;
+    // 7~30 일 사이로 설정한다고 합니다. 14일로 설정했습니다.
 
     private final UserDetailsServiceImpl userDetailsService;
     @Value("${jwt.secret.key}")
@@ -66,17 +71,26 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String username, UserRole role) {
+    public JwtDto createToken(String username, UserRole role) {
         Date date = new Date();
 
-        return BEARER_PREFIX +// BEARER : 인증 타입중 하나로 JWT 또는 OAuth에 대한 토큰을 사용 (RFC 6750 문서 확인)
-                Jwts.builder()
-                        .setSubject(username)// 토큰 용도
-                        .claim(AUTHORIZATION_KEY, role)// payload에 들어갈 정보 조각들
-                        .setExpiration(new Date(date.getTime() + TOKEN_TIME))// 만료시간 설정
-                        .setIssuedAt(date)// 토큰 발행일
-                        .signWith(key, signatureAlgorithm) // key변수 값과 해당 알고리즘으로 sign
-                        .compact();// 토큰 생성
+        String accessToken = BEARER_PREFIX + Jwts.builder()
+                .setSubject(username)// 토큰 용도
+                .claim(AUTHORIZATION_KEY, role)// payload에 들어갈 정보 조각들
+                .setExpiration(new Date(date.getTime() + TOKEN_TIME))// 만료시간 설정
+                .setIssuedAt(date)// 토큰 발행일
+                .signWith(key, signatureAlgorithm) // key변수 값과 해당 알고리즘으로 sign
+                .compact();// 토큰 생성
+        String refreshToken = Jwts.builder()
+                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_EXPIRATION_TIME))
+                .signWith(key, signatureAlgorithm)
+                .compact();
+        return JwtDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .grantType(BEARER_PREFIX)
+                .refreshTokenExpirationTime(REFRESH_TOKEN_EXPIRATION_TIME)
+                .build();
     }
 
     // 토큰 검증
