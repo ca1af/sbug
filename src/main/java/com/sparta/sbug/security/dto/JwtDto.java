@@ -15,8 +15,8 @@ public class JwtDto {
     @Builder
     public JwtDto(String grantType, String accessToken, String refreshToken, Long refreshTokenExpirationTime) {
         this.grantType = grantType;
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
+        this.accessToken = grantType + accessToken;
+        this.refreshToken = grantType + refreshToken;
         this.refreshTokenExpirationTime = refreshTokenExpirationTime;
     }
 }

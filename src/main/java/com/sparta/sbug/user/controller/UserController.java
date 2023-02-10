@@ -31,6 +31,7 @@ public class UserController {
     public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response){
         JwtDto token = userService.login(requestDto);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token.getAccessToken());
+        response.addHeader(JwtUtil.REFRESH_TOKEN, token.getRefreshToken());
         return "Success";
     }
     @DeleteMapping("/api/user/unregister")

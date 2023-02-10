@@ -28,6 +28,7 @@ public class ChannelController {
         channelService.createChannel(userDetails.getUser(), channelName);
         return "home";
     }
+    // requestParam < Get에서 주로 사용한다.
 
     @PostMapping("/channel/{id}/invite")
     public String inviteUser(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam(name = "email") String email, @PathVariable Long id){
