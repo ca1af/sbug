@@ -1,12 +1,10 @@
 package com.sparta.sbug.chat.entity;
 
+import com.sparta.sbug.chatroom.entity.ChatRoom;
 import com.sparta.sbug.common.entity.Timestamp;
 import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 // lombok
 @Getter
@@ -27,13 +25,15 @@ public class Chat extends Timestamp {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Setter
     private ChatStatus status = ChatStatus.NEW;
 
     /**
      * 생성자
      */
     @Builder
-    public Chat(User sender, String message, User receiver) {
+    public Chat(ChatRoom room, User sender, String message, User receiver) {
+        this.room = room;
         this.sender = sender;
         this.message = message;
         this.receiver = receiver;
@@ -42,6 +42,10 @@ public class Chat extends Timestamp {
     /**
      * 연관관계
      */
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private ChatRoom room;
+
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     private User receiver;
@@ -57,7 +61,4 @@ public class Chat extends Timestamp {
         this.message = message;
     }
 
-    public void markToRead() {
-        this.status = ChatStatus.READ;
-    }
 }

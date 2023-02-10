@@ -28,6 +28,8 @@ public class JwtUtil {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String REFRESH_TOKEN = "RefreshToken";
     public static final String AUTHORIZATION_KEY = "auth";
+    public static final String ID = "id";
+
     private static final String BEARER_PREFIX = "Bearer ";
     private static final long TOKEN_TIME = 60L;
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 60*3;
@@ -57,11 +59,12 @@ public class JwtUtil {
 
 
     // 토큰 생성
-    public JwtDto createToken(String username, UserRole role) {
+    public JwtDto createToken(String username, Long userId, UserRole role) {
         Date date = new Date();
 
         String accessToken = Jwts.builder()
                 .setSubject(username)// 토큰 용도
+                .claim(ID, userId)
                 .claim(AUTHORIZATION_KEY, role)// payload에 들어갈 정보 조각들
                 .setExpiration(new Date(date.getTime() + TOKEN_TIME))// 만료시간 설정
                 .setIssuedAt(date)// 토큰 발행일
@@ -93,16 +96,12 @@ public class JwtUtil {
             return true;
         } catch (SecurityException | MalformedJwtException e) {// 전: 권한 없다면 발생 , 후: JWT가 올바르게 구성되지 않았다면 발생
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
-
         } catch (ExpiredJwtException e) {// JWT만료
             log.info("Expired JWT token, 만료된 JWT token 입니다.");
-
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
-
         } catch (IllegalArgumentException e) {
             log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
-
         }
         return false;
     }

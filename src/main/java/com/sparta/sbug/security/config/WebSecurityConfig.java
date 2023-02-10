@@ -57,6 +57,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         //3.0 버전이라 antMatchers 가 requestMatchers 로 된듯 합니다.
         // https://stackoverflow.com/questions/74447778/spring-security-in-spring-boot-3
         http.authorizeHttpRequests()
+                .requestMatchers("/chats").permitAll()
                 .requestMatchers("/api/user/**").permitAll()
                 .requestMatchers("/h2-console").permitAll()
                 .requestMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")

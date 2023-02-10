@@ -4,6 +4,7 @@ import com.sparta.sbug.chat.dto.ChatResponseDto;
 import com.sparta.sbug.chat.entity.Chat;
 import com.sparta.sbug.chat.entity.ChatStatus;
 import com.sparta.sbug.chat.repository.ChatRepository;
+import com.sparta.sbug.chatroom.entity.ChatRoom;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 // lombok
@@ -28,25 +27,38 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ChatResponseDto> readAllExchangedMessage(Long receiver, Long sender, PageDto pageDto) {
-        Page<Chat> pageChats = chatRepository.findExchangedMessages(receiver, sender, pageDto.toPageable());
-        for (Chat chat : pageChats.getContent()) {
-            if (chat.getReceiver().getId().equals(receiver)) {
-                chat.markToRead();
-            }
-        }
+    public List<ChatResponseDto> readAllMessageInChatRoom(Long requesterId, Long roomId, PageDto pageDto) {
+        Page<Chat> pageChats = chatRepository.findMessagesInChatRoom(roomId, pageDto.toPageable());
+        convertToRead(requesterId, pageChats);
         return getDtoListFromEntities(pageChats);
     }
 
     @Override
     @Transactional
-    public String sendMessage(User sender, User receiver, String message) {
+    public void convertToRead(Long requesterId, Page<Chat> chats) {
+        for (Chat chat : chats.getContent()) {
+            if (chat.getReceiver().getId().equals(requesterId)) {
+                chat.setStatus(ChatStatus.READ);
+            }
+        }
+    }
+
+    @Override
+    public List<ChatResponseDto> getDtoListFromEntities(Page<Chat> pageChats) {
+        List<Chat> chats = pageChats.getContent();
+        return chats.stream().map(ChatResponseDto::of).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public ChatResponseDto createMessage(ChatRoom chatRoom, User sender, User receiver, String message) {
         Chat chat = Chat.builder()
+                .room(chatRoom)
                 .sender(sender)
                 .message(message)
                 .receiver(receiver).build();
-        chatRepository.save(chat);
-        return "Success";
+        Chat savedChat = chatRepository.saveAndFlush(chat);
+        return ChatResponseDto.of(savedChat);
     }
 
     @Override
@@ -70,33 +82,22 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional(readOnly = true)
-    public Long countNewMessages(User user) {
-        return chatRepository.countByReceiverIdAndStatus(user.getId(), ChatStatus.NEW);
-    }
-
-    @Transactional(readOnly = true)
     public Chat findChatById(Long messageId) {
-        Optional<Chat> optionalChat = chatRepository.findById(messageId);
-        if (optionalChat.isEmpty()) {
-            // 수정 예정, 리소스를 찾을 수 없을 때
-            throw new IllegalArgumentException();
-        }
-
-        return optionalChat.get();
+        return chatRepository.findById(messageId).orElseThrow();
     }
 
+    @Override
     @Transactional(readOnly = true)
-    public Chat validateUserIsSender(Chat chat, User user) {
+    public void validateUserIsSender(Chat chat, User user) {
         if (!chat.getSender().equals(user)) {
             // 수정 예정, 권한이 없을 때
             throw new IllegalArgumentException();
         }
-
-        return chat;
     }
 
-    public List<ChatResponseDto> getDtoListFromEntities(Page<Chat> pageChats) {
-        List<Chat> chats = pageChats.getContent();
-        return chats.stream().map(ChatResponseDto::of).collect(Collectors.toList());
+    @Override
+    @Transactional(readOnly = true)
+    public Long countNewMessages(User user) {
+        return chatRepository.countByReceiverIdAndStatus(user.getId(), ChatStatus.NEW);
     }
 }
