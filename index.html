@@ -17,6 +17,13 @@
             // 회원이미지조회가 allmember에 userlist 기입전에 데이터를 받아야함어야함 추가되면 삭제할것
             allMember();
             getChannelList();
+            const urlParams = new URL(location.href).searchParams;
+            const name = urlParams.get('id');
+            console.log(name);
+            console.log(name);
+            console.log(name);
+            console.log(name);
+            console.log(name);
 
         });
     </script>
@@ -33,7 +40,7 @@
                     <button onclick="">회원정보조회</button>
                     <button onclick="deleteMember()">회원탈퇴</button>
                     <button onclick="location.href='updatemember.html'">회원정보수정</button>
-                    <button onclick="createChannel()">채널생성</button>
+                    <button onclick="createChannel(name)">채널생성</button>
                     <button onclick="">채널초대</button>
                     <button onclick="">ㅇㅇㅇㅇ</button>
                 </div>
@@ -62,7 +69,7 @@
         <section id="section-two-channellist">
             <article class="channelbox">
                 <div class="">
-                    asdf
+                    asdfsadfsadf
                 </div>
             </article>
         </section>
@@ -83,7 +90,7 @@
             <article class="chatsend cf">
                 <div class="messagewriter">
                     <input type="text" id="message"></input>
-                    <button id="sendmessagebtn" onclick="createComment(5)">Send</button>
+                    <button id="sendmessagebtn" onclick="createComment()">Send</button>
                 </div>
             </article>
             <!-- 채팅 쓰기 끝 -->

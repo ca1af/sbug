@@ -40,7 +40,7 @@ function signIn() {
     console.log(xhr.getResponseHeader("Authorization"));
     localStorage.setItem('accessToken', xhr.getResponseHeader("Authorization")); 
     alert("로그인 완료!"); 
-    location.href="./index.html";
+    location.href="./index.html?id=5";
     });
 }
 
@@ -105,6 +105,7 @@ function deleteMember(){
 	  $.ajax(settings).done(function (response) {
 		console.log(response);
     alert("회원탈퇴");
+    location.href="./login.html";
   });
 }
 

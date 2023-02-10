@@ -1,7 +1,14 @@
 // 채널개설 //완성안된듯?
-function createChannel(){
+// @GetMapping("/channel/{channelId}")
+// "url": "http://localhost:8080/api/channel/create?channel-name=ThisChannel",
+function createChannel(ThisChannel){
 	var settings = {
-		"url": "http://localhost:8080/api/channel/create?name={channelName}",
+		"url": "http://localhost:8080/api/channel/create?channel-name=ThisChannel",
+		"url": "http://localhost:8080/api/channel/create?name={ThisChannel}",
+		"url": "http://localhost:8080/api/channel/create?name={"+ThisChannel+"}",
+		// "url": "http://localhost:8080/api/channel/create?name="+ThisChannel,
+		// "url": "http://localhost:8080/api/channel/create?name={channelName}",
+		// "url": "http://localhost:8080/api/channel/create",
 		"method": "POST",
 		"timeout": 0,
 		"headers": {

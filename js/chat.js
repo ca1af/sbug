@@ -1,9 +1,10 @@
-function createComment(id){
+function createComment(){
 	var settings = {
-		// "url": "http://localhost:8080/api/channels/{id}/thread",
+		"url": "http://localhost:8080/api/channels/{id}/thread",
 		// "url": "http://localhost:8080/api/channels/${id}/thread",
 		// "url": "http://localhost:8080/api/channels/{"+id+"}/thread",
-		"url": "http://localhost:8080/api/channels/"+{id}+"/thread",
+		// "url": "http://localhost:8080/api/channels/"+{id}+"/thread",
+		// "url": "http://localhost:8080/api/channels/"+id+"/thread",
 		"method": "POST",
 		"timeout": 0,
 		"headers": {
@@ -11,7 +12,7 @@ function createComment(id){
 		  "Authorization": localStorage.getItem('accessToken')
 		},
     "data": JSON.stringify({
-      "content": $('#message').val()
+      "contents": $('#message').val()
     })
 	  };
 	$.ajax(settings).done(function (response) {
