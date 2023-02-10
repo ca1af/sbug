@@ -58,7 +58,12 @@
             success: function (response, status, xhr) {
                 if (response === 'Success') {
                     let host = window.location.host;
-                    let url = host + '/chats';
+                    let url;
+                    if (username === "user3") {
+                        url = host + '/chat/user?id=4';
+                    } else {
+                        url = host + '/chat/user?id=3';
+                    }
 
                     document.cookie =
                         'Authorization' + '=' + xhr.getResponseHeader('Authorization') + ';path=/';

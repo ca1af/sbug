@@ -12,4 +12,9 @@ import java.util.List;
 public class ChatRoomResponseDto {
     private Long roomId;
     private List<ChatResponseDto> chats;
+
+    public ChatRoomResponseDto(Long roomId, List<ChatResponseDto> chats) {
+        this.roomId = roomId;
+        this.chats = chats;
+    }
 }
