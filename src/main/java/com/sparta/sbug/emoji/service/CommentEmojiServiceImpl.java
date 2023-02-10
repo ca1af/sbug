@@ -27,7 +27,7 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
         Comment comment = commentService.getComment(commentId);
         CommentEmoji commentEmoji = new CommentEmoji(emojiType, user, comment);
         commentEmojiRepository.save(commentEmoji);
-        return "channelName/thread/{id}";
+        return "Success";
     }
 
     // CommentEmoji 삭제
@@ -35,7 +35,7 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
     public String deleteCommentEmoji(Long emojiId, User user) {
         CommentEmoji commentEmoji = commentEmojiRepository.findByIdAndUser(emojiId, user).orElseThrow();
         commentEmojiRepository.delete(commentEmoji);
-        return "channelName/thread/{id}";
+        return "Success";
     }
 
 }
