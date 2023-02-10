@@ -27,7 +27,7 @@ public class JwtProvider {
     public static final String Bearer = "Bearer ";
 
     @Value("${jwt.secret.key}")
-    private String key;
+    private String key = "7ZWt7ZW0OTntmZTsnbTtjIXtlZzqta3snYTrhIjrqLjshLjqs4TroZzrgpjslYTqsIDsnpDtm4zrpa3tlZzqsJzrsJzsnpDrpbzrp4zrk6TslrTqsIDsnpA=";
 
     @Value("${jwt.live.atk}")
     private Long atkTime;
@@ -41,31 +41,26 @@ public class JwtProvider {
     }
 
     public TokenResponse reissueAtk(UserResponseDto userResponseDto) throws JsonProcessingException {
-        String rtkInRedis = redisDao.getValues(userResponseDto.getEmail());
+        String email = userResponseDto.getEmail();
+        String rtkInRedis = redisDao.getValues(email);
         if (Objects.isNull(rtkInRedis)) throw new ForbiddenException("인증 정보가 만료되었습니다.");
-        TokenWithEmail atkTokenWithEmail = TokenWithEmail.atk(
-                userResponseDto.getEmail());
-        String atk = createToken(atkTokenWithEmail, atkTime);
+        String atk = createToken(email, atkTime);
         return new TokenResponse(atk, null);
     }
 
     public TokenResponse createTokensByLogin(UserResponseDto userResponseDto) throws JsonProcessingException {
-        TokenWithEmail atkTokenWithEmail = TokenWithEmail.atk(
-                userResponseDto.getEmail());
+        String email = userResponseDto.getEmail();
 
-        TokenWithEmail rtkTokenWithEmail = TokenWithEmail.rtk(
-                userResponseDto.getEmail());
-
-        String atk = Bearer + createToken(atkTokenWithEmail, atkTime);
-        String rtk = Bearer + createToken(rtkTokenWithEmail, rtkTime);
-        redisDao.setValues(userResponseDto.getEmail(), rtk, Duration.ofMillis(rtkTime));
+        String atk = createToken(email, atkTime);
+        String rtk = createToken(email, rtkTime);
+        redisDao.setValues(email, rtk, Duration.ofMillis(rtkTime));
         return new TokenResponse(atk, rtk);
     }
 
-    private String createToken(TokenWithEmail tokenWithEmail, Long tokenLive) throws JsonProcessingException {
-        String subjectStr = objectMapper.writeValueAsString(tokenWithEmail);
+    private String createToken(String email, Long tokenLive) throws JsonProcessingException {
+        //String subjectStr = objectMapper.writeValueAsString(email);
         Claims claims = Jwts.claims()
-                .setSubject(subjectStr);
+                .setSubject(email);
         Date date = new Date();
         return Bearer + Jwts.builder()
                 .setClaims(claims)
@@ -75,9 +70,10 @@ public class JwtProvider {
                 .compact();
     }
 
-    public TokenWithEmail getSubject(String atk) throws JsonProcessingException {
+    public String getSubject(String atk) throws JsonProcessingException {
         String subjectStr = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(atk).getBody().getSubject();
-        return objectMapper.readValue(subjectStr, TokenWithEmail.class);
+        //return objectMapper.readValue(subjectStr, TokenWithEmail.class);
+        return subjectStr;
     }
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();

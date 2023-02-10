@@ -25,7 +25,6 @@ public class UserChannel extends Timestamp {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "channel_id")
     Channel channel;
-
     @Builder
     public UserChannel(User user, Channel channel) {
         this.user = user;
