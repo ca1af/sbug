@@ -9,8 +9,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Getter
 @RequiredArgsConstructor
-public class ScheduleRequestDto {
-    private final String content;
+public class PeriodRequestDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private final LocalDateTime date;
+    private final LocalDateTime startDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private final LocalDateTime endDate;
 }
