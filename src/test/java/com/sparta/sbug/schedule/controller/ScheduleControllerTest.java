@@ -30,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class ScheduleControllerTest {
 
@@ -131,23 +132,23 @@ public class ScheduleControllerTest {
     void getMySchedules() {
 
         //given
-        Pageable pageableStub = PageRequest.of(3, 3);
+        Pageable pageable = PageRequest.of(3, 3);
         User user = User.builder()
             .email("123")
             .password("123")
             .nickname("123")
             .build();
-        UserDetailsImpl userDetailsImplStub =
+        UserDetailsImpl userDetailsImpl =
             new UserDetailsImpl(user, "123");
 
-        //비어있는 변수 resultStub을 만든다
-        Optional<Integer> resultStub = Optional.empty();
+        //비어있는 변수 result를 만든다
+        Optional<Integer> result = Optional.empty();
 
         //Mock객체 scheduleService의 method는
-        //resultStub을 반환하도록 설정
-        //doReturn은 non-type safe라서 resultStub의 type을
+        //result를 반환하도록 설정
+        //doReturn은 non-type safe라서 result의 type을
         //임의로 정할 수 있다.
-        doReturn(resultStub).when(scheduleService).getMySchedules(
+        doReturn(result).when(scheduleService).getMySchedules(
             any(Pageable.class),
             any(User.class)
         );
@@ -158,15 +159,15 @@ public class ScheduleControllerTest {
         //response에 담는다.
         Page<ScheduleResponseDto> response
             = scheduleController.getMySchedules(
-                pageableStub,
-                userDetailsImplStub
+                pageable,
+                userDetailsImpl
             );
 
         //then
 
-        //response와 resultStub의 주소가 같은지 확인
+        //response와 result의 주소가 같은지 확인
         //이게 된다고..?
-        assertThat(response).isSameAs(resultStub);
+        assertThat(response).isSameAs(result);
 
     }
 
@@ -209,10 +210,54 @@ public class ScheduleControllerTest {
     void getPeriodSchedules() {
 
         //given
+        Pageable pageable = PageRequest.of(3, 3);
 
+        User user = User.builder()
+            .email("123")
+            .password("123")
+            .nickname("123")
+            .build();
+
+        UserDetailsImpl userDetailsImpl =
+            new UserDetailsImpl(user, "123");
+
+        PeriodRequestDto periodDto = new PeriodRequestDto(
+            LocalDateTime.now(),
+            LocalDateTime.now().plus(3, ChronoUnit.DAYS)
+        );
+
+
+        //비어있는 변수 result를 만든다
+        Optional<Integer> result = Optional.empty();
+
+        //Mock객체 scheduleService의 method는
+        //result를 반환하도록 설정
+        //doReturn은 non-type safe라서 result의 type을
+        //임의로 정할 수 있다.
+        doReturn(result).when(scheduleService).getPeriodSchedules(
+            any(Pageable.class),
+            any(User.class),
+            any(PeriodRequestDto.class)
+        );
+        
         //when
 
+        //scheduleController의 method(Test대상)의 return은
+        //response에 담는다.
+        Page<ScheduleResponseDto> response
+            = scheduleController.getPeriodSchedules(
+                pageable,
+                periodDto,
+                userDetailsImpl
+            );
+
         //then
+
+        //response와 result의 주소가 같은지 확인
+        assertThat(response).isSameAs(result);
+
+
+
     }
 }
 
