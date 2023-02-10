@@ -1,12 +1,14 @@
 package com.sparta.sbug.security;
 
+import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 
-@Component
+@Repository
 public class RedisDao {
 
     private final RedisTemplate<String, String> redisTemplate;

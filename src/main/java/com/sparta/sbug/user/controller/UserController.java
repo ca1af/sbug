@@ -2,7 +2,6 @@ package com.sparta.sbug.user.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
-import com.sparta.sbug.security.dto.JwtDto;
 import com.sparta.sbug.security.dto.TokenResponse;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
@@ -33,6 +32,7 @@ public class UserController {
         UserResponseDto responseDto = userService.login(requestDto);
         TokenResponse tokensByLogin = jwtProvider.createTokensByLogin(responseDto);
         response.addHeader("Authorization", tokensByLogin.getAtk());
+        // 헤더에 준다면 리프레쉬 토큰 보안문제...
         return "ok";
     }
     @DeleteMapping("/api/user/unregister")

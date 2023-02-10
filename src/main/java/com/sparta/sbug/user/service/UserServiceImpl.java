@@ -4,7 +4,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.entity.QChannel;
-import com.sparta.sbug.security.dto.JwtDto;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;

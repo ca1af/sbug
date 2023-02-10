@@ -25,21 +25,19 @@ import java.util.Objects;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final UserDetailsServiceImpl userDetailsImpl;
-
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
         if (!Objects.isNull(authorization)) {
             String atk = authorization.substring(7);
             try {
-                Subject subject = jwtProvider.getSubject(atk);
+                TokenWithEmail tokenWithEmail = jwtProvider.getSubject(atk);
                 String requestURI = request.getRequestURI();
-                if (subject.getType().equals("RTK") && !requestURI.equals("/account/reissue")) {
+                if (tokenWithEmail.getType().equals("RTK") && !requestURI.equals("/account/reissue")) {
                     throw new JwtException("토큰을 확인하세요.");
                 }
-                UserDetails userDetails = userDetailsImpl.loadUserByUsername(subject.getEmail());
-                Authentication token = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+                UserDetails userDetails = userDetailsImpl.loadUserByUsername(tokenWithEmail.getEmail());
+                Authentication token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(token);
             } catch (JwtException e) {
                 request.setAttribute("exception", e.getMessage());
