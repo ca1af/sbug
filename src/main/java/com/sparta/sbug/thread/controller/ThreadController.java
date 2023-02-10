@@ -15,9 +15,9 @@ public class ThreadController {
     private final ThreadServiceImpl threadService;
 
     // Thread 작성
-    @PostMapping("/api/channels/{id}/thread")
+    @PostMapping("/api/channels/{channelId}/thread")
     public String createThread(
-            @RequestParam Long channelId,
+            @PathVariable Long channelId,
             @RequestBody ThreadRequestDto threadRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
