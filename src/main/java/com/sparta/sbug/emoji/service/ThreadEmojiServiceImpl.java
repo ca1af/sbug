@@ -25,7 +25,7 @@ public class ThreadEmojiServiceImpl implements ThreadEmojiService {
         Thread thread = threadService.getThread(threadId);
         ThreadEmoji threadEmoji = new ThreadEmoji(emojiType, user, thread);
         threadEmojiRepository.save(threadEmoji);
-        return "channelName/thread/{id}";
+        return "Success";
     }
 
     // ThreadEmoji 삭제
@@ -33,7 +33,7 @@ public class ThreadEmojiServiceImpl implements ThreadEmojiService {
     public String deleteThreadEmoji(Long emojiId, User user) {
         ThreadEmoji threadEmoji = threadEmojiRepository.findByIdAndUser(emojiId,user).orElseThrow();
         threadEmojiRepository.delete(threadEmoji);
-        return "channelName/thread/{id}";
+        return "Success";
     }
 
 
