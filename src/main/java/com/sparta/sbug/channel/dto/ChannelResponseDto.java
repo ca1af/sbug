@@ -2,9 +2,10 @@ package com.sparta.sbug.channel.dto;
 
 import com.sparta.sbug.channel.entity.Channel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ChannelResponseDto {
     private String channelName;
 

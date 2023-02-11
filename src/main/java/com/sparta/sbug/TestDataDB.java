@@ -1,14 +1,13 @@
 package com.sparta.sbug;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.repository.ChannelRepository;
-import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.user.entity.UserRole;
 import com.sparta.sbug.user.repository.UserRepository;
+import com.sparta.sbug.userchannel.enttiy.UserChannel;
+import com.sparta.sbug.userchannel.repository.UserChannelRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,51 +34,57 @@ public class TestDataDB {
         private final UserRepository userRepository;
 
         private final ChannelRepository channelRepository;
+        private final UserChannelRepository userChannelRepository;
         private final PasswordEncoder passwordEncoder;
 
-        private final JPAQueryFactory queryFactory;
-        static final PageDto pageDto = PageDto.builder().currentPage(1).size(5).sortBy("createdAt").build();
-
         public void init() {
-            String password1 = getEncode("password1");
-            String password2 = getEncode("password2");
-            String password3 = getEncode("password3");
-
-            User user1 = User.builder().email("user1").password(password1).nickname("뽀로로").build();
-            user1.setUserRole(UserRole.USER);
+            // 유저 생성
+            User user1 = User.builder().email("user1").password(getEncode("password1")).nickname("뽀로로")
+                    .build();
             User savedUser1 = userRepository.save(user1);
 
-            User user2 = User.builder().email("user2").password(password2).nickname("루피").build();
-            user2.setUserRole(UserRole.USER);
+            User user2 = User.builder().email("user2").password(getEncode("password2")).nickname("루피")
+                    .build();
             userRepository.save(user2);
+            
+            User user3 = User.builder().email("user3").password(getEncode("password3")).nickname("펭구")
+                    .build();
+            User savedUser3 = userRepository.save(user3);
 
-            User user3 = User.builder().email("user3").password(password3).nickname("펭구").build();
-            user2.setUserRole(UserRole.USER);
-            userRepository.save(user2);
+            User user4 = User.builder().email("user4").password(getEncode("password4")).nickname("뿡뿡이")
+                    .build();
+            userRepository.save(user4);
 
+            // 채널 생성
             Channel channel = Channel.builder()
                     .adminEmail(savedUser1.getEmail())
                     .channelName("channel").build();
 
-//            channel.joinChannel(savedUser1);
-
             Channel channel2 = Channel.builder()
-                    .adminEmail(savedUser1.getEmail())
+                    .adminEmail(savedUser3.getEmail())
                     .channelName("channel2").build();
 
-//            channel2.joinChannel(savedUser1);
-
-            Channel savedChannel = channelRepository.save(channel);
+            Channel savedChannel1 = channelRepository.save(channel);
             Channel savedChannel2 = channelRepository.save(channel2);
 
+            // 사용자-채널 바인딩(생성)
+            UserChannel userChannel1 = UserChannel.builder().user(user1).channel(savedChannel1).build();
+            UserChannel userChannel2 = UserChannel.builder().user(user2).channel(savedChannel1).build();
+            UserChannel userChannel3 = UserChannel.builder().user(user3).channel(savedChannel2).build();
+            UserChannel userChannel4 = UserChannel.builder().user(user4).channel(savedChannel2).build();
+            userChannelRepository.save(userChannel1);
+            userChannelRepository.saveAndFlush(userChannel2);
+            userChannelRepository.saveAndFlush(userChannel3);
+            userChannelRepository.saveAndFlush(userChannel4);
 
-            Thread thread = new Thread(savedChannel, savedUser1, "안녕하세요");
+            // 쓰레드 생성
+            Thread thread = new Thread(savedChannel1, savedUser1, "안녕하세요");
             Thread thread2 = new Thread(savedChannel2, savedUser1, "안녕하세요2");
 
             Thread savedThread = threadRepository.save(thread);
             Thread savedThread2 = threadRepository.save(thread2);
 
-            savedChannel.addThread(savedThread);
+            savedChannel1.addThread(savedThread);
             savedChannel2.addThread(savedThread2);
         }
 

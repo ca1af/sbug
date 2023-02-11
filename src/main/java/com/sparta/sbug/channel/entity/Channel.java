@@ -1,9 +1,6 @@
 package com.sparta.sbug.channel.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.sbug.thread.entity.Thread;
-import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.userchannel.enttiy.UserChannel;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,7 +21,7 @@ public class Channel {
     @Column(nullable = false)
     private String channelName;
 
-    @OneToMany(mappedBy = "channel")
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY)
     private Set<Thread> threads = new LinkedHashSet<>();
 
     private String adminEmail;
@@ -35,7 +32,7 @@ public class Channel {
         this.channelName = channelName;
     }
 
-    public void updateChannel(Channel channel, User user, String channelName) {
+    public void updateChannel(String channelName) {
         this.channelName = channelName;
     }
 
