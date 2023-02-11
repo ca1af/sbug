@@ -2,7 +2,10 @@ package com.sparta.sbug.chat.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 // lombok
 @RequiredArgsConstructor
@@ -16,8 +19,12 @@ public class ChatViewController {
         return "login";
     }
 
-    @RequestMapping(value = "/chats")
-    public String chatView() {
-        return "chat";
+    @GetMapping("/chats/users")
+    public ModelAndView chatView(@RequestParam Long id) {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("chat");
+        mv.addObject("data", id);
+
+        return mv;
     }
 }

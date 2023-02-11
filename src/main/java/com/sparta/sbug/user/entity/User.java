@@ -1,17 +1,11 @@
 package com.sparta.sbug.user.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.common.entity.Timestamp;
-import com.sparta.sbug.userchannel.enttiy.UserChannel;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -34,7 +28,6 @@ public class User extends Timestamp {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole = UserRole.USER;
-
 
     @Builder
     public User(String email, String password, String nickname) {

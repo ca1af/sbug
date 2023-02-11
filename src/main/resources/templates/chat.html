@@ -17,49 +17,84 @@
 
     <script>
         $(document).ready(function () {
-            const auth = getToken();
+            const auth1 = getAtkToken();
+            const auth2 = getRtkToken();
 
             let sockJs = new SockJS("/stomp/unit");
             //1. SockJS를 내부에 들고있는 stomp를 내어줌
             let stomp = Stomp.over(sockJs);
 
-            let userId = 1;
+            let userId = new URL(location.href).searchParams.get("id");
+            let myProfile;
+            let theOtherUserProfile
+            if (userId === "1") {
+                myProfile = "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                theOtherUserProfile = "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"
+            } else {
+                myProfile = "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"
+                theOtherUserProfile = "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+            }
+
             let roomId;
 
             //2. connection이 맺어지면 실행
-            stomp.connect({}, function () {
+            stomp.connect({Authorization: auth1, RTK: auth2}, function () {
                 console.log("STOMP Connection")
 
-                let url = "/api/chat/enter/" + userId;
+                let url = "/api/rooms/enter/receivers/" + userId;
                 console.log(url);
 
                 $.ajax({
                     type: "GET",
                     url: url,
                     async: false,
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Authorization", auth);
-                    },
                     success: function (response) {
-                        roomId = response;
-                    }
+                        roomId = response.roomId;
+                        let dtos = response.chats;
+                        for (let i = 0; i < dtos.length; i++) {
+                            let dto = dtos[i];
+                            let tempHtml;
+                            if (dto.receiverId === Number(userId)) {
+                                tempHtml = makeMyMessage(dto.message, dto.sender, myProfile)
+                            } else {
+                                tempHtml = makeTheOtherUserMessage(dto.message, dto.sender, theOtherUserProfile)
+                            }
+                            $('#msg-box').append(tempHtml);
+                        }
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", auth1);
+                        xhr.setRequestHeader("RTK", auth2)
+                    },
                 })
 
                 // 4. subscribe(path, callback)으로 메세지를 받을 수 있음
                 stomp.subscribe("/topic/chat/room/" + roomId, function (chat) {
-                    let tempHtml = makeMessage(JSON.parse(chat.body).message);
+                    let body = JSON.parse(chat.body);
+                    let tempHtml;
+                    console.log(body.receiverId);
+                    console.log(userId);
+                    if (body.receiverId === Number(userId)) {
+                        tempHtml = makeMyMessage(body.message, body.sender, myProfile)
+                    } else {
+                        tempHtml = makeTheOtherUserMessage(body.message, body.sender, theOtherUserProfile)
+                    }
                     $('#msg-box').append(tempHtml);
-                });
+                }, {Authorization: auth1});
             });
 
             $("#button-send").on("click", function (e) {
                 let msg = document.getElementById("chat-message");
-                stomp.send('/app/chat/message', {}, JSON.stringify({roomId: roomId, message: msg.value}));
+                stomp.send('/app/chat', {Authorization: auth1}, JSON.stringify({
+                    roomId: roomId,
+                    receiverId: userId,
+                    message: msg.value
+                }));
                 msg.value = '';
             });
         });
 
-        function getToken() {
+        function getAtkToken() {
             let cName = 'Authorization' + '=';
             let cookieData = document.cookie;
             let cookie = cookieData.indexOf('Authorization');
@@ -79,13 +114,43 @@
             return auth;
         }
 
-        function makeMessage(msg) {
+        function getRtkToken() {
+            let cName = 'Authorization' + '=';
+            let cookieData = document.cookie;
+            let cookie = cookieData.indexOf('RTK');
+            let auth = '';
+            if (cookie !== -1) {
+                cookie += cName.length;
+                let end = cookieData.indexOf(';', cookie);
+                if (end === -1) end = cookieData.length;
+                auth = cookieData.substring(cookie, end);
+            }
+
+            // kakao 로그인 사용한 경우 Bearer 추가
+            if (auth.indexOf('Bearer') === -1 && auth !== '') {
+                auth = 'Bearer ' + auth;
+            }
+
+            return auth;
+        }
+
+        function makeTheOtherUserMessage(msg, name, profile) {
             return `<div class="d-flex flex-row justify-content-start mb-4">
-                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                        <img src="${profile}"
                              alt="avatar 1" style="width: 45px; height: 100%;">
-                        <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
-                            <p class="small mb-0">${msg}</p>
+                        <div class="p-3 ms-3" style="border-radius: 15px; background-color: #fbfbfb;">
+                            <p class="small mb-0">${name} : ${msg}</p>
                         </div>
+                    </div>`;
+        }
+
+        function makeMyMessage(msg, name, profile) {
+            return `<div class="d-flex flex-row justify-content-end mb-4">
+                        <div class="p-3 me-3 border" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
+                            <p class="small mb-0">${name} : ${msg}</p>
+                        </div>
+                        <img src="${profile}"
+                             alt="avatar 1" style="width: 45px; height: 100%;">
                     </div>`;
         }
     </script>
@@ -108,23 +173,23 @@
                         <i class="fas fa-times"></i>
                     </div>
                     <div id="msg-box" class="card-body">
-                        <!--상대편 메세지-->
-                        <!--                        <div class="d-flex flex-row justify-content-end mb-4">-->
-                        <!--                            <div class="p-3 me-3 border" style="border-radius: 15px; background-color: #fbfbfb;">-->
-                        <!--                                <p class="small mb-0">Thank you, I really like your product.</p>-->
-                        <!--                            </div>-->
-                        <!--                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"-->
-                        <!--                                 alt="avatar 1" style="width: 45px; height: 100%;">-->
-                        <!--                        </div>-->
-
-                        <!-- 내 메세지 -->
-                        <!--                                                <div class="d-flex flex-row justify-content-start mb-4">-->
-                        <!--                                                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"-->
-                        <!--                                                         alt="avatar 1" style="width: 45px; height: 100%;">-->
-                        <!--                                                    <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">-->
-                        <!--                                                        <p class="small mb-0">123</p>-->
+                        <!--                        상대편 메세지-->
+                        <!--                                                <div class="d-flex flex-row justify-content-end mb-4">-->
+                        <!--                                                    <div class="p-3 me-3 border" style="border-radius: 15px; background-color: #fbfbfb;">-->
+                        <!--                                                        <p class="small mb-0">Thank you, I really like your product.</p>-->
                         <!--                                                    </div>-->
+                        <!--                                                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"-->
+                        <!--                                                         alt="avatar 1" style="width: 45px; height: 100%;">-->
                         <!--                                                </div>-->
+
+                        <!--내 메세지-->
+                        <!--                        <div class="d-flex flex-row justify-content-start mb-4">-->
+                        <!--                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"-->
+                        <!--                                 alt="avatar 1" style="width: 45px; height: 100%;">-->
+                        <!--                            <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">-->
+                        <!--                                <p class="small mb-0">뿡뿡이 : 123</p>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
 
                         <div class="form-outline">
                             <textarea id="chat-message" class="form-control" rows="4"></textarea>

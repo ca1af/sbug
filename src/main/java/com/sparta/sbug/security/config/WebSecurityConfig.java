@@ -3,7 +3,8 @@ package com.sparta.sbug.security.config;
 import com.sparta.sbug.security.exception.CustomAccessDeniedHandler;
 import com.sparta.sbug.security.exception.CustomAuthenticationEntryPoint;
 import com.sparta.sbug.security.jwt.JwtAuthFilter;
-import com.sparta.sbug.security.jwt.JwtUtil;
+import com.sparta.sbug.security.jwt.JwtProvider;
+import com.sparta.sbug.security.userDetails.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -29,9 +30,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableScheduling // @Scheduled 어노테이션 활성화
 public class WebSecurityConfig implements WebMvcConfigurer {
 
-    private final JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final UserDetailsServiceImpl userDetailsService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -48,32 +51,22 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
+        http.cors().and().csrf().disable();
+
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        //3.0 버전이라 antMatchers 가 requestMatchers 로 된듯 합니다.
-        // https://stackoverflow.com/questions/74447778/spring-security-in-spring-boot-3
         http.authorizeHttpRequests()
-                .requestMatchers("/chats").permitAll()
+                .requestMatchers("/stomp/**").permitAll()
+                .requestMatchers("/chat/**").permitAll()
+                .requestMatchers("/login").permitAll()
                 .requestMatchers("/api/user/**").permitAll()
                 .requestMatchers("/h2-console").permitAll()
-                .requestMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
-                .requestMatchers("/api/products/**").hasAnyAuthority("ROLE_SELLER")
-                .anyRequest().permitAll()//authenticated()//인증이 되어야 한다는 이야기이다.
-                //.anonymous() : 인증되지 않은 사용자도 접근할 수 있다.
-                // JWT 인증/인가를 사용하기 위한 설정
-                .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .anyRequest().authenticated()
+                .and().addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
         // 401 Error 처리, Authorization 즉, 인증과정에서 실패할 시 처리
         http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
         // 403 Error 처리, 인증과는 별개로 추가적인 권한이 충족되지 않는 경우
         http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
-//                .formLogin().failureHandler();
-//                http.exceptionHandling().accessDeniedHandler(new AccessDeniedHandlerImpl());
-//        http.formLogin().loginPage("/api/user/login-page").permitAll();
-        // 이 부분에서 login 관련 문제 발생
-        // jwt 로그인 방식에서는 세션 로그인 방식을 막아줘야 한다.
-//        http.exceptionHandling().accessDeniedPage("/api/user/forbidden");
         return http.build();
     }
     @Override

@@ -29,20 +29,20 @@ public class CommentController {
         return commentService.getAllCommentsInThread(id, pageDto);
     }
 
-    @PostMapping("/threads/{id}/comment")
+    @PostMapping("/threads/{id}/comments")
     public String createMessage(@PathVariable Long id, @RequestBody CommentRequestDto requestDto,
                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Thread thread = threadService.findThreadById(id);
         return commentService.createComment(thread, requestDto.getContent(), userDetails.getUser());
     }
 
-    @PatchMapping("/comment/{id}")
+    @PatchMapping("/comments/{id}")
     public String updateMessage(@PathVariable Long id, @RequestBody CommentRequestDto requestDto,
                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.updateComment(id, requestDto.getContent(), userDetails.getUser().getId());
     }
 
-    @DeleteMapping("/comment/{id}")
+    @DeleteMapping("/comments/{id}")
     public String deleteMessage(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.deleteComment(id, userDetails.getUser().getId());
     }
