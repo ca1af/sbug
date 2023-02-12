@@ -8,7 +8,6 @@ import com.sparta.sbug.chatroom.service.ChatRoomService;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserService;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -48,8 +47,8 @@ public class ChatMessageController {
         User receiver = userService.getUserById(requestDto.getReceiverId());
 
         // sender
-        Claims info = jwtProvider.getUserInfoFromToken(rawToken.substring(7));
-        User sender = userService.getUserById(info.get("id", Long.class));
+        String email = jwtProvider.getSubject(rawToken.substring(7));
+        User sender = userService.getUser(email);
 
         // room
         ChatRoom room = chatRoomService.getChatRoomById(requestDto.getRoomId());
