@@ -19,7 +19,7 @@ public class ChatViewController {
         return "login";
     }
 
-    @GetMapping("/chat/user")
+    @GetMapping("/chats/users")
     public ModelAndView chatView(@RequestParam Long id) {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("chat");

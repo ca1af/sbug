@@ -8,7 +8,6 @@ import com.sparta.sbug.upperlayerservice.UserChannelUpperLayerService;
 import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +31,7 @@ public class ChannelController {
         return userChannelUpperLayerService.getChannelsByUserId(userDetails.getUser().getId());
     }
 
-    @PostMapping("/channesl/create")
+    @PostMapping("/channels")
     public String channel(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ChannelRequestDto requestDto) {
         userChannelUpperLayerService.createChannelAndUserChannelForRequester(userDetails.getUser(), requestDto.getChannelName());
         return "home";
@@ -49,7 +48,7 @@ public class ChannelController {
         return "Success";
     }
 
-    @PatchMapping("/channels/{channelId}/update")
+    @PatchMapping("/channels/{channelId}")
     public String channelName(@PathVariable Long channelId,
                                     @AuthenticationPrincipal UserDetailsImpl userDetails,
                                     @RequestBody ChannelDto.ChannelRequest requestDto) {
@@ -57,7 +56,7 @@ public class ChannelController {
         return "redirect home";
     }
 
-    @DeleteMapping("/channels/{channelId}/delete")
+    @DeleteMapping("/channels/{channelId}")
     public String channel(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                 @PathVariable Long channelId) {
         userChannelUpperLayerService.deleteChannelAndDependentUserChannel(userDetails.getUser(), channelId);
