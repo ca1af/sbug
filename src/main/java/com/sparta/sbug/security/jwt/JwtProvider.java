@@ -6,13 +6,15 @@ import com.sparta.sbug.security.dto.TokenResponse;
 import com.sparta.sbug.security.exception.ForbiddenException;
 import com.sparta.sbug.user.dto.UserResponseDto;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.security.Key;
 import java.time.Duration;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 
@@ -25,7 +27,9 @@ public class JwtProvider {
     public static final String Bearer = "Bearer ";
 
     @Value("${jwt.secret.key}")
-    private String key = "7ZWt7ZW0OTntmZTsnbTtjIXtlZzqta3snYTrhIjrqLjshLjqs4TroZzrgpjslYTqsIDsnpDtm4zrpa3tlZzqsJzrsJzsnpDrpbzrp4zrk6TslrTqsIDsnpA=";
+    protected byte[] byteKey;
+
+    protected Key key;
 
     @Value("${jwt.live.atk}")
     private Long atkTime;
@@ -35,7 +39,7 @@ public class JwtProvider {
 
     @PostConstruct
     protected void init() {
-        key = Base64.getEncoder().encodeToString(key.getBytes());
+        key = Keys.hmacShaKeyFor(this.byteKey);
     }
 
     public TokenResponse reissueAtk(UserResponseDto userResponseDto) throws JsonProcessingException {
@@ -43,7 +47,9 @@ public class JwtProvider {
         String rtkInRedis = redisDao.getValues(email);
         if (Objects.isNull(rtkInRedis)) throw new ForbiddenException("인증 정보가 만료되었습니다.");
         String atk = createToken(email, atkTime);
-        return new TokenResponse(atk, null);
+        String rtk = createToken(email, rtkTime);
+        redisDao.setValues(email, rtk, Duration.ofMillis(rtkTime));
+        return new TokenResponse(atk, rtk);
     }
 
     public TokenResponse createTokensByLogin(UserResponseDto userResponseDto) throws JsonProcessingException {
@@ -64,7 +70,7 @@ public class JwtProvider {
                 .setClaims(claims)
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + tokenLive))
-                .signWith(SignatureAlgorithm.HS256, key)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 

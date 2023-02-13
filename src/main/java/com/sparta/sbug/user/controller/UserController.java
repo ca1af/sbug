@@ -1,7 +1,6 @@
 package com.sparta.sbug.user.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.security.dto.TokenResponse;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
@@ -29,13 +28,9 @@ public class UserController {
     }
 
     @PostMapping("/api/users/login")
-    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) throws JsonProcessingException {
+    public TokenResponse login(@RequestBody LoginRequestDto requestDto) throws JsonProcessingException {
         UserResponseDto responseDto = userService.login(requestDto);
-        TokenResponse tokensByLogin = jwtProvider.createTokensByLogin(responseDto);
-        // 바디로
-        response.addHeader("Authorization", tokensByLogin.getAtk());
-        response.addHeader("RTK", tokensByLogin.getRtk());
-        return "ok";
+        return jwtProvider.createTokensByLogin(responseDto);
     }
 
     @DeleteMapping("/api/users")
@@ -59,10 +54,10 @@ public class UserController {
         return userService.myPage(userDetails.getUser());
     }
 
-    @GetMapping("/api/users/channel")
-    public List<ChannelResponseDto> getMyChannels(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.getMyChannels(userDetails.getUser());
-    }
+//    @GetMapping("/api/users/channels")
+//    public List<ChannelResponseDto> getMyChannels(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return userService.getMyChannels(userDetails.getUser());
+//    }
 
     @GetMapping("/account/reissue")
     public TokenResponse reissue(@AuthenticationPrincipal UserDetailsImpl accountDetails, HttpServletResponse response)

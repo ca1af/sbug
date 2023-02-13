@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,8 +25,6 @@ import java.util.Base64;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final UserDetailsServiceImpl userDetailsImpl;
-    @Value("${jwt.secret.key}")
-    private String key = "7ZWt7ZW0OTntmZTsnbTtjIXtlZzqta3snYTrhIjrqLjshLjqs4TroZzrgpjslYTqsIDsnpDtm4zrpa3tlZzqsJzrsJzsnpDrpbzrp4zrk6TslrTqsIDsnpA=";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -43,15 +40,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     jwtProvider.getSubject(rtk);
                 }
 
-                if (validateToken(rtk)) {
-                    // 1. 리프레쉬 토큰 리이슈
-                    // 2. 다른 기기에서 같은 사용자가 로그인했을떄... " 기기ID "
-                    response.sendRedirect("/account/reissue");
-                } else {
-                    response.sendRedirect("/login");
-                    /**
-                     * 로그인 요청으로 리다이렉트 시켜야한다.
-                     */
+                if (!validateToken(rtk)) {
+                    response.sendError(403, "권한 없음. 다시 로그인 해주세요");
+                } else if (!request.getRequestURI().equals("/account/reissue")) {
+                    response.sendError(401, "만료되었습니다. reissue");
                 }
             }
 
@@ -59,7 +51,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // try 들어가기 전에 토큰 밸리데이션 로직 필요함.
             try {
                 String email = jwtProvider.getSubject(atk);
-                System.out.println(email);
                 String requestURI = request.getRequestURI();
                 if (email.equals("RTK") && !requestURI.equals("/account/reissue")) {
                     throw new JwtException("토큰을 확인하세요.");
@@ -69,19 +60,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(token);
             } catch (JwtException e) {
                 request.setAttribute("exception", e.getMessage());
-                /**
-                 * 로그인 페이지로 리다이렉트 해주기.
-                 */
-                response.sendRedirect("");
             }
         }
 
         filterChain.doFilter(request, response);
     }
 
+
     public boolean validateToken(String token) {
         try {
-            var encodeKey = Base64.getEncoder().encodeToString(key.getBytes());
+            var encodeKey = Base64.getEncoder().encodeToString(jwtProvider.byteKey);
             Jwts.parserBuilder().setSigningKey(encodeKey).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {// 전: 권한 없다면 발생 , 후: JWT가 올바르게 구성되지 않았다면 발생

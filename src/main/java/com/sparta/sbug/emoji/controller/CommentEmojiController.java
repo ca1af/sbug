@@ -8,29 +8,31 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/channel/threads/comments")
+@RequestMapping("/api/channels/threads/comments")
 public class CommentEmojiController {
     private final CommentEmojiServiceImpl commentEmojiService;
 
- //  api/channel/threads{threadId}/comments/{commentId}/emoji?emojiType={emojiType}
+
+///api/channels/threads/comments/{id}/emojis?emoji-type={emojiType}
+///api/channels/threads/comments/emojis/{id}
 
     // CommentEmoji 생성
-    @PostMapping("/{commentId}")
+    @PostMapping("/{id}/emojis")
     public String commentEmoji(
-            @PathVariable Long commentId,
+            @PathVariable Long id,
             @RequestParam(name = "emoji-type") String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return commentEmojiService.createCommentEmoji(commentId, emojiType,userDetails.getUser());
+        return commentEmojiService.createCommentEmoji(id, emojiType,userDetails.getUser());
     }
 
 
     // CommentEmoji 삭제
-    @DeleteMapping("/{emojiId}")
+    @DeleteMapping("/emojis/{id}")
     public String commentEmoji(
-            @PathVariable Long emojiId,
+            @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return commentEmojiService.deleteCommentEmoji(emojiId, userDetails.getUser());
+        return commentEmojiService.deleteCommentEmoji(id, userDetails.getUser());
     }
 }

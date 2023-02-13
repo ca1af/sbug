@@ -9,29 +9,30 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/channel/threads")
+@RequestMapping("/api/channels/threads")
 public class ThreadEmojiController {
     private final ThreadEmojiServiceImpl threadEmojiService;
 
-    // api/channel/threads/{id}/emoji?emojiType={emojiType}
+///api/channels/threads/{id}/emojis?emoji-type={emojiType}
+///api/channels/threads/emojis/{id}
 
     // ThreadEmoji 생성
-    @PostMapping("/{threadId}/emoji")
-    public String createThreadEmoji(
-            @PathVariable Long threadId,
+    @PostMapping("/emojis/{id}")
+    public String threadEmoji(
+            @PathVariable Long id,
             @RequestParam(name = "emoji-type") String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return threadEmojiService.createThreadEmoji(threadId, emojiType, userDetails.getUser());
+        return threadEmojiService.createThreadEmoji(id, emojiType, userDetails.getUser());
     }
 
 
     // ThreadEmoji 삭제
-    @DeleteMapping("/{emojiId}/emoji")
-    public String deleteThreadEmoji(
-        @PathVariable Long emojiId,
+    @DeleteMapping("/emojis/{id}")
+    public String threadEmoji(
+        @PathVariable Long id,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return threadEmojiService.deleteThreadEmoji(emojiId, userDetails.getUser());
+        return threadEmojiService.deleteThreadEmoji(id, userDetails.getUser());
     }
 }

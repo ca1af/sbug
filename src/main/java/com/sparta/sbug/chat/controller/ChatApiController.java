@@ -15,7 +15,7 @@ import java.util.List;
 
 // springframework
 @RestController
-@RequestMapping("/api/chat")
+@RequestMapping("/api/chats")
 public class ChatApiController {
 
     private final ChatService chatService;
