@@ -89,14 +89,14 @@ public class ScheduleControllerTest {
     //일정 등록
     @Test
     @DisplayName("@PostMapping('') schedule() Test: registerSchedule")
-    public void schedule() {
+    public void registerSchedule() {
 
     }
     
     //일정 수정
     @Test
     @DisplayName("@PutMapping('/{id}') schedule() Test: updateSchedule")
-    public void schedule() {
+    public void updateSchedule() {
 
     }
 

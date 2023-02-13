@@ -69,8 +69,18 @@ public class ScheduleServiceImplTest {
 
         scheduleId = schedule.getId();
 
+        /*
+        when(scheduleRepository.save(schedule))
+            .thenReturn(schedule);
+        */
+
+        /*
         when(scheduleRepository.save(any(Schedule.class)))
             .thenReturn(any(Schedule.class));
+        */
+
+        doReturn(any(Schedule.class))
+            .when(scheduleRepository).save(any(Schedule.class));
 
 
     }
@@ -96,8 +106,19 @@ public class ScheduleServiceImplTest {
     public void updateSchedule() {
         //given
 
+        /*
         when(scheduleRepository.findById(scheduleId))
             .thenReturn(Optional.ofNullable(schedule));
+        //PotentialStubbingProblem
+        */
+
+        /*
+        when(scheduleRepository.findById(any(Long.class)))
+            .thenReturn(any(Schedule.class));
+        */
+
+        doReturn(Optional.ofNullable(schedule))
+            .when(scheduleRepository).findById(scheduleId);
 
         //when
         scheduleServiceImpl.updateSchedule(
@@ -122,8 +143,13 @@ public class ScheduleServiceImplTest {
     public void deleteSchedule() {
         //given
 
+        /*
         when(scheduleRepository.findById(scheduleId))
             .thenReturn(Optional.ofNullable(schedule));
+        */
+        doReturn(Optional.ofNullable(schedule))
+            .when(scheduleRepository).findById(scheduleId);
+
         //when
         scheduleServiceImpl.deleteSchedule(
             scheduleId,
