@@ -18,39 +18,39 @@ public class ThreadController {
     private final ThreadServiceImpl threadService;
 
    // Thread 작성
-    @PostMapping("/{channelId}/thread")
+    @PostMapping("/{id}/threads")
     public String thread(
-            @PathVariable Long channelId,
+            @PathVariable Long id,
             @RequestBody ThreadRequestDto threadRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return threadService.createThread(channelId, threadRequestDto, userDetails.getUser());
+        return threadService.createThread(id, threadRequestDto, userDetails.getUser());
     }
 
     // Thread 수정
-    @PatchMapping("/threads/{threadId}")
+    @PatchMapping("/threads/{id}")
     public String tread(
-            @PathVariable Long threadId,
+            @PathVariable Long id,
             @RequestBody ThreadRequestDto threadRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails)
     {
-        return threadService.editThread(threadId, threadRequestDto,userDetails.getUser());
+        return threadService.editThread(id, threadRequestDto,userDetails.getUser());
     }
 
     // Tread 삭제
-    @DeleteMapping("/threads/{threadId}")
+    @DeleteMapping("/threads/{id}")
     public String thread(
-            @PathVariable Long threadId,
+            @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails)
     {
-        return threadService.deleteThread(threadId, userDetails.getUser().getId());
+        return threadService.deleteThread(id, userDetails.getUser().getId());
     }
 
-    // 각 Thread에 대한 Comment 조회
-    @GetMapping("/threads/{threadId}")
+    // Thread 아래 댓글 전체 조회(페이징)
+    @GetMapping("/threads/{id}")
     public List<CommentResponseDto> comments(
-            @PathVariable Long threadId){
-        return threadService.getComments(threadId);
+            @PathVariable Long id){
+        return threadService.getComments(id);
     }
 
 }
