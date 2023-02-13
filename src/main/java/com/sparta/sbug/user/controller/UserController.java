@@ -29,13 +29,9 @@ public class UserController {
     }
 
     @PostMapping("/api/users/login")
-    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) throws JsonProcessingException {
+    public TokenResponse login(@RequestBody LoginRequestDto requestDto) throws JsonProcessingException {
         UserResponseDto responseDto = userService.login(requestDto);
-        TokenResponse tokensByLogin = jwtProvider.createTokensByLogin(responseDto);
-        // 바디로
-        response.addHeader("Authorization", tokensByLogin.getAtk());
-        response.addHeader("RTK", tokensByLogin.getRtk());
-        return "ok";
+        return jwtProvider.createTokensByLogin(responseDto);
     }
 
     @DeleteMapping("/api/users")
