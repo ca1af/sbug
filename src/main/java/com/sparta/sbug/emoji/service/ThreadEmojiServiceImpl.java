@@ -1,6 +1,5 @@
 package com.sparta.sbug.emoji.service;
 
-import com.sparta.sbug.emoji.dto.EmojiRequestDto;
 import com.sparta.sbug.emoji.entity.ThreadEmoji;
 import com.sparta.sbug.emoji.repository.ThreadEmojiRepository;
 import com.sparta.sbug.thread.entity.Thread;
