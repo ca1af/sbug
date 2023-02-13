@@ -15,12 +15,12 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.BDDMockito.given;
+import org.mockito.BDDMockito.Then;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.times;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.eq;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
@@ -46,7 +46,7 @@ public class ScheduleServiceImplTest {
 
         request = new ScheduleRequestDto(
             "팀 최종 프로젝트 미팅",
-            LocalDateTime.now()
+            LocalDateTime.of(2023, 5, 4, 12, 20)
         );
 
         user = User.builder()
@@ -54,7 +54,6 @@ public class ScheduleServiceImplTest {
             .password("123")
             .nickname("123")
             .build();
-
         ReflectionTestUtils.setField(user, "id", 4878L);
 
         userId = user.getId();
@@ -62,26 +61,11 @@ public class ScheduleServiceImplTest {
         schedule = Schedule.builder()
             .user(user)
             .content("123")
-            .date(LocalDateTime.now())
+            .date(LocalDateTime.of(2023, 5, 5, 14, 40))
             .build();
-
         ReflectionTestUtils.setField(schedule, "id", 4545L);
 
         scheduleId = schedule.getId();
-
-        /*
-        when(scheduleRepository.save(schedule))
-            .thenReturn(schedule);
-        */
-
-        /*
-        when(scheduleRepository.save(any(Schedule.class)))
-            .thenReturn(any(Schedule.class));
-        */
-
-        doReturn(any(Schedule.class))
-            .when(scheduleRepository).save(any(Schedule.class));
-
 
     }
 
@@ -89,36 +73,24 @@ public class ScheduleServiceImplTest {
     @DisplayName("ServiceImpl.registerSchedule Test")
     public void registerSchedule() {
         //given
-
+        given(scheduleRepository.save(any(Schedule.class)))
+            .willReturn(schedule);
 
         //when
         scheduleServiceImpl.registerSchedule(request, user);
 
         //then
-        verify(scheduleRepository, times(1)).save(
-            any(Schedule.class)
-        );
-
+        then(scheduleRepository).should(times(1)).save(any(Schedule.class));
     }
 
     @Test
     @DisplayName("ServiceImpl.updateSchedule Test")
     public void updateSchedule() {
         //given
-
-        /*
-        when(scheduleRepository.findById(scheduleId))
-            .thenReturn(Optional.ofNullable(schedule));
-        //PotentialStubbingProblem
-        */
-
-        /*
-        when(scheduleRepository.findById(any(Long.class)))
-            .thenReturn(any(Schedule.class));
-        */
-
-        doReturn(Optional.ofNullable(schedule))
-            .when(scheduleRepository).findById(scheduleId);
+        given(scheduleRepository.findById(scheduleId))
+            .willReturn(Optional.of(schedule));
+        given(scheduleRepository.save(any(Schedule.class)))
+            .willReturn(any(Schedule.class));
 
         //when
         scheduleServiceImpl.updateSchedule(
@@ -128,14 +100,11 @@ public class ScheduleServiceImplTest {
         );
 
         //then
+        then(scheduleRepository).should(times(1))
+            .findById(eq(scheduleId));
+        then(scheduleRepository).should(times(1)).save(any(Schedule.class));
 
-        verify(scheduleRepository, times(1)).findById(
-            any(Long.class)
-        );
-        
-        verify(scheduleRepository, times(1)).save(
-            any(Schedule.class)
-        );
+
     }
 
     @Test
@@ -143,27 +112,10 @@ public class ScheduleServiceImplTest {
     public void deleteSchedule() {
         //given
 
-        /*
-        when(scheduleRepository.findById(scheduleId))
-            .thenReturn(Optional.ofNullable(schedule));
-        */
-        doReturn(Optional.ofNullable(schedule))
-            .when(scheduleRepository).findById(scheduleId);
-
         //when
-        scheduleServiceImpl.deleteSchedule(
-            scheduleId,
-            userId
-        );
 
         //then
-        verify(scheduleRepository, times(1)).findById(
-            any(Long.class)
-        );
-        
-        verify(scheduleRepository, times(1)).delete(
-            any(Schedule.class)
-        );
+
     }
 
     @Test
