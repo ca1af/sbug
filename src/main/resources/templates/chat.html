@@ -17,7 +17,8 @@
 
     <script>
         $(document).ready(function () {
-            const auth = getToken();
+            const auth1 = getAtkToken();
+            const auth2 = getRtkToken();
 
             let sockJs = new SockJS("/stomp/unit");
             //1. SockJS를 내부에 들고있는 stomp를 내어줌
@@ -26,7 +27,7 @@
             let userId = new URL(location.href).searchParams.get("id");
             let myProfile;
             let theOtherUserProfile
-            if (userId === "3") {
+            if (userId === "1") {
                 myProfile = "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
                 theOtherUserProfile = "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"
             } else {
@@ -37,10 +38,10 @@
             let roomId;
 
             //2. connection이 맺어지면 실행
-            stomp.connect({Authorization: auth}, function () {
+            stomp.connect({Authorization: auth1, RTK: auth2}, function () {
                 console.log("STOMP Connection")
 
-                let url = "/api/room/enter/receiver/" + userId;
+                let url = "/api/rooms/receivers/" + userId;
                 console.log(url);
 
                 $.ajax({
@@ -62,13 +63,13 @@
                         }
                     },
                     beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Authorization", auth);
+                        xhr.setRequestHeader("Authorization", auth1);
+                        xhr.setRequestHeader("RTK", auth2)
                     },
                 })
 
-                console.log()
                 // 4. subscribe(path, callback)으로 메세지를 받을 수 있음
-                stomp.subscribe("/topic/chat/room/" + roomId, function (chat) {
+                stomp.subscribe("/topic/chats/rooms/" + roomId, function (chat) {
                     let body = JSON.parse(chat.body);
                     let tempHtml;
                     console.log(body.receiverId);
@@ -79,12 +80,12 @@
                         tempHtml = makeTheOtherUserMessage(body.message, body.sender, theOtherUserProfile)
                     }
                     $('#msg-box').append(tempHtml);
-                }, {Authorization: auth});
+                }, {Authorization: auth1});
             });
 
             $("#button-send").on("click", function (e) {
                 let msg = document.getElementById("chat-message");
-                stomp.send('/app/chat/message', {Authorization: auth}, JSON.stringify({
+                stomp.send('/app/chats/messages', {Authorization: auth1}, JSON.stringify({
                     roomId: roomId,
                     receiverId: userId,
                     message: msg.value
@@ -93,10 +94,30 @@
             });
         });
 
-        function getToken() {
+        function getAtkToken() {
             let cName = 'Authorization' + '=';
             let cookieData = document.cookie;
             let cookie = cookieData.indexOf('Authorization');
+            let auth = '';
+            if (cookie !== -1) {
+                cookie += cName.length;
+                let end = cookieData.indexOf(';', cookie);
+                if (end === -1) end = cookieData.length;
+                auth = cookieData.substring(cookie, end);
+            }
+
+            // kakao 로그인 사용한 경우 Bearer 추가
+            if (auth.indexOf('Bearer') === -1 && auth !== '') {
+                auth = 'Bearer ' + auth;
+            }
+
+            return auth;
+        }
+
+        function getRtkToken() {
+            let cName = 'Authorization' + '=';
+            let cookieData = document.cookie;
+            let cookie = cookieData.indexOf('RTK');
             let auth = '';
             if (cookie !== -1) {
                 cookie += cName.length;

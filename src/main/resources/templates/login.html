@@ -56,24 +56,29 @@
             contentType: "application/json",
             data: JSON.stringify({email: username, password: password}),
             success: function (response, status, xhr) {
-                if (response === 'Success') {
+                if (response === 'ok') {
                     let host = window.location.host;
                     let url;
-                    if (username === "user3") {
-                        url = host + '/chat/user?id=4';
+                    if (username === "user1") {
+                        url = '/chats/users?id=2';
                     } else {
-                        url = host + '/chat/user?id=3';
+                        url = '/chats/users?id=1';
                     }
 
                     document.cookie =
-                        'Authorization' + '=' + xhr.getResponseHeader('Authorization') + ';path=/';
-                    window.location.href = 'http://' + url;
+                        'Authorization' + '=' + xhr.getResponseHeader('Authorization') + ';path=/;';
+                    document.cookie =
+                        'RTK' + '=' + xhr.getResponseHeader('RTK') + ';path=/;';
+                    window.location.href = 'http://' + host + url;
                 } else {
-                    alert('로그인에 실패하셨습니다. 다시 로그인해 주세요.')
+                    alert('로그인에 실패하셨습니다. 다시 로그인해 주세요.');
                     window.location.reload();
                 }
             }
         })
+
+
+
     }
 
 </script>

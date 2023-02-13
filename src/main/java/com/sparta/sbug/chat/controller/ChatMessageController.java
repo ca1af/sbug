@@ -8,7 +8,6 @@ import com.sparta.sbug.chatroom.service.ChatRoomService;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserService;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -42,14 +41,14 @@ public class ChatMessageController {
      * @param requestDto : 방 ID, 수신자 ID, 메세지 내용
      * @param rawToken   : Header의 Authorization의 값
      */
-    @MessageMapping("/chat")
-    public void message(ChatRequestDto requestDto, @Header("Authorization") String rawToken) {
+    @MessageMapping("/chats")
+    public void sendMessage(ChatRequestDto requestDto, @Header("Authorization") String rawToken) {
         // receiver
         User receiver = userService.getUserById(requestDto.getReceiverId());
 
         // sender
-        Claims info = jwtProvider.getUserInfoFromToken(rawToken.substring(7));
-        User sender = userService.getUserById(info.get("id", Long.class));
+        String email = jwtProvider.getSubject(rawToken.substring(7));
+        User sender = userService.getUser(email);
 
         // room
         ChatRoom room = chatRoomService.getChatRoomById(requestDto.getRoomId());

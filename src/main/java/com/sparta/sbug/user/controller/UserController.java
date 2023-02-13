@@ -9,7 +9,6 @@ import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
-import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,26 +23,23 @@ public class UserController {
     private final UserServiceImpl userService;
     private final JwtProvider jwtProvider;
 
-    @PostMapping("/api/user/sign-up")
+    @PostMapping("/api/users/sign-up")
     public String signup(@RequestBody SignUpRequestDto requestDto) {
         return userService.signup(requestDto);
     }
 
-    @PostMapping("/api/user/login")
-    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) throws JsonProcessingException {
+    @PostMapping("/api/users/login")
+    public TokenResponse login(@RequestBody LoginRequestDto requestDto) throws JsonProcessingException {
         UserResponseDto responseDto = userService.login(requestDto);
-        TokenResponse tokensByLogin = jwtProvider.createTokensByLogin(responseDto);
-        response.addHeader("Authorization", tokensByLogin.getAtk());
-        response.addHeader("RTK", tokensByLogin.getRtk());
-        return "ok";
+        return jwtProvider.createTokensByLogin(responseDto);
     }
 
-    @DeleteMapping("/api/user/unregister")
+    @DeleteMapping("/api/users")
     public String unregister(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.unregister(userDetails.getUser());
     }
 
-    @PutMapping("/api/user/update")
+    @PutMapping("/api/users")
     public String update(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserUpdateDto dto) {
         userService.update(userDetails.getUser(), dto);
         return "updated";
@@ -54,12 +50,12 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @GetMapping("/api/user/mypage")
+    @GetMapping("/api/users/my-page")
     public UserResponseDto myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.myPage(userDetails.getUser());
     }
 
-    @GetMapping("/api/user/channel")
+    @GetMapping("/api/users/channels")
     public List<ChannelResponseDto> getMyChannels(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.getMyChannels(userDetails.getUser());
     }

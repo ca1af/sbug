@@ -11,7 +11,7 @@ public class UserResponseDto {
     String nickname;
 
     private UserResponseDto(User user){
-        this.userId = getUserId();
+        this.userId = user.getId();
         this.email = user.getEmail();
         this.nickname = user.getNickname();
     }
