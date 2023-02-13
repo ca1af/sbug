@@ -1,7 +1,6 @@
 package com.sparta.sbug.user.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.security.dto.TokenResponse;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
@@ -55,10 +54,10 @@ public class UserController {
         return userService.myPage(userDetails.getUser());
     }
 
-    @GetMapping("/api/users/channels")
-    public List<ChannelResponseDto> getMyChannels(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.getMyChannels(userDetails.getUser());
-    }
+//    @GetMapping("/api/users/channels")
+//    public List<ChannelResponseDto> getMyChannels(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return userService.getMyChannels(userDetails.getUser());
+//    }
 
     @GetMapping("/account/reissue")
     public TokenResponse reissue(@AuthenticationPrincipal UserDetailsImpl accountDetails, HttpServletResponse response)

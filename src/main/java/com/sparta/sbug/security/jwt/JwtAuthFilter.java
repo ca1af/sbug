@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,8 +25,6 @@ import java.util.Base64;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final UserDetailsServiceImpl userDetailsImpl;
-    @Value("${jwt.secret.key}")
-    private String key = "7ZWt7ZW0OTntmZTsnbTtjIXtlZzqta3snYTrhIjrqLjshLjqs4TroZzrgpjslYTqsIDsnpDtm4zrpa3tlZzqsJzrsJzsnpDrpbzrp4zrk6TslrTqsIDsnpA=";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -63,9 +60,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(token);
             } catch (JwtException e) {
                 request.setAttribute("exception", e.getMessage());
-                /**
-                 * 로그인 페이지로 리다이렉트 해주기.
-                 */
             }
         }
 
@@ -75,7 +69,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     public boolean validateToken(String token) {
         try {
-            var encodeKey = Base64.getEncoder().encodeToString(key.getBytes());
+            var encodeKey = Base64.getEncoder().encodeToString(jwtProvider.byteKey);
             Jwts.parserBuilder().setSigningKey(encodeKey).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {// 전: 권한 없다면 발생 , 후: JWT가 올바르게 구성되지 않았다면 발생
