@@ -41,7 +41,7 @@
             stomp.connect({Authorization: auth1, RTK: auth2}, function () {
                 console.log("STOMP Connection")
 
-                let url = "/api/room/enter/receiver/" + userId;
+                let url = "/api/rooms/enter/receivers/" + userId;
                 console.log(url);
 
                 $.ajax({

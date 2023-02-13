@@ -23,7 +23,7 @@ import java.util.List;
 
 // springframework
 @RestController
-@RequestMapping("/api/room")
+@RequestMapping("/api/rooms")
 public class ChatRoomController {
 
     private final UserService userService;
@@ -38,7 +38,7 @@ public class ChatRoomController {
      * @param id          : 상대방의 ID
      * @param userDetails : 요청자 정보
      */
-    @GetMapping("/enter/receiver/{id}")
+    @GetMapping("/enter/receivers/{id}")
     public ChatRoomResponseDto enter(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         // 채팅할 대상 유저를 찾아 가져옵니다.
         User user = userService.getUserById(id);

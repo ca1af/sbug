@@ -62,7 +62,7 @@ public class ChatApiController {
      *
      * @param userDetails : 요청자에게 온 메세지만을 찾기 위해 이 유저 정보가 사용됩니다.
      */
-    @GetMapping("/count-new-messages")
+    @GetMapping("/new-messages")
     public Long countNewMessages(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return chatService.countNewMessages(userDetails.getUser());
     }

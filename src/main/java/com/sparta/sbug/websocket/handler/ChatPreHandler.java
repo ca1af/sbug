@@ -22,12 +22,13 @@ public class ChatPreHandler implements ChannelInterceptor {
     private final JwtProvider jwtProvider;
     private static final Map<String, String> sessions = new HashMap<>();
 
-    // 전송 받은 메세지에서 JWT 토큰을 검증하는 메서드
+    // 전송 받은 메세지에서 JWT 토큰을 검증하는 메서드 (보내진 메세지를 전처리하는 메서드)
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        // 헤더 토큰 열기
+
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
 
+        // 연결 해제 메세지일 시 콘솔에 로그를 남김
         if (Objects.requireNonNull(headerAccessor.getMessageType()).equals(SimpMessageType.DISCONNECT)) {
             var sessionId = headerAccessor.getSessionId();
             String email = sessions.get(sessionId);
@@ -35,20 +36,21 @@ public class ChatPreHandler implements ChannelInterceptor {
             return message;
         }
 
+        // 헤더에서 토큰을 가져옴
         String authorizationHeader = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
 
-        // 토큰 자르기
         if(authorizationHeader == null || authorizationHeader.equals("null")) {
             throw new MessageDeliveryException("메세지: 토큰 없음");
         }
 
         String token = authorizationHeader.substring("Bearer ".length());
 
-//         토큰 인증
-//        if (!jwtProvider.validateToken(token, null)) {
+        //토큰 인증
+//        if (!jwtAuthFilter.validateToken(token)) {
 //            throw new MessageDeliveryException("메세지 토큰 예외");
 //        }
 
+        // 연결 메세지일 시 세션 ID를 저장하고 콘솔에 로그를 남김
         if (Objects.requireNonNull(headerAccessor.getMessageType()).equals(SimpMessageType.CONNECT)) {
             Claims info = jwtProvider.getUserInfoFromToken(token);
             var email = info.getSubject();
