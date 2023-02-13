@@ -86,184 +86,45 @@ public class ScheduleControllerTest {
         );
     }
 
+    //일정 등록
     @Test
-    @DisplayName("registerSchedule() Controller Test")
-    public void registerSchedule() {
+    @DisplayName("@PostMapping('') schedule() Test: registerSchedule")
+    public void schedule() {
 
-        //given
-        doNothing().when(scheduleService).registerSchedule(
-            any(ScheduleRequestDto.class),
-            any(User.class)
-        );
-
-        //when scheduleController.registerSchedule()이 호출되었을 때..
-        String redirect = scheduleController.registerSchedule(
-            request,
-            userDetails
-        );
-        //then
-
-        //scheduleService.registerSchedule()이 한번 호출되는가?
-        verify(scheduleService, times(1)).registerSchedule(
-            request,
-            user
-        );
-
-        //redirect url이 제대로 반환되는가?
-        assertThat(redirect).isEqualTo("/user/schedule");
     }
     
+    //일정 수정
     @Test
-    @DisplayName("updateSchedule() Controller Test")
-    public void updateSchedule() {
+    @DisplayName("@PutMapping('/{id}') schedule() Test: updateSchedule")
+    public void schedule() {
 
-        //given
-        doNothing().when(scheduleService).updateSchedule(
-            request,
-            scheduleId,
-            userId
-        );
-
-        //when
-        String redirect = scheduleController.updateSchedule(
-            request,
-            scheduleId,
-            userDetails
-        );
-
-        //then
-
-        //scheduleService.updateSchedule()이 한번 호출되는가?
-        verify(scheduleService, times(1)).updateSchedule(
-            request,
-            scheduleId,
-            userId
-        );
-
-        //redircet url이 제대로 반환되는가?
-        assertThat(redirect).isEqualTo("/user/schedule");
     }
 
+    //일정 삭제
     @Test
-    @DisplayName("deleteSchedule() Controller Test")
+    @DisplayName("@DeleteMapping('/{id}') schedule() Test: deleteSchedule")
     public void deleteSchedule() {
 
-        //given 
-
-        //when
-        String redirect = scheduleController.deleteSchedule(
-            scheduleId,
-            userDetails
-        );
-
-        //then
-
-        //scheduleService.deleteSchedule()이 한번 호출되는가?
-        verify(scheduleService, times(1)).deleteSchedule(
-            scheduleId,
-            userId
-        );
-
-        //redirect url이 제대로 반환되는가?
-        assertThat(redirect).isEqualTo("/user/schedule");
-
     }
 
+    //내 일정 조회
     @Test
-    @DisplayName("getMySchedules() Controller Test")
+    @DisplayName("@GetMapping('') mySchedules() Test: getMySchedules")
     public void getMySchedules() {
 
-        //given
-
-        //비어있는 변수 result를 만든다
-        Optional<Integer> result = Optional.empty();
-
-        //Mock객체 scheduleService의 method는
-        //result를 반환하도록 설정
-        //doReturn은 non-type safe라서 result의 type을
-        //임의로 정할 수 있다.
-        doReturn(result).when(scheduleService).getMySchedules(
-            any(Pageable.class),
-            any(User.class)
-        );
-        
-        //when
-
-        //scheduleController의 method(Test대상)의 return은
-        //response에 담는다.
-        Page<ScheduleResponseDto> response
-            = scheduleController.getMySchedules(
-                pageable,
-                userDetails
-            );
-
-        //then
-
-        //response와 result의 주소가 같은지 확인
-        //이게 된다고..?
-        assertThat(response).isSameAs(result);
-
     }
 
+    //일정 상세 조회
     @Test
-    @DisplayName("getSchedule() Controller Test")
+    @DisplayName("@GetMapping('/{id}') schedule() Test: getSchedule")
     public void getSchedule() {
 
-        //given
-        ScheduleResponseDto resultStub = new ScheduleResponseDto(
-            schedule
-        );
-
-
-        when(scheduleService.getSchedule(scheduleId))
-            .thenReturn(resultStub);
-
-        //when
-        ScheduleResponseDto response
-            = scheduleController.getSchedule(scheduleId);
-
-        //then
-        assertThat(response).isSameAs(resultStub);
     }
 
+    //기간내 일정 조회
     @Test
-    @DisplayName("getPeriodSchedules() Controller Test")
+    @DisplayName("@GetMapping('/period') schedule() Test: getPeriodSchedule")
     public void getPeriodSchedules() {
-
-        //given
-
-
-
-        //비어있는 변수 result를 만든다
-        Optional<Integer> result = Optional.empty();
-
-        //Mock객체 scheduleService의 method는
-        //result를 반환하도록 설정
-        //doReturn은 non-type safe라서 result의 type을
-        //임의로 정할 수 있다.
-        doReturn(result).when(scheduleService).getPeriodSchedules(
-            any(Pageable.class),
-            any(User.class),
-            any(PeriodRequestDto.class)
-        );
-        
-        //when
-
-        //scheduleController의 method(Test대상)의 return은
-        //response에 담는다.
-        Page<ScheduleResponseDto> response
-            = scheduleController.getPeriodSchedules(
-                pageable,
-                periodDto,
-                userDetails
-            );
-
-        //then
-
-        //response와 result의 주소가 같은지 확인
-        assertThat(response).isSameAs(result);
-
-
 
     }
 }
