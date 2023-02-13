@@ -1,7 +1,6 @@
 package com.sparta.sbug.security.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.sbug.security.RedisDao;
 import com.sparta.sbug.security.dto.TokenResponse;
 import com.sparta.sbug.security.exception.ForbiddenException;

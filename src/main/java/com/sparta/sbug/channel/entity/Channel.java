@@ -32,7 +32,7 @@ public class Channel {
         this.channelName = channelName;
     }
 
-    public void updateChannel(String channelName) {
+    public void updateChannelName(String channelName) {
         this.channelName = channelName;
     }
 
