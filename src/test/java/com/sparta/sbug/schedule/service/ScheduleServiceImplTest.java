@@ -21,6 +21,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.times;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.eq;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ public class ScheduleServiceImplTest {
     private long userId;
     private Schedule schedule;
     private long scheduleId;
+    private Schedule updatedSchedule;
 
     @BeforeEach
     public void init() {
@@ -87,10 +89,16 @@ public class ScheduleServiceImplTest {
     @DisplayName("ServiceImpl.updateSchedule Test")
     public void updateSchedule() {
         //given
+        updatedSchedule = schedule;
+        updatedSchedule.updateSchedule(
+            request.getContent(),
+            request.getDate()
+        );
+
         given(scheduleRepository.findById(scheduleId))
             .willReturn(Optional.of(schedule));
-        given(scheduleRepository.save(any(Schedule.class)))
-            .willReturn(any(Schedule.class));
+        given(scheduleRepository.save(updatedSchedule))
+            .willReturn(updatedSchedule);
 
         //when
         scheduleServiceImpl.updateSchedule(
@@ -102,19 +110,28 @@ public class ScheduleServiceImplTest {
         //then
         then(scheduleRepository).should(times(1))
             .findById(eq(scheduleId));
-        then(scheduleRepository).should(times(1)).save(any(Schedule.class));
-
-
+        then(scheduleRepository).should(times(1))
+            .save(eq(updatedSchedule));
     }
 
     @Test
     @DisplayName("serviceImpl.deleteSchedule Test")
     public void deleteSchedule() {
         //given
-
+        given(scheduleRepository.findById(scheduleId))
+            .willReturn(Optional.of(schedule));
+        willDoNothing().given(scheduleRepository).delete(schedule);
         //when
+        scheduleServiceImpl.deleteSchedule(
+            scheduleId,
+            userId
+        );
 
         //then
+        then(scheduleRepository).should(times(1))
+            .findById(eq(scheduleId));
+        then(scheduleRepository).should(times(1))
+            .delete(schedule);
 
     }
 
