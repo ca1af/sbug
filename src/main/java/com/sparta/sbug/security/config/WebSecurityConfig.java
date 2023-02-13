@@ -43,9 +43,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     // 가장 먼저 시큐리티를 사용하기 위해선 선언해준다.
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        // h2-console 사용 및 resources 접근 허용 설정
+        // resources 접근 허용 설정
         return (web) -> web.ignoring()
-                .requestMatchers(PathRequest.toH2Console())
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
@@ -59,8 +58,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/stomp/**").permitAll()
                 .requestMatchers("/chat/**").permitAll()
                 .requestMatchers("/login").permitAll()
-                .requestMatchers("/api/user/**").permitAll()
-                .requestMatchers("/h2-console").permitAll()
+                .requestMatchers("/api/users/**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
         // 401 Error 처리, Authorization 즉, 인증과정에서 실패할 시 처리
