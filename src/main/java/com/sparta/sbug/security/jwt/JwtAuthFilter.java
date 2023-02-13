@@ -43,15 +43,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     jwtProvider.getSubject(rtk);
                 }
 
-                if (validateToken(rtk)) {
-                    // 1. 리프레쉬 토큰 리이슈
-                    // 2. 다른 기기에서 같은 사용자가 로그인했을떄... " 기기ID "
-                    response.sendRedirect("/account/reissue");
-                } else {
-                    response.sendRedirect("/login");
-                    /**
-                     * 로그인 요청으로 리다이렉트 시켜야한다.
-                     */
+                if (!validateToken(rtk)) {
+                    response.sendError(403, "권한 없음. 다시 로그인 해주세요");
+                } else if (!request.getRequestURI().equals("/account/reissue")) {
+                    response.sendError(401, "만료되었습니다. reissue");
                 }
             }
 
@@ -59,7 +54,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // try 들어가기 전에 토큰 밸리데이션 로직 필요함.
             try {
                 String email = jwtProvider.getSubject(atk);
-                System.out.println(email);
                 String requestURI = request.getRequestURI();
                 if (email.equals("RTK") && !requestURI.equals("/account/reissue")) {
                     throw new JwtException("토큰을 확인하세요.");
@@ -72,12 +66,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 /**
                  * 로그인 페이지로 리다이렉트 해주기.
                  */
-                response.sendRedirect("");
             }
         }
 
         filterChain.doFilter(request, response);
     }
+
 
     public boolean validateToken(String token) {
         try {
