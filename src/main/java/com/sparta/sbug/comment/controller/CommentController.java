@@ -1,9 +1,7 @@
 package com.sparta.sbug.comment.controller;
 
 import com.sparta.sbug.comment.dto.CommentRequestDto;
-import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
-import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.service.ThreadService;
@@ -24,10 +22,10 @@ public class CommentController {
     private final CommentService commentService;
     private final ThreadService threadService;
 
-    @GetMapping("/threads/{id}/comments")
-    public List<CommentResponseDto> getAllCommentsInThread(@PathVariable Long id, PageDto pageDto) {
-        return commentService.getAllCommentsInThread(id, pageDto);
-    }
+//    @GetMapping("/threads/{id}/comments")
+//    public List<CommentResponseDto> getAllCommentsInThread(@PathVariable Long id, PageDto pageDto) {
+//        return commentService.getAllCommentsInThread(id, pageDto);
+//    }
 
     @PostMapping("/threads/{id}/comments")
     public String createMessage(@PathVariable Long id, @RequestBody CommentRequestDto requestDto,

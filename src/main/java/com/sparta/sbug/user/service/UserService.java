@@ -21,7 +21,8 @@ public interface UserService {
     void update(User user, UserUpdateDto dto);
 
     List<UserResponseDto> getUsers();
-    
+
+    // 오버로드를 한 것..
     UserResponseDto myPage(User user);
     
     UserResponseDto getUser(Long id);

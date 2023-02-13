@@ -41,8 +41,8 @@ public class ChatMessageController {
      * @param requestDto : 방 ID, 수신자 ID, 메세지 내용
      * @param rawToken   : Header의 Authorization의 값
      */
-    @MessageMapping("/chat")
-    public void message(ChatRequestDto requestDto, @Header("Authorization") String rawToken) {
+    @MessageMapping("/chats")
+    public void sendMessage(ChatRequestDto requestDto, @Header("Authorization") String rawToken) {
         // receiver
         User receiver = userService.getUserById(requestDto.getReceiverId());
 

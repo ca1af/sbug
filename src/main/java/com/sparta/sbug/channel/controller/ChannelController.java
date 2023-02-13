@@ -20,17 +20,20 @@ public class ChannelController {
     private final ChannelServiceImpl channelService;
     private final UserChannelUpperLayerService userChannelUpperLayerService;
 
+    // 채널 정보 불러오기
     @GetMapping("/channels/{id}")
     public String channel(@PathVariable Long id) {
         Channel channel = channelService.getChannelById(id);
         return channel.getChannelName();
     }
 
-    @GetMapping("/user/channels")
+    // 유저가 속한 채널의 리스트를 불러오기
+    @GetMapping("/users/channels")
     public List<ChannelResponseDto> allMyChannel(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userChannelUpperLayerService.getChannelsByUserId(userDetails.getUser().getId());
     }
 
+    // 채널 생성
     @PostMapping("/channels")
     public String channel(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ChannelRequestDto requestDto) {
         userChannelUpperLayerService.createChannelAndUserChannelForRequester(userDetails.getUser(), requestDto.getChannelName());
@@ -39,15 +42,16 @@ public class ChannelController {
         // 프론트와 서버를 분리해야함! (API 서버와 웹 서버와 프론트의 관점)
     }
 
-    @PostMapping("/channels/{channelId}/invite")
+    // 채널에 유저 초대하기
+    @PostMapping("/channels/{channelId}/users")
     public String inviteUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                             @RequestBody ChannelDto.InvitationRequest requestDto,
+                             @RequestParam("email") String email,
                              @PathVariable Long channelId) {
-
-        userChannelUpperLayerService.inviteUser(userDetails.getUser(), channelId, requestDto.getEmail());
+        userChannelUpperLayerService.inviteUser(userDetails.getUser(), channelId, email);
         return "Success";
     }
 
+    // 채널 정보 수정
     @PatchMapping("/channels/{channelId}")
     public String channelName(@PathVariable Long channelId,
                                     @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -56,6 +60,7 @@ public class ChannelController {
         return "redirect home";
     }
 
+    // 채널 삭제
     @DeleteMapping("/channels/{channelId}")
     public String channel(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                 @PathVariable Long channelId) {

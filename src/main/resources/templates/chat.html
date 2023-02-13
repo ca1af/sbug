@@ -41,7 +41,7 @@
             stomp.connect({Authorization: auth1, RTK: auth2}, function () {
                 console.log("STOMP Connection")
 
-                let url = "/api/rooms/enter/receivers/" + userId;
+                let url = "/api/rooms/receivers/" + userId;
                 console.log(url);
 
                 $.ajax({
@@ -69,7 +69,7 @@
                 })
 
                 // 4. subscribe(path, callback)으로 메세지를 받을 수 있음
-                stomp.subscribe("/topic/chat/room/" + roomId, function (chat) {
+                stomp.subscribe("/topic/chats/rooms/" + roomId, function (chat) {
                     let body = JSON.parse(chat.body);
                     let tempHtml;
                     console.log(body.receiverId);
@@ -85,7 +85,7 @@
 
             $("#button-send").on("click", function (e) {
                 let msg = document.getElementById("chat-message");
-                stomp.send('/app/chat', {Authorization: auth1}, JSON.stringify({
+                stomp.send('/app/chats/messages', {Authorization: auth1}, JSON.stringify({
                     roomId: roomId,
                     receiverId: userId,
                     message: msg.value

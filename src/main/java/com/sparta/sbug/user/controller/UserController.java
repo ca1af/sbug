@@ -59,7 +59,7 @@ public class UserController {
         return userService.myPage(userDetails.getUser());
     }
 
-    @GetMapping("/api/users/channel")
+    @GetMapping("/api/users/channels")
     public List<ChannelResponseDto> getMyChannels(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.getMyChannels(userDetails.getUser());
     }
