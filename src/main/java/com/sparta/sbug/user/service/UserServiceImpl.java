@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JPAQueryFactory queryFactory;
+
     @Override
     public String signup(SignUpRequestDto requestDto) {
         String email = requestDto.getEmail();
