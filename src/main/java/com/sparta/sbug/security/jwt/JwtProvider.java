@@ -43,7 +43,9 @@ public class JwtProvider {
         String rtkInRedis = redisDao.getValues(email);
         if (Objects.isNull(rtkInRedis)) throw new ForbiddenException("인증 정보가 만료되었습니다.");
         String atk = createToken(email, atkTime);
-        return new TokenResponse(atk, null);
+        String rtk = createToken(email, rtkTime);
+        redisDao.setValues(email, rtk, Duration.ofMillis(rtkTime));
+        return new TokenResponse(atk, rtk);
     }
 
     public TokenResponse createTokensByLogin(UserResponseDto userResponseDto) throws JsonProcessingException {
