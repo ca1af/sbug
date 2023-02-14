@@ -45,7 +45,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("일정을 찾을 수 없습니다.")
             );
-        if (foundSchedule.getUser().getId() == userId) {
+        if (userId.equals(foundSchedule.getUser().getId())) {
             foundSchedule.updateSchedule(
                 requestDto.getContent(),
                 requestDto.getDate()
