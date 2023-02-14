@@ -2,6 +2,12 @@ package com.sparta.sbug;
 
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.repository.ChannelRepository;
+import com.sparta.sbug.comment.entity.Comment;
+import com.sparta.sbug.comment.repository.CommentRepository;
+import com.sparta.sbug.emoji.entity.CommentEmoji;
+import com.sparta.sbug.emoji.entity.ThreadEmoji;
+import com.sparta.sbug.emoji.repository.CommentEmojiRepository;
+import com.sparta.sbug.emoji.repository.ThreadEmojiRepository;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.user.entity.User;
@@ -30,12 +36,13 @@ public class TestDataDB {
     static class InitService {
 
         private final ThreadRepository threadRepository;
-
         private final UserRepository userRepository;
-
         private final ChannelRepository channelRepository;
         private final UserChannelRepository userChannelRepository;
         private final PasswordEncoder passwordEncoder;
+        private final CommentRepository commentRepository;
+        private final ThreadEmojiRepository threadEmojiRepository;
+        private final CommentEmojiRepository commentEmojiRepository;
 
         public void init() {
             // 유저 생성
@@ -86,6 +93,15 @@ public class TestDataDB {
 
             savedChannel1.addThread(savedThread);
             savedChannel2.addThread(savedThread2);
+
+            Comment comment1 = new Comment("코멘트1", user1, thread);
+
+            commentRepository.save(comment1);
+
+            ThreadEmoji threadEmoji = new ThreadEmoji("Emoji1", user1, thread);
+            threadEmojiRepository.save(threadEmoji);
+            CommentEmoji commentEmoji = new CommentEmoji("Emoji1", user1, comment1);
+            commentEmojiRepository.save(commentEmoji);
         }
 
         private String getEncode(String password) {
