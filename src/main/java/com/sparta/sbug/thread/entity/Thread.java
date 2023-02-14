@@ -29,6 +29,7 @@ public class Thread extends Timestamp {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "channel_id")
     private Channel channel;
 

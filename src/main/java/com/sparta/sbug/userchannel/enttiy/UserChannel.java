@@ -25,6 +25,7 @@ public class UserChannel extends Timestamp {
     User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "channel_id")
     Channel channel;
     @Builder

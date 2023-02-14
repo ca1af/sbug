@@ -47,6 +47,7 @@ public class Comment extends Timestamp {
     private Set<CommentEmoji> emojis = new LinkedHashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "thread_id")
     private Thread thread;
 
