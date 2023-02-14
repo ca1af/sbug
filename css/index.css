@@ -1,202 +1,263 @@
 @charset "utf-8";
-
-.cf:after {
-    visibility: hidden;
-    display: block;
-    font-size: 0;
-    content: " ";
-    clear: both;
-    height: 0;
-  }
-.space {
-    width: 4px;
-    background-color: #41434b;
-    border-radius: 12px;
-    margin-left: 13.5px;
-    margin-right: 13.5px;
-    box-shadow: 2px 2px 4px #2c2e33;
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700);
+*, *:before, *:after {
+  box-sizing: border-box;
 }
 
 body {
     width: 100%;
-    height: 100%;
-    min-width: 1200px;
-    background: #0d1117;
-    font: 14px/20px "Lato", Arial, sans-serif;
-    margin: 0 auto;
-    padding: 35px;
-    color: white;
+    background-color: #ccc;
+}
+.cf:after {
+    display: block;
+    content: " ";
+    clear: both;
+}
+#cf:after {
+    content: "";
+    display: block;
+    clear: both;
 }
 
-#container {
-    margin: 0 auto;
+header {
+    height: 50px;
+}
+/* top */
+.top{
     width: 100%;
-    height: 850px;
-    background: #444753;
-    border-radius: 5px;
-    padding: 25px;
     display: flex;
-    border:none;
+    justify-content: space-between;
 }
 
-
-#container .menu {
-    width: 180px;
-    height: 25%;
-    margin: 0;
-    padding: 0;
-}
-/* ------------------------------------- */
-#section-one-menumember {
-    max-width: 180px;
-}
-
-
-/* 검색 */
-#container .menu .search {
-    position: relative;
-    font-size: 20px;
-    border-radius: 3px;
-    border: none;
-    color: white;
-    background: #6A6C75;
-    width: 180px;
-    font-size: 20px;
-    padding: 4px;
-    margin-bottom: 8%;
-    
-}
-#container .menu .search:focus {
-    color: white;
-    padding-left: 8px;
-}
-#container .menu .search::placeholder {
-    color: #8a8c96;
-}
-#container .menu .search:focus::placeholder{
-    color: white;
-}
-/* 검색끝 */
-
-
-/* 회원메뉴 */
-#container .menu .menubtn {
-    width:100%;
-    margin-bottom: 12px;
-
-}
-#container .menu .menubtn button{
-    width: 85px;
-    font-size: 12px;
-    font-weight: bold;
-    background-color: #8a8c96;
-    padding: 5px;
-    margin: 2.5px;
-    border: none;
-    float: left;
-    border-radius: 3px
-    
-}
-
-/* 회원메뉴끝 */
-
-/* 유저리스트 시작 */
-#container .member {
-    width: 180px;
-    height: 75%;
-    max-height: 75%;
-    /* border: 1px solid red; */
-}
-
-#container .member .list {
-    
-    border-radius: 4px;
-
-}
-#container .member .list ul {
-    
-    margin-bottom: 4px;
-    background-color: #555763;
-    border-radius: 4px;
-}
-
-#container .member .list .userimage {
-    padding-left: 10px;
-    width: 45px;
-    height: 45px;
-    border-radius: 32px;
-    float: left;
-    overflow: hidden;
-    border: 3px solid rgba(59, 133, 122, 0.849);
-}
-#container .member .list .username {
-    font-size: 18px;
-    float: left;
-    margin-top: 12px;
-    margin-left: 12px;
-}
-/* 유저리스트목록 끝 */
-
-
-
-/* ------------------------------------- */
-#section-two-channellist {
-    width: 180px;
-}
-/* 채널리스트 시작*/
-.channelbox {
-    /* width: 185px; */
-    height: 100%;
-    color: white;
+.top-logo{
+    width: 100px;
+    height: 50px;
+    padding: 10px;
     /* border: 1px solid #000; */
 }
-/* 채널리스트 끝*/
+.top-logo p {
+    height: 20px;
+    font-size: 1.25rem;
+}
 
+.top-searchbox{
+    min-width: 350px;
+    width: 70%;
+    height: 50px;
+    /* border: 1px solid #000; */
+}
 
+.top-searchbox input {
+    min-width: 350px;
+    width: 100%;
+    font-size: 20px;
+    border-radius: 6px;
+    padding: 4px;
+    margin-top: 7.5px;
+    border: none;
 
+}
 
-
-/* ------------------------------------- */
-#section-three-chatroom{
-    width: 76%;
+.top-personalmenu{
+    width: 50px;
+    height: 50px;
     border-radius: 8px;
-    background-color: white;
-    color: red;
+    background-color: #717171;
+    /* border: 1px solid #000; */
     
 }
-/* 채팅방 시작 */
+/* /top 끝 */
 
 
-/* 채팅내역 */
-.chatlist {
-    height: 90%;
-    border: 2px solid red;
-    margin-bottom: 4%;
-    padding: 10px;
+/* main */
+main {
 }
-/* 채팅내역 끝 */
-
-/* 채팅보내기 */
-.chatsend {
-    height: 5%;
-    /* background-color: red; */
-    border: 2px solid purple;
+    
+/* 좌측 메뉴 섹션 시작 */
+#section-two-member-channellist {
+    position: absolute;
+    top: 50px;
+    height: calc(100% - 50px);
+    border-right: 1px solid black;
+    min-width: 250px;
+    width: 20%;
 }
-.chatsend .messagewriter {
+
+/* 로그인한 본인 이미지&닉네임&+버튼 시작 */
+
+main .loginmemberbox {
+    height: 60px;
+    padding: 5px 0 5px 8px;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000; 
+}
+
+main .loginmemberbox ul {
+    display: flex;
     width: 100%;
-    height: 100%;
 }
-.chatsend #message {
-    float:left;
-    width: 90%;
-    height: 100%;
+
+main .loginmemberbox ul li {
+    /* border: 1px solid #000; */
 }
-.chatsend #sendmessagebtn {
-    float:right;
-    width: 10%;
-    height: 100%;
+main .loginmemberbox ul .login-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 32px;
+    overflow: hidden;
+    border: 2px solid red;
+    cursor: pointer;
 }
-/* 채팅보내기 끝 */
+main .loginmemberbox ul .login-img img {
+    max-width: 50px;
+    width: 50px;
+    height: 50px;
+    
+}
+main .loginmemberbox ul .login-name {
+    margin-left: 4px;
+    margin-top: 4px;
+    padding: 8px 4px 0 4px;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: bold;
+    height: 40px;
+    display: flex;
+    cursor: pointer;
+
+}
+main .loginmemberbox ul .loginmember-plus {
+    margin: 5px;
+    width: 40px;
+    height: 40px;
+    font-size: 40px;
+    line-height: 28px;
+    text-align: center;
+    margin-left: auto;
+    border-radius: 32px;
+    cursor: pointer;
+}
+
+main .loginmemberbox ul .loginmember-plus p {
+    /* user-select: none; */
+  }
+
+    /* 호버효과 */
+    main .loginmemberbox ul .loginmember-plus:hover {
+        background-color: #717171;
+    }
+    main .loginmemberbox ul .login-name:hover  {
+        background-color: #717171;
+    }
+/* /로그인한 본인 이미지&닉네임&+버튼 끝
 
 
-/* 채팅방 끝 */
+/* 채널 목록 시작 */
+
+main .channellist {
+    padding-left: 12px;
+    margin-top: 12px;
+}
+main .channellist ul li {
+    display: flex;
+}
+main .channellist .chanelbox p {
+    font-size: 18px;
+    border-radius: 4px;
+    /* padding: 2px; */
+}
+main .channellist .chanelbox p:first-child{
+    
+}
+main .channellist ul li p:first-child:not(.channeltogglebox p) {
+    margin-left: 10px;
+}
+.createchannelbtn {
+    margin-top: 10px;
+    padding: 4px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+/* /채널 목록 끝 */
+
+
+/* 멤버목록 시작 */
+main .memberlist {
+    padding-left: 12px;
+    margin-top: 12px;
+}
+main .memberlist ul li {
+    display: flex;
+}
+/* main .channellist ul li p:first-child { */
+    /* margin-right: 12px; */
+/* } */
+main .memberlist .memberbox p {
+    font-size: 18px;
+    border-radius: 4px;
+    padding: 2px;
+    /* background-color: red; */
+}
+main .memberlist .memberbox .memberimg{
+    margin-left: 10px;
+    overflow: hidden;
+    margin-top: 4px;
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    border-radius: 4px;
+    background-color: #717171;
+    
+}
+main .memberlist ul li p:first-child:not(.memberbox p) {
+    margin-left: 12px;
+    margin-right: 12px;
+    margin-bottom: 4px;
+}
+/* /멤버목록 끝 */
+/* /좌측 메뉴 섹션 끝 */
+
+/* 우측 채팅방 섹션 시작 */
+#section-three-chatroom {
+    position: absolute;
+    right: 0;
+    width: 80%;
+    height: calc(100% - 50px);
+    background-color: white;
+}
+
+/* /우측 채팅방 섹션 끝 */
+/* /main 끝*/
+
+
+
+.currentchannel {
+    height: 60px;
+    padding: 5px 20px;
+    display: flex;
+    font-size: 24px;    
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+}
+.currentchannel p:first-child {
+    margin-right: 10px;
+}
+.currentchannel p {
+    padding-top: 8px;
+    height: 50px;
+}
+
+/* 미디어쿼리, 1200이하가되면 좌측메뉴를 지워준다 */
+@media screen and (max-width:1200px){
+    #section-two-member-channellist {
+        display: none;
+    }
+    #section-three-chatroom {
+        position: absolute;
+        right: 0;
+        width: 100%;
+        height: calc(100% - 50px);
+        border: 1px solid #000;
+    }
+}

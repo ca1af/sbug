@@ -7,10 +7,6 @@
     <title>Document</title>
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/index.css">
-    <script src="./js/jquery-3.3.1.min.js"></script>
-    <script src="./js/user.js"></script>
-    <script src="./js/channel.js"></script>
-    <script src="./js/chat.js"></script>
     <script>
         $(document).ready(function () {
             getUserMe();
@@ -20,85 +16,185 @@
             const urlParams = new URL(location.href).searchParams;
             const name = urlParams.get('id');
             console.log(name);
-            console.log(name);
-            console.log(name);
-            console.log(name);
-            console.log(name);
 
         });
     </script>
 </head>
 <body>
-    <div id="container">
+    <div id="wrap">
         <!-- 회원&메뉴 섹션 시작 -->
-        <section id="section-one-menumember">
-            <article class="menu">
-                <div class="searchbox">
-                    <input type="text" class="search" placeholder="search" value=""/>
-                </div>
-                <div class="menubtn cf">
-                    <button onclick="">회원정보조회</button>
-                    <button onclick="deleteMember()">회원탈퇴</button>
-                    <button onclick="location.href='updatemember.html'">회원정보수정</button>
-                    <button onclick="createChannel(name)">채널생성</button>
-                    <button onclick="">채널초대</button>
-                    <button onclick="">ㅇㅇㅇㅇ</button>
-                </div>
-                <div>
-                    <p id="welcome" style="padding-left:20px;">환영합니다</p>
-                </div>
-            </article>
-            <article class="member">
-                <div class="userlist">
-                    <ul class="list">
-                        <li class="userimage">
-                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar"/>
+        <header>
+            <section>
+                <article class="top">
+                    <div class="top-logo">
+                        <p>Sbug</p>
+                    </div>
+                    <div class="top-searchbox">
+                        <input type="text" class="search" placeholder="검색" value=""/>
+                    </div>
+                    <div class="top-personalmenu">
+                        <p id="welcome" style="padding-left:20px;">img</p>
+                    </div>
+                </article>
+            </section>
+        </header>
+        <!-- /회원&메뉴 선택 섹션 끝 -->
+
+        <!-- 멤버&채널 섹션 시작 -->
+        <main role="main">
+            <section id="section-two-member-channellist">
+                <!-- 로그인 회원 표시 -->
+                <article class="loginmemberbox">
+                        <ul>
+                            <li class="login-img">
+                                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar"/>
+                            </li>
+                            <li class="login-name">
+                                <p>Mike Thomas</p>
+                                <p>▼</p>
+                                
+                            </li>
+                            <li class="loginmember-plus">
+                                <p>+</p>
+                            </li>
+                        </ul>
+                </article>
+                <!-- /로그인 회원표시 끝 -->
+
+                <!-- 채널 리스트 시작 -->
+                <article class="channellist">
+                    <ul class="chanelbox">
+                        <li class="channeltogglebox">
+                            <p class="channeltoggle">▼</p>
+                            <p class="channelclick">채널</p>
                         </li>
-                        <li class="username">
-                            <p>Mike Thomas</p>
+                        <li>
+                            <p class="channelsharp">#</p>
+                            <p class="channelname">채널1</p>
+                        </li>
+                        <li>
+                            <p class="channelsharp">#</p>
+                            <p class="channelname">채널2</p>
+                        </li>
+                        <li>
+                            <p class="channelsharp">#</p>
+                            <p class="channelname">채널3</p>
                         </li>
                     </ul>
+                    <button class="createchannelbtn" onclick="">채널생성</button>
+                </article>
+                <!-- /채널 리스트 끝 -->
+
+                <!-- 멤버리스트 시작 -->
+                <article class="memberlist">
+                    <ul class="memberbox">
+                        <li class="memberlisttogglebox">
+                            <p class="membertoggle">▼</p>
+                            <p class="memberclick">멤버목록</p>
+                        </li>
+                        <li class="userbox">
+                            <div class="memberimg" style="font-size: 12px;">
+                                img
+                            </div>
+                            <p class="username">
+                                유저명
+                            </p>
+                            <p class="usernamedescription">
+                                (본인)
+                            </p>
+                        </li>
+                        <li>
+                            <div class="memberimg" style="font-size: 12px;">
+                                img
+                            </div>
+                            <p class="username">
+                                유저명2
+                            </p>
+                        </li>
+                        <li>
+                            <div class="memberimg" style="font-size: 12px;">
+                                img
+                            </div>
+                            <p class="username">
+                                유저명3
+                            </p>
+                        </li>
+                    </ul>
+                </article>
+                <!-- /멤버리스트 끝 -->
+                <!-- 이름 클릭시 나오는 메뉴 시작-->
+                <div class="personalmenu-chioce">
+                    <my-component>
+                        <p>슬롯('slot')내용</p>
+                        <button>슬롯지우면이것들없어짐</button>
+                    </my-component>                    
                 </div>
-            </article>
-        </section>
-        <!-- 회원&메뉴 선택 섹션 끝 -->
+                <style>
+                    .personalmenu-chioce {
+                        width: 100%;
+                        height: 300px;
+                        background-color: #ddd;
+                        position: absolute;
+                        z-index: 100;
+                    }
+                </style>
+                <!-- /이름 클릭시 나오는 메뉴 끝-->
+    
+            </section>
 
-        <div class="space"></div>
 
-        <!-- 채널 섹션 시작 -->
-        <section id="section-two-channellist">
-            <article class="channelbox">
-                <div class="">
-                    asdfsadfsadf
-                </div>
-            </article>
-        </section>
-        <!-- 채널 섹션 끝 -->
+             <!-- /멤버&채널 섹션 끝 -->
 
-        <div class="space"></div>
+            <!-- 채팅방섹션 시작 -->
+            <section id="section-three-chatroom">
+                <!-- 현재 보고잇는 채널명 -->
+                <article class="currentchannel">
+                    <p>#</p>
+                    <p class="currentchannelname">채널명</p>
+                </article>
+                <!-- /현재 보고잇는 채널명 -->
 
-        <!-- 채팅방섹션 시작 -->
-        <section id="section-three-chatroom">
-            <!-- 채팅내역 시작-->
-            <article class="chatlist">
+                <!-- 채팅내역 시작 -->
+                <article class="chathistory cf">
+                    <div>
+                        니 채팅내역
+                    </div>
+                    <div>
+                        내 채팅내역
+                    </div>
+                </article>
+                <!-- /채팅내역 끝 -->
+                
+                <!-- 채팅입력/보내기 시작 -->
+                <article>
+                    <div>
+                        고민중
+                        <button click="버튼" onclick="">보내기버튼</button>
+                    </div>
+                </article>
+                <!-- /채팅입력/보내기 끝 -->
+            </section>
+            <!-- 채팅방섹션 끝 -->
+        </main>
 
-            </article>
-            <!-- 채팅내역 끝-->
-
-            
-            <!-- 채팅 쓰기 시작-->
-            <article class="chatsend cf">
-                <div class="messagewriter">
-                    <input type="text" id="message"></input>
-                    <button id="sendmessagebtn" onclick="createComment()">Send</button>
-                </div>
-            </article>
-            <!-- 채팅 쓰기 끝 -->
-
-        </section>
-        <!-- 채팅방섹션 끝 -->
 
     </div>
-    
 </body>
 </html>
+
+                        <!-- /로그인 회원 표시 -->
+                <!-- <div class="menubtn cf">
+                        <button onclick="">회원정보조회</button>
+                        <button onclick="deleteMember()">회원탈퇴</button>
+                        <button onclick="location.href='updatemember.html'">회원정보수정</button>
+                        <button onclick="createChannel(name)">채널생성</button>
+                        <button onclick="">채널초대</button>
+                        <button onclick="">ㅇㅇㅇㅇ</button>
+                    </div> -->
+        <!-- /멤버&채널 섹션 끝 -->
+
+<script src="./js/jquery-3.3.1.min.js"></script>
+<script src="./js/user.js"></script>
+<script src="./js/channel.js"></script>
+<script src="./js/chat.js"></script>
+<script src="./js/component.js"></script>

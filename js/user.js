@@ -44,22 +44,21 @@ function signIn() {
     });
 }
 
-// 회원정보조회 //o
+// 회원정보조회
 function getUserMe(){
 	var settings = {
 		"url": "http://localhost:8080/api/user/mypage",
 		"method": "GET",
 		"timeout": 0,
 		"headers": {
-      "Content-Type":"application/json",
-		  "Authorization": localStorage.getItem('accessToken')
+      "Authorization": localStorage.getItem('accessToken')
 		},
 	  };
 	  $.ajax(settings).done(function (response) {
 		console.log(response);	
     console.log(response.email);	
-    $('#welcome').empty();
-		$('#welcome').append(response.email+'님 반갑습니다.');
+    // $('#welcome').empty();
+		// $('#welcome').append(response.email+'님 반갑습니다.');
   });
 }
 

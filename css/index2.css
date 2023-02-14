@@ -1,210 +1,202 @@
-@import url(https://fonts.googleapis.com/css?family=Lato:400,700);
-*, *:before, *:after {
-  box-sizing: border-box;
+@charset "utf-8";
+
+.cf:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+.space {
+    width: 4px;
+    background-color: #41434b;
+    border-radius: 12px;
+    margin-left: 13.5px;
+    margin-right: 13.5px;
+    box-shadow: 2px 2px 4px #2c2e33;
 }
 
 body {
-  background: #0d1117;
-  font: 14px/20px "Lato", Arial, sans-serif;
-  padding: 40px 0;
-  color: white;
+    width: 100%;
+    height: 100%;
+    min-width: 1200px;
+    background: #0d1117;
+    font: 14px/20px "Lato", Arial, sans-serif;
+    margin: 0 auto;
+    padding: 35px;
+    color: white;
 }
 
-.container {
-  margin: 0 auto;
-  width: 100%;
-  height: 20%;
-  background: #444753;
-  border-radius: 5px;
-  border: 1px solid red;
+#container {
+    margin: 0 auto;
+    width: 100%;
+    height: 850px;
+    background: #444753;
+    border-radius: 5px;
+    padding: 25px;
+    display: flex;
+    border:none;
 }
 
-.people-list {
-  width: 260px;
-  float: left;
+
+#container .menu {
+    width: 180px;
+    height: 25%;
+    margin: 0;
+    padding: 0;
 }
-.people-list .search {
-  padding: 20px;
-}
-.people-list input {
-  border-radius: 3px;
-  border: none;
-  padding: 14px;
-  color: white;
-  background: #6A6C75;
-  width: 90%;
-  font-size: 14px;
-}
-.people-list .fa-search {
-  position: relative;
-  left: -25px;
-}
-.people-list ul {
-  padding: 20px;
-  height: 770px;
-}
-.people-list ul li {
-  padding-bottom: 20px;
-}
-.people-list img {
-  float: left;
-}
-.people-list .about {
-  float: left;
-  margin-top: 8px;
-}
-.people-list .about {
-  padding-left: 8px;
-}
-.people-list .status {
-  color: #92959E;
+/* ------------------------------------- */
+#section-one-menumember {
+    max-width: 180px;
 }
 
-.chat {
-  width: 490px;
-  float: left;
-  background: #F2F5F8;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  color: #434651;
+
+/* 검색 */
+#container .menu .search {
+    position: relative;
+    font-size: 20px;
+    border-radius: 3px;
+    border: none;
+    color: white;
+    background: #6A6C75;
+    width: 180px;
+    font-size: 20px;
+    padding: 4px;
+    margin-bottom: 8%;
+    
+}
+#container .menu .search:focus {
+    color: white;
+    padding-left: 8px;
+}
+#container .menu .search::placeholder {
+    color: #8a8c96;
+}
+#container .menu .search:focus::placeholder{
+    color: white;
+}
+/* 검색끝 */
+
+
+/* 회원메뉴 */
+#container .menu .menubtn {
+    width:100%;
+    margin-bottom: 12px;
 
 }
-.chat .chat-header {
-  padding: 20px;
-  border-bottom: 2px solid white;
-}
-.chat .chat-header img {
-  float: left;
-}
-.chat .chat-header .chat-about {
-  float: left;
-  padding-left: 10px;
-  margin-top: 6px;
-}
-.chat .chat-header .chat-with {
-  font-weight: bold;
-  font-size: 16px;
-}
-.chat .chat-header .chat-num-messages {
-  color: #92959E;
-}
-.chat .chat-header .fa-star {
-  float: right;
-  color: #D8DADF;
-  font-size: 20px;
-  margin-top: 12px;
-}
-.chat .chat-history {
-  padding: 30px 30px 20px;
-  border-bottom: 2px solid white;
-  overflow-y: scroll;
-  height: 575px;
-}
-.chat .chat-history .message-data {
-  margin-bottom: 15px;
-}
-.chat .chat-history .message-data-time {
-  color: #a8aab1;
-  padding-left: 6px;
-}
-.chat .chat-history .message {
-  color: white;
-  padding: 18px 20px;
-  line-height: 26px;
-  font-size: 16px;
-  border-radius: 7px;
-  margin-bottom: 30px;
-  width: 90%;
-  position: relative;
-}
-.chat .chat-history .message:after {
-  bottom: 100%;
-  left: 7%;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none;
-  border-bottom-color: #86BB71;
-  border-width: 10px;
-  margin-left: -10px;
-}
-.chat .chat-history .my-message {
-  background: #86BB71;
-}
-.chat .chat-history .other-message {
-  background: #94C2ED;
-}
-.chat .chat-history .other-message:after {
-  border-bottom-color: #94C2ED;
-  left: 93%;
-}
-.chat .chat-message {
-  padding: 30px;
-}
-.chat .chat-message textarea {
-  width: 100%;
-  border: none;
-  padding: 10px 20px;
-  font: 14px/22px "Lato", Arial, sans-serif;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  resize: none;
-}
-.chat .chat-message .fa-file-o, .chat .chat-message .fa-file-image-o {
-  font-size: 16px;
-  color: gray;
-  cursor: pointer;
-}
-.chat .chat-message button {
-  float: right;
-  color: #94C2ED;
-  font-size: 16px;
-  text-transform: uppercase;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  background: #F2F5F8;
-}
-.chat .chat-message button:hover {
-  color: #75b1e8;
+#container .menu .menubtn button{
+    width: 85px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #8a8c96;
+    padding: 5px;
+    margin: 2.5px;
+    border: none;
+    float: left;
+    border-radius: 3px
+    
 }
 
-.online, .offline, .me {
-  margin-right: 3px;
-  font-size: 10px;
+/* 회원메뉴끝 */
+
+/* 유저리스트 시작 */
+#container .member {
+    width: 180px;
+    height: 75%;
+    max-height: 75%;
+    /* border: 1px solid red; */
 }
 
-.online {
-  color: #86BB71;
+#container .member .list {
+    
+    border-radius: 4px;
+
+}
+#container .member .list ul {
+    
+    margin-bottom: 4px;
+    background-color: #555763;
+    border-radius: 4px;
 }
 
-.offline {
-  color: #E38968;
+#container .member .list .userimage {
+    padding-left: 10px;
+    width: 45px;
+    height: 45px;
+    border-radius: 32px;
+    float: left;
+    overflow: hidden;
+    border: 3px solid rgba(59, 133, 122, 0.849);
 }
+#container .member .list .username {
+    font-size: 18px;
+    float: left;
+    margin-top: 12px;
+    margin-left: 12px;
+}
+/* 유저리스트목록 끝 */
 
-.me {
-  color: #94C2ED;
-}
 
-.align-left {
-  text-align: left;
-}
 
-.align-right {
-  text-align: right;
+/* ------------------------------------- */
+#section-two-channellist {
+    width: 180px;
 }
+/* 채널리스트 시작*/
+.channelbox {
+    /* width: 185px; */
+    height: 100%;
+    color: white;
+    /* border: 1px solid #000; */
+}
+/* 채널리스트 끝*/
 
-.float-right {
-  float: right;
-}
 
-.clearfix:after {
-  visibility: hidden;
-  display: block;
-  font-size: 0;
-  content: " ";
-  clear: both;
-  height: 0;
+
+
+
+/* ------------------------------------- */
+#section-three-chatroom{
+    width: 76%;
+    border-radius: 8px;
+    background-color: white;
+    color: red;
+    
 }
+/* 채팅방 시작 */
+
+
+/* 채팅내역 */
+.chatlist {
+    height: 90%;
+    border: 2px solid red;
+    margin-bottom: 4%;
+    padding: 10px;
+}
+/* 채팅내역 끝 */
+
+/* 채팅보내기 */
+.chatsend {
+    height: 5%;
+    /* background-color: red; */
+    border: 2px solid purple;
+}
+.chatsend .messagewriter {
+    width: 100%;
+    height: 100%;
+}
+.chatsend #message {
+    float:left;
+    width: 90%;
+    height: 100%;
+}
+.chatsend #sendmessagebtn {
+    float:right;
+    width: 10%;
+    height: 100%;
+}
+/* 채팅보내기 끝 */
+
+
+/* 채팅방 끝 */
