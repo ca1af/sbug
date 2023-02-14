@@ -2,21 +2,13 @@ class MyComponent extends HTMLElement {
   connectedCallback() {
     const template = document.createElement('template');
     template.innerHTML = `
-      <style>
-        .wrapper {
-          background-color: #f9f9f9;
-          padding: 10px;
-        }
 
-        .title {
-          font-weight: bold;
-        }
-      </style>
-
-      <div class="wrapper">
-        <h2 class="title">My Component</h2>
+        <h2 class="title">팝업 컴포넌트 테스트중</h2>
+        <button onclick="">회원정보조회</button>
+        <button onclick="location.href='updatemember.html'">회원정보수정</button>
+        <button onclick="deleteMember()">회원탈퇴</button>
         <slot></slot>
-      </div>
+      
     `;
 
     this.attachShadow({ mode: 'open' });
