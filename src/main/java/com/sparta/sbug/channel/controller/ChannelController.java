@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@CrossOrigin
 public class ChannelController {
     private final ChannelServiceImpl channelService;
     private final UserChannelUpperLayerService userChannelUpperLayerService;
