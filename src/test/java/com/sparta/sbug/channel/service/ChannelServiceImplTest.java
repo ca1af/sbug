@@ -19,7 +19,6 @@ class ChannelServiceImplTest {
     UserRepository userRepository;
     @Autowired
     ChannelRepository channelRepository;
-
     // Service
     @Autowired
     ChannelService channelService;

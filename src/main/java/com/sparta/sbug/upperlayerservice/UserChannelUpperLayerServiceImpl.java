@@ -1,8 +1,13 @@
 package com.sparta.sbug.upperlayerservice;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.service.ChannelServiceImpl;
+import com.sparta.sbug.comment.entity.QComment;
+import com.sparta.sbug.emoji.entity.QCommentEmoji;
+import com.sparta.sbug.emoji.entity.QThreadEmoji;
+import com.sparta.sbug.thread.entity.QThread;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserService;
 import com.sparta.sbug.userchannel.enttiy.UserChannel;
@@ -24,6 +29,7 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
     private final ChannelServiceImpl channelService;
     private final UserChannelService userChannelService;
     private final UserService userService;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     @Transactional(readOnly = true)
@@ -46,8 +52,8 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
     @Override
     @Transactional
     public void deleteChannelAndDependentUserChannel(User user, Long channelId) {
-        channelService.deleteChannel(channelId, user);
         userChannelService.deleteUserChannelsAboutChannel(channelId);
+        channelService.deleteChannel(channelId, user);
     }
 
     @Override

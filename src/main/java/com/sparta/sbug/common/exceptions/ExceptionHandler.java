@@ -1,6 +1,7 @@
 package com.sparta.sbug.common.exceptions;
 
 import com.sparta.sbug.common.exceptions.dto.ExceptionDto;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -29,6 +30,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     public ExceptionDto illegalHandler(IllegalArgumentException e) {
         return new ExceptionDto(e.getMessage(), 400);
     }
+
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @org.springframework.web.bind.annotation.ExceptionHandler(NoSuchElementException.class)

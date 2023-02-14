@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Data
 public class UserUpdateDto {
-    @NotNull
+    @Pattern(regexp = "^[a-zA-Z0-9]{4,10}$", message = "닉네임은 영문이나 숫자로 이루어져야 하고, 4~10글자여야 합니다.")
     private String nickname;
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$",
             message = "비밀번호는 8자 이상 20자 이하, 영문자, 숫자, 특수문자의 혼합으로 이루어져야 합니다.")
