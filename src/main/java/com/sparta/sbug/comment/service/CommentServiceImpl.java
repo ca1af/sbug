@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,26 +46,24 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public String updateComment(Long commentId, String content, Long userId) {
-        Comment comment = getComment(commentId);
+    public String updateComment(Comment comment, String content) {
         comment.updateContent(content);
         return "Success";
     }
 
     @Override
     @Transactional
-    public String deleteComment(Long commentId, Long userId) {
-        Comment comment = getComment(commentId);
+    public String deleteComment(Comment comment) {
         commentRepository.delete(comment);
         return "Success";
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Comment getComment(Long commentId) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
         if (optionalComment.isEmpty()) {
-            // 수정 예정, 엔터티 찾을 수 없음
-            throw new IllegalArgumentException();
+            throw new NoSuchElementException("댓글을 찾을 수 없었습니다.");
         }
         return optionalComment.get();
     }
