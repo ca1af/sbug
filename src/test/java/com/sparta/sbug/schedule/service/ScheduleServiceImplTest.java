@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import static org.mockito.BDDMockito.given;
 import org.mockito.BDDMockito.Then;
@@ -89,6 +91,7 @@ public class ScheduleServiceImplTest {
     @DisplayName("ServiceImpl.updateSchedule Test")
     public void updateSchedule() {
         //given
+
         updatedSchedule = schedule;
         updatedSchedule.updateSchedule(
             request.getContent(),
@@ -139,10 +142,40 @@ public class ScheduleServiceImplTest {
     @DisplayName("serviceImpl.getMySchedules Test")
     public void getMySchedules() {
         //given
+        Schedule schedule1 = Schedule.builder()
+            .user(user)
+            .content("My First schedule")
+            .date(LocalDateTime.of(2023, 5, 6, 14, 40))
+            .build();
+        ReflectionTestUtils.setField(schedule1, "id", 1111L);
+
+        Schedule schedule2 = Schedule.builder()
+            .user(user)
+            .content("My Second schedule")
+            .date(LocalDateTime.of(2023, 5, 7, 14, 40))
+            .build();
+        ReflectionTestUtils.setField(schedule1, "id", 2222L);
+
+        Schedule schedule3 = Schedule.builder()
+            .user(user)
+            .content("My Third schedule")
+            .date(LocalDateTime.of(2023, 5, 8, 14, 40))
+            .build();
+        ReflectionTestUtils.setField(schedule1, "id", 3333L);
+
+        given(scheduleRepository.findAllByUserId(userId, pageable))
+            .willReturn();
 
         //when
+        Page<ScheduleResponseDto> response =
+            scheduleServiceImpl.getMySchedules(pageable, user);
 
         //then
+        then(scheduleRepository).should(times(1))
+            .findAllById();
+        then(scheduleRepository).should(times(1))
+            .toDto
+
 
     }
 
