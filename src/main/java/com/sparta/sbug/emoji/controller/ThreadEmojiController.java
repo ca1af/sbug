@@ -17,7 +17,7 @@ public class ThreadEmojiController {
 ///api/channels/threads/emojis/{id}
 
     // ThreadEmoji 생성
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/emojis")
     public String threadEmoji(
             @PathVariable Long id,
             @RequestBody String emojiType,
@@ -28,7 +28,7 @@ public class ThreadEmojiController {
 
 
     // ThreadEmoji 삭제
-    @DeleteMapping("/emojis/{id}")
+    @DeleteMapping("/{id}/emojis")
     public String threadEmoji(
         @PathVariable Long id,
         @AuthenticationPrincipal UserDetailsImpl userDetails
