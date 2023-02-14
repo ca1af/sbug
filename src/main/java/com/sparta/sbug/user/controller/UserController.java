@@ -10,11 +10,17 @@ import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.service.UserServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.web.servlet.function.ServerResponse.ok;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,9 +29,10 @@ public class UserController {
     private final JwtProvider jwtProvider;
 
     @PostMapping("/api/users/sign-up")
-    public String signup(@RequestBody SignUpRequestDto requestDto) {
+    public String signup(@RequestBody @Valid SignUpRequestDto requestDto) {
         return userService.signup(requestDto);
     }
+
 
     @PostMapping("/api/users/login")
     public TokenResponse login(@RequestBody LoginRequestDto requestDto) throws JsonProcessingException {

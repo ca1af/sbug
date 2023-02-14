@@ -2,10 +2,8 @@ package com.sparta.sbug.user.entity;
 
 import com.sparta.sbug.common.entity.Timestamp;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 @Entity
 @Getter
@@ -18,11 +16,12 @@ public class User extends Timestamp {
 
     @Column(nullable = false, unique = true)
     private String email;
-
+    @Setter
     @Column(nullable = false)
     private String password;
-
+    @Setter
     @Column(nullable = false)
+    @Size(min = 2, max = 10 , message = "닉네임의 길이는 2~10 글자 사이입니다.")
     private String nickname;
 
     @Column(nullable = false)

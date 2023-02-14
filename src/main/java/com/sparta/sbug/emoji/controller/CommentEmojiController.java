@@ -20,7 +20,7 @@ public class CommentEmojiController {
     @PostMapping("/{id}/emojis")
     public String commentEmoji(
             @PathVariable Long id,
-            @RequestParam(name = "emoji-type") String emojiType,
+            @RequestBody String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return commentEmojiService.createCommentEmoji(id, emojiType,userDetails.getUser());
@@ -28,7 +28,7 @@ public class CommentEmojiController {
 
 
     // CommentEmoji 삭제
-    @DeleteMapping("/emojis/{id}")
+    @DeleteMapping("/{id}/emojis")
     public String commentEmoji(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails
