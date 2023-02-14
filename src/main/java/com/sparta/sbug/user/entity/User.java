@@ -2,6 +2,7 @@ package com.sparta.sbug.user.entity;
 
 import com.sparta.sbug.common.entity.Timestamp;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -21,7 +22,6 @@ public class User extends Timestamp {
     private String password;
     @Setter
     @Column(nullable = false)
-    @Size(min = 2, max = 10 , message = "닉네임의 길이는 2~10 글자 사이입니다.")
     private String nickname;
 
     @Column(nullable = false)

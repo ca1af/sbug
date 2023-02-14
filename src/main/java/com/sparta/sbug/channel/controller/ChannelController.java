@@ -46,9 +46,9 @@ public class ChannelController {
     // 채널에 유저 초대하기
     @PostMapping("/channels/{channelId}/users")
     public String inviteUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                             @RequestParam("email") String email,
+                             @RequestBody ChannelDto.InvitationRequest dto,
                              @PathVariable Long channelId) {
-        userChannelUpperLayerService.inviteUser(userDetails.getUser(), channelId, email);
+        userChannelUpperLayerService.inviteUser(userDetails.getUser(), channelId, dto.getEmail());
         return "Success";
     }
 

@@ -1,6 +1,7 @@
 package com.sparta.sbug.common.exceptions;
 
 import com.sparta.sbug.common.exceptions.dto.ExceptionDto;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -26,5 +27,12 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(IllegalArgumentException.class)
     public ExceptionDto illegalHandler(IllegalArgumentException e){
         return new ExceptionDto(e.getMessage(), 400);
+    }
+
+    //ConstraintViolationException
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @org.springframework.web.bind.annotation.ExceptionHandler(ConstraintViolationException.class)
+    public ExceptionDto sizeHandler(ConstraintViolationException e){
+        return new ExceptionDto(e.getLocalizedMessage(), 400);
     }
 }
