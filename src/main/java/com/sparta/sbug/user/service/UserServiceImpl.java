@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService {
         return UserResponseDto.of(user);
     }
 
+
     @Override
     public String unregister(User user) {
         userRepository.deleteByEmail(user.getEmail());

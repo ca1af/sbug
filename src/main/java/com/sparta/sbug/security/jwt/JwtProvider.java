@@ -80,4 +80,8 @@ public class JwtProvider {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
+
+    public void deleteRtk(String key){
+        redisDao.deleteValues(key);
+    }
 }
