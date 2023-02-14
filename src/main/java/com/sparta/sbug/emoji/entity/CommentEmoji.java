@@ -18,7 +18,6 @@ public class CommentEmoji extends Emoji{
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
-
     public CommentEmoji(String emojiType, User user, Comment comment){
         super(emojiType, user);
         this.comment = comment;

@@ -2,15 +2,16 @@ package com.sparta.sbug.emoji.service;
 
 import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.service.CommentServiceImpl;
-import com.sparta.sbug.emoji.dto.EmojiRequestDto;
 import com.sparta.sbug.emoji.entity.CommentEmoji;
-import com.sparta.sbug.emoji.entity.ThreadEmoji;
+import com.sparta.sbug.emoji.entity.EmojiType;
 import com.sparta.sbug.emoji.repository.CommentEmojiRepository;
-import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +24,12 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
 
     // CommentEmoji 생성
     @Override
-    public String createCommentEmoji(Long commentId, String emojiType, User user){
+    public String createCommentEmoji(String emojiType, User user, Long commentId){
         Comment comment = commentService.getComment(commentId);
+        Optional<CommentEmoji> optionalEmoji = commentEmojiRepository.findByEmojiTypeAndCommentAndUser(EmojiType.valueOf(emojiType), comment, user);
+        if (optionalEmoji.isPresent()) {
+            throw new IllegalArgumentException("이미 동일한 이모지 반응이 존재합니다.");
+        }
         CommentEmoji commentEmoji = new CommentEmoji(emojiType, user, comment);
         commentEmojiRepository.save(commentEmoji);
         return "Success";
@@ -32,10 +37,13 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
 
     // CommentEmoji 삭제
     @Override
-    public String deleteCommentEmoji(Long emojiId, User user) {
-        CommentEmoji commentEmoji = commentEmojiRepository.findByIdAndUser(emojiId, user).orElseThrow();
-        commentEmojiRepository.delete(commentEmoji);
+    public String deleteCommentEmoji(String emojiType, User user, Long commentId) {
+        Comment comment = commentService.getComment(commentId);
+        Optional<CommentEmoji> optionalEmoji = commentEmojiRepository.findByEmojiTypeAndCommentAndUser(EmojiType.valueOf(emojiType), comment, user);
+        if (optionalEmoji.isEmpty()) {
+            throw new NoSuchElementException("해당 이모지 반응을 찾을 수 없습니다.");
+        }
+        commentEmojiRepository.delete(optionalEmoji.get());
         return "Success";
     }
-
 }

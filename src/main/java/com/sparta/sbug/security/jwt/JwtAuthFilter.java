@@ -77,7 +77,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         } catch (ExpiredJwtException e) {// JWT만료
             log.info("Expired JWT token, 만료된 JWT token 입니다.");
-
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
 

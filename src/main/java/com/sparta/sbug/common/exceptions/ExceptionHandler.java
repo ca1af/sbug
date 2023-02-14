@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @RestControllerAdvice
@@ -23,16 +24,17 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionDto exceptionDto = new ExceptionDto(Objects.requireNonNull(ex.getFieldError()).getDefaultMessage(), 400);
         return new ResponseEntity<>(exceptionDto, HttpStatus.BAD_REQUEST);
     }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @org.springframework.web.bind.annotation.ExceptionHandler(IllegalArgumentException.class)
-    public ExceptionDto illegalHandler(IllegalArgumentException e){
+    public ExceptionDto illegalHandler(IllegalArgumentException e) {
         return new ExceptionDto(e.getMessage(), 400);
     }
 
-    //ConstraintViolationException
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @org.springframework.web.bind.annotation.ExceptionHandler(ConstraintViolationException.class)
-    public ExceptionDto sizeHandler(ConstraintViolationException e){
-        return new ExceptionDto(e.getLocalizedMessage(), 400);
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @org.springframework.web.bind.annotation.ExceptionHandler(NoSuchElementException.class)
+    public ExceptionDto noSuchElementException(NoSuchElementException e) {
+        return new ExceptionDto(e.getMessage(), 404);
     }
 }

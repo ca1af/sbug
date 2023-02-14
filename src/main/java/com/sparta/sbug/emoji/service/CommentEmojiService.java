@@ -3,6 +3,9 @@ package com.sparta.sbug.emoji.service;
 import com.sparta.sbug.user.entity.User;
 
 public interface CommentEmojiService {
-    String createCommentEmoji(Long commentId, String emojiType, User user);
-    String deleteCommentEmoji(Long emojiId, User user);
+
+    // CommentEmoji 생성
+    String createCommentEmoji(String emojiType, User user, Long commentId);
+
+    String deleteCommentEmoji(String emojiType, User user, Long emojiId);
 }

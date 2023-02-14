@@ -43,14 +43,14 @@ public class Comment extends Timestamp {
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
-    @OneToMany(mappedBy = "comment", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
     private Set<CommentEmoji> emojis = new LinkedHashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread_id")
     private Thread thread;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
