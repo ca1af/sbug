@@ -9,9 +9,7 @@ import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.user.entity.UserRole;
 import com.sparta.sbug.user.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +55,6 @@ class CommentServiceImplTest {
                 .user(user1).thread(thread).content("comment1").build();
         Comment comment2 = Comment.builder()
                 .user(user2).thread(thread).content("comment2").build();
-        Comment savedComment1 = commentRepository.save(comment1);
-        Comment savedComment2 = commentRepository.save(comment2);
 
         // when
         List<CommentResponseDto> responseDtoList = commentService.getAllCommentsInThread(this.thread.getId(), pageDto);
