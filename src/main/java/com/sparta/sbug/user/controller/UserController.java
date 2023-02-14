@@ -24,6 +24,7 @@ import static org.springframework.web.servlet.function.ServerResponse.ok;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 public class UserController {
     private final UserServiceImpl userService;
     private final JwtProvider jwtProvider;

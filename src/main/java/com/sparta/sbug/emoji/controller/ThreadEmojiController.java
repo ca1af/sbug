@@ -28,7 +28,7 @@ public class ThreadEmojiController {
 
 
     // ThreadEmoji 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/emojis/{id}")
     public String threadEmoji(
         @PathVariable Long id,
         @AuthenticationPrincipal UserDetailsImpl userDetails
