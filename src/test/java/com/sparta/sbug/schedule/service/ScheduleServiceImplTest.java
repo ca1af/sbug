@@ -3,6 +3,7 @@ package com.sparta.sbug.schedule.service;
 import com.sparta.sbug.schedule.repository.ScheduleRepository;
 import com.sparta.sbug.schedule.dto.ScheduleRequestDto;
 import com.sparta.sbug.schedule.dto.ScheduleResponseDto;
+import com.sparta.sbug.schedule.dto.PeriodRequestDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.schedule.entity.Schedule;
 
@@ -42,12 +43,27 @@ public class ScheduleServiceImplTest {
     @InjectMocks
     private ScheduleServiceImpl scheduleServiceImpl;
 
+    //Variables for methods which returns single schedule
     private ScheduleRequestDto request;
     private User user;
     private long userId;
     private Schedule schedule;
     private long scheduleId;
     private Schedule updatedSchedule;
+
+    //Variables for paging methods
+    private PageRequest pageable;
+
+    //Variables for methods which returns multiple schedules
+    private Schedule schedule1;
+    private Schedule schedule2;
+    private Schedule schedule3;
+    private ArrayList scheduleList;
+
+    //for getPeriodSchedules()
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private PeriodRequestDto periodDto;
 
     @BeforeEach
     public void init() {
@@ -74,6 +90,38 @@ public class ScheduleServiceImplTest {
         ReflectionTestUtils.setField(schedule, "id", 4545L);
 
         scheduleId = schedule.getId();
+
+        pageable = PageRequest.of(0, 5);
+
+        schedule1 = Schedule.builder()
+            .user(user)
+            .content("My First schedule")
+            .date(LocalDateTime.of(2023, 5, 6, 14, 40))
+            .build();
+        ReflectionTestUtils.setField(schedule1, "id", 1111L);
+
+        schedule2 = Schedule.builder()
+            .user(user)
+            .content("My Second schedule")
+            .date(LocalDateTime.of(2023, 5, 7, 14, 40))
+            .build();
+        ReflectionTestUtils.setField(schedule2, "id", 2222L);
+
+        schedule3 = Schedule.builder()
+            .user(user)
+            .content("My Third schedule")
+            .date(LocalDateTime.of(2023, 5, 8, 14, 40))
+            .build();
+        ReflectionTestUtils.setField(schedule3, "id", 3333L);
+
+        scheduleList = new ArrayList();
+        scheduleList.add(schedule1);
+        scheduleList.add(schedule2);
+        scheduleList.add(schedule3);
+
+        startDate = LocalDateTime.of(2023, 5, 1, 00, 00);
+        endDate = LocalDateTime.of(2023, 6, 1, 00, 00);
+        periodDto = new PeriodRequestDto(startDate, endDate);
 
     }
 
@@ -146,38 +194,9 @@ public class ScheduleServiceImplTest {
     @DisplayName("serviceImpl.getMySchedules Test")
     public void getMySchedules() {
         //given
-        PageRequest pageable = PageRequest.of(0, 5);
-
-        Schedule schedule1 = Schedule.builder()
-            .user(user)
-            .content("My First schedule")
-            .date(LocalDateTime.of(2023, 5, 6, 14, 40))
-            .build();
-        ReflectionTestUtils.setField(schedule1, "id", 1111L);
-
-        Schedule schedule2 = Schedule.builder()
-            .user(user)
-            .content("My Second schedule")
-            .date(LocalDateTime.of(2023, 5, 7, 14, 40))
-            .build();
-        ReflectionTestUtils.setField(schedule2, "id", 2222L);
-
-        Schedule schedule3 = Schedule.builder()
-            .user(user)
-            .content("My Third schedule")
-            .date(LocalDateTime.of(2023, 5, 8, 14, 40))
-            .build();
-        ReflectionTestUtils.setField(schedule3, "id", 3333L);
-
-        ArrayList scheduleList = new ArrayList();
-        scheduleList.add(schedule1);
-        scheduleList.add(schedule2);
-        scheduleList.add(schedule3);
 
         Page<Schedule> expectedSchedules = new PageImpl(scheduleList);
 
-        Page<ScheduleResponseDto> expectedDtoList =
-            ScheduleResponseDto.toDtoList(expectedSchedules);
 
         given(scheduleRepository.findAllByUserId(userId, pageable))
             .willReturn(expectedSchedules);
@@ -201,19 +220,26 @@ public class ScheduleServiceImplTest {
         assertThat(responseDto3.getScheduleId())
             .isEqualTo(schedule3.getId());
 
-
-
-
     }
 
     @Test
     @DisplayName("serviceImpl.getSchedule Test")
     public void getSchedule() {
         //given
+        given(scheduleRepository.findById(scheduleId))
+            .willReturn(Optional.of(schedule));
 
         //when
+        ScheduleResponseDto response = 
+            scheduleServiceImpl.getSchedule(scheduleId);
 
         //then
+        assertThat(response.getScheduleId())
+            .isEqualTo(scheduleId);
+        assertThat(response.getContent())
+            .isEqualTo(schedule.getContent());
+        assertThat(response.getDate())
+            .isEqualTo(schedule.getDate());
 
     }
 
@@ -221,10 +247,33 @@ public class ScheduleServiceImplTest {
     @DisplayName("serviceImpl.getPeriodSchedules Test")
     public void getPeriodSchedules() {
         //given
+        Page<Schedule> expectedSchedules = new PageImpl(scheduleList);
+
+        given(scheduleRepository.findAllByUserIdAndDateBetween(
+                userId, startDate, endDate, pageable
+            )
+        )
+            .willReturn(expectedSchedules);
 
         //when
+        Page<ScheduleResponseDto> response =
+            scheduleServiceImpl.getPeriodSchedules(pageable, user, periodDto);
+        ScheduleResponseDto responseDto1 = response.getContent().get(0);
+        ScheduleResponseDto responseDto2 = response.getContent().get(1);
+        ScheduleResponseDto responseDto3 = response.getContent().get(2);
 
         //then
+        then(scheduleRepository).should(times(1))
+            .findAllByUserIdAndDateBetween(
+                userId, startDate, endDate, pageable
+            );
+
+        assertThat(responseDto1.getScheduleId())
+            .isEqualTo(schedule1.getId());
+        assertThat(responseDto2.getScheduleId())
+            .isEqualTo(schedule2.getId());
+        assertThat(responseDto3.getScheduleId())
+            .isEqualTo(schedule3.getId());
 
     }
 

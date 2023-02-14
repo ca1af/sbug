@@ -103,8 +103,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         LocalDateTime startDate = periodDto.getStartDate();
         LocalDateTime endDate = periodDto.getEndDate();
         Page<Schedule> periodSchedules =
-            scheduleRepository.findAllByDateBetween(
-                startDate, endDate, pageable
+            scheduleRepository.findAllByUserIdAndDateBetween(
+                user.getId(), startDate, endDate, pageable
             );
         Page<ScheduleResponseDto> responseDtoList =
             ScheduleResponseDto.toDtoList(periodSchedules);
