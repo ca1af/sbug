@@ -10,6 +10,7 @@ import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.service.UserServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +19,16 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 public class UserController {
     private final UserServiceImpl userService;
     private final JwtProvider jwtProvider;
 
     @PostMapping("/api/users/sign-up")
-    public String signup(@RequestBody SignUpRequestDto requestDto) {
+    public String signup(@RequestBody @Valid SignUpRequestDto requestDto) {
         return userService.signup(requestDto);
     }
+
 
     @PostMapping("/api/users/login")
     public TokenResponse login(@RequestBody LoginRequestDto requestDto) throws JsonProcessingException {
@@ -58,6 +61,13 @@ public class UserController {
 //    public List<ChannelResponseDto> getMyChannels(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 //        return userService.getMyChannels(userDetails.getUser());
 //    }
+    @PostMapping("/api/users/logout")
+    public void logout(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        jwtProvider.deleteRtk(userDetails.getUser().getEmail());
+        // 이 부분은 redis 에 저장되어 있는 리프레쉬 토큰을 삭제합니다.
+        // 프론트에서 로그아웃 API를 받으면 사용자의 헤더에 있는 모든 토큰을 지워야 합니다.
+        // 백엔드에서 처리하려면 요청하는 사용자의 헤더에 있는 값을 set해야 하는데, 자연스럽지 않은 듯 합니다.
+    }
 
     @GetMapping("/account/reissue")
     public TokenResponse reissue(@AuthenticationPrincipal UserDetailsImpl accountDetails, HttpServletResponse response)

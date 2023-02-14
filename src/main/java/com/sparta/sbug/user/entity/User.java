@@ -2,10 +2,9 @@ package com.sparta.sbug.user.entity;
 
 import com.sparta.sbug.common.entity.Timestamp;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 @Entity
 @Getter
@@ -18,10 +17,10 @@ public class User extends Timestamp {
 
     @Column(nullable = false, unique = true)
     private String email;
-
+    @Setter
     @Column(nullable = false)
     private String password;
-
+    @Setter
     @Column(nullable = false)
     private String nickname;
 

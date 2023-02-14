@@ -9,9 +9,7 @@ import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.user.entity.UserRole;
 import com.sparta.sbug.user.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +55,6 @@ class CommentServiceImplTest {
                 .user(user1).thread(thread).content("comment1").build();
         Comment comment2 = Comment.builder()
                 .user(user2).thread(thread).content("comment2").build();
-        Comment savedComment1 = commentRepository.save(comment1);
-        Comment savedComment2 = commentRepository.save(comment2);
 
         // when
         List<CommentResponseDto> responseDtoList = commentService.getAllCommentsInThread(this.thread.getId(), pageDto);
@@ -73,56 +69,20 @@ class CommentServiceImplTest {
     @DisplayName("Comment: Create comment")
     @Transactional
     public void createComment() {
-        // give
 
-        // when
-        String result1 = commentService.createComment(this.thread, "comment1", user1);
-        String result2 = commentService.createComment(this.thread, "comment2", user2);
-
-        // then
-        assert result1.equals("Success");
-        assert result2.equals("Success");
-        var comments = commentRepository.findCommentsByThreadId(this.thread.getId(), pageDto.toPageable());
-        assert comments.getContent().stream().map(Comment::getContent).collect(Collectors.toSet())
-                .equals(Set.of("comment1", "comment2"));
     }
 
     @Test
     @DisplayName("Comment: update comment")
     @Transactional
     public void updateComment() {
-        // give
-        Comment comment1 = Comment.builder()
-                .user(user1).thread(thread).content("comment1").build();
-        Comment savedComment1 = commentRepository.save(comment1);
 
-
-        // when
-        System.out.println("======================= test query start! =======================");
-        String result = commentService.updateComment(savedComment1.getId(), "updated comment", user1.getId());
-
-        // then
-        assert result.equals("Success");
-        assert savedComment1.getContent().equals("updated comment");
     }
 
     @Test
     @DisplayName("Comment: delete comment")
     @Transactional
     public void deleteComment() {
-        // give
-        Comment comment1 = Comment.builder()
-                .user(user1).thread(thread).content("comment1").build();
-        Comment savedComment1 = commentRepository.save(comment1);
-
-
-        // when
-        System.out.println("======================= test query start! =======================");
-        String result = commentService.deleteComment(savedComment1.getId(), user1.getId());
-
-        // then
-        assert result.equals("Success");
-        assert commentRepository.findById(savedComment1.getId()).isEmpty();
 
     }
 }

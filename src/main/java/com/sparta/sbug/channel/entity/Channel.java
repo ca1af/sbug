@@ -2,6 +2,8 @@ package com.sparta.sbug.channel.entity;
 
 import com.sparta.sbug.thread.entity.Thread;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,9 +21,10 @@ public class Channel {
     private Long id;
 
     @Column(nullable = false)
+    @Pattern(regexp = "^[a-zA-Z0-9]{4,10}$", message = "영문이나 숫자로 이루어져야 하고, 4~10글자여야 합니다.")
     private String channelName;
 
-    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Thread> threads = new LinkedHashSet<>();
 
     private String adminEmail;

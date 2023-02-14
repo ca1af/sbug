@@ -6,13 +6,15 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @DiscriminatorValue("THREAD")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ThreadEmoji extends Emoji{
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "thread_id")
     private Thread thread;
 

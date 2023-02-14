@@ -1,6 +1,7 @@
 package com.sparta.sbug.comment.service;
 
 import com.sparta.sbug.comment.dto.CommentResponseDto;
+import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
@@ -13,7 +14,9 @@ public interface CommentService {
 
     String createComment(Thread thread, String content, User user);
 
-    String updateComment(Long commentId, String content, Long userId);
+    String updateComment(Comment comment, String content);
 
-    String deleteComment(Long commentId, Long userId);
+    String deleteComment(Comment comment);
+
+    Comment getComment(Long commentId);
 }

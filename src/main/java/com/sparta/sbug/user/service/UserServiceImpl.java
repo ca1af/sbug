@@ -11,7 +11,6 @@ import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
 import com.sparta.sbug.userchannel.enttiy.QUserChannel;
-import io.jsonwebtoken.security.SecurityException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JPAQueryFactory queryFactory;
+
     @Override
     public String signup(SignUpRequestDto requestDto) {
         String email = requestDto.getEmail();
@@ -55,14 +55,15 @@ public class UserServiceImpl implements UserService {
         String password = requestDto.getPassword();
 
         User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new SecurityException("사용자를 찾을수 없습니다.")
+                () -> new IllegalArgumentException("사용자를 찾을수 없습니다.")
         );
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new SecurityException("사용자를 찾을수 없습니다.");
+            throw new IllegalArgumentException("사용자를 찾을수 없습니다.");
         }
         
         return UserResponseDto.of(user);
     }
+
 
     @Override
     public String unregister(User user) {
@@ -83,7 +84,13 @@ public class UserServiceImpl implements UserService {
         User user1 = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("유저를 찾을 수 없습니다.")
         );
-        user1.updateUser(dto.getNickname(), dto.getPassword());
+
+        if (!dto.getNickname().trim().equals("")){
+            user1.setNickname(dto.getNickname());
+        }
+
+        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+        user1.setPassword(encodedPassword);
     }
 
     @Override

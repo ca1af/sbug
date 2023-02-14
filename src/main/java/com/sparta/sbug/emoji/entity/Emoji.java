@@ -11,12 +11,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public abstract class Emoji {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private EmojiType emojiType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

@@ -18,21 +18,22 @@ public class CommentEmojiController {
 
     // CommentEmoji 생성
     @PostMapping("/{id}/emojis")
-    public String commentEmoji(
+    public String ReactToComment(
             @PathVariable Long id,
-            @RequestParam(name = "emoji-type") String emojiType,
+            @RequestBody String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return commentEmojiService.createCommentEmoji(id, emojiType,userDetails.getUser());
+        return commentEmojiService.createCommentEmoji(emojiType, userDetails.getUser(), id);
     }
 
 
     // CommentEmoji 삭제
-    @DeleteMapping("/emojis/{id}")
-    public String commentEmoji(
+    @DeleteMapping("/{id}/emojis")
+    public String cancelReactToComment(
             @PathVariable Long id,
+            @RequestBody String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return commentEmojiService.deleteCommentEmoji(id, userDetails.getUser());
+        return commentEmojiService.deleteCommentEmoji(emojiType, userDetails.getUser(), id);
     }
 }

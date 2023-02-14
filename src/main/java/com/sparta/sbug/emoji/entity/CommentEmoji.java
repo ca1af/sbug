@@ -6,16 +6,17 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @DiscriminatorValue("COMMENT")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentEmoji extends Emoji{
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "comment_id")
     private Comment comment;
-
 
     public CommentEmoji(String emojiType, User user, Comment comment){
         super(emojiType, user);

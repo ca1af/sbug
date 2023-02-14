@@ -22,7 +22,7 @@ public class ChannelServiceImpl implements ChannelService {
     @Transactional(readOnly = true)
     public Channel getChannelById(Long channelId) {
         return channelRepository.findById(channelId).orElseThrow(
-                () -> new NoSuchElementException("채널이 없습니다")
+                () -> new IllegalArgumentException("채널이 없습니다")
         );
     }
 

@@ -17,10 +17,10 @@ public class ThreadEmojiController {
 ///api/channels/threads/emojis/{id}
 
     // ThreadEmoji 생성
-    @PostMapping("/emojis/{id}")
+    @PostMapping("/{id}/emojis")
     public String threadEmoji(
             @PathVariable Long id,
-            @RequestParam(name = "emoji-type") String emojiType,
+            @RequestBody String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return threadEmojiService.createThreadEmoji(id, emojiType, userDetails.getUser());
@@ -28,7 +28,7 @@ public class ThreadEmojiController {
 
 
     // ThreadEmoji 삭제
-    @DeleteMapping("/emojis/{id}")
+    @DeleteMapping("/{id}/emojis")
     public String threadEmoji(
         @PathVariable Long id,
         @AuthenticationPrincipal UserDetailsImpl userDetails
