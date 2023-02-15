@@ -5,9 +5,7 @@ public enum EmojiType {
 
     private final String emojiType;
 
-    EmojiType(String emojiType) {
-        this.emojiType = emojiType;
-    }
+    EmojiType(String emojiType) {this.emojiType = emojiType;}
 
     public String getEmojiType() {
         return this.emojiType;

@@ -13,26 +13,25 @@ import org.springframework.web.bind.annotation.*;
 public class ThreadEmojiController {
     private final ThreadEmojiServiceImpl threadEmojiService;
 
-///api/channels/threads/{id}/emojis?emoji-type={emojiType}
-///api/channels/threads/emojis/{id}
 
     // ThreadEmoji 생성
     @PostMapping("/{id}/emojis")
-    public String threadEmoji(
+    public String reactToThread(
             @PathVariable Long id,
             @RequestBody String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return threadEmojiService.createThreadEmoji(id, emojiType, userDetails.getUser());
+        return threadEmojiService.createThreadEmoji(emojiType, userDetails.getUser(), id);
     }
 
 
     // ThreadEmoji 삭제
     @DeleteMapping("/{id}/emojis")
-    public String threadEmoji(
+    public String cancelReactToThread(
         @PathVariable Long id,
+        @RequestBody String emojiType,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return threadEmojiService.deleteThreadEmoji(id, userDetails.getUser());
+        return threadEmojiService.deleteThreadEmoji(emojiType, userDetails.getUser(), id);
     }
 }

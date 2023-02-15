@@ -13,9 +13,6 @@ public class CommentEmojiController {
     private final CommentEmojiServiceImpl commentEmojiService;
 
 
-///api/channels/threads/comments/{id}/emojis?emoji-type={emojiType}
-///api/channels/threads/comments/emojis/{id}
-
     // CommentEmoji 생성
     @PostMapping("/{id}/emojis")
     public String ReactToComment(
