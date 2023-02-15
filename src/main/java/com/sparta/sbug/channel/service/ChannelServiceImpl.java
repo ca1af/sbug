@@ -90,29 +90,4 @@ public class ChannelServiceImpl implements ChannelService {
         }
         return threadService.createThread(channel, requestContent, user);
     }
-
-    // Thread 수정
-    @Override
-    @Transactional
-    public String editThread(Long threadId, String requestContent, User user){
-        Thread thread = validateUserAuth(threadId, user);
-        return threadService.editThread(thread, requestContent);
-    }
-
-    // Thread 삭제
-    @Override
-    @Transactional
-    public String deleteThread(Long threadId, User user){
-        Thread thread = validateUserAuth(threadId, user);
-        return threadService.deleteThread(thread);
-    }
-
-    @Transactional
-    public Thread validateUserAuth(Long threadId, User user){
-        Thread thread = threadService.getThread(threadId);
-        if (!thread.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("수정할 수 있는 권한이 없습니다.");
-        }
-        return thread;
-    }
 }

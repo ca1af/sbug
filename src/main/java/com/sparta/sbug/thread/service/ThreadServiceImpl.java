@@ -48,20 +48,49 @@ public class ThreadServiceImpl implements ThreadService {
     }
 
     //Thread 수정
+//    @Override
+//    @Transactional
+//    public String editThread(Thread thread, String requestContent){
+//        thread.updateThread(requestContent);
+//        return "Success";
+//    }
+
+    // Thread 수정
     @Override
     @Transactional
-    public String editThread(Thread thread, String requestContent){
+    public String editThread(Long threadId, String requestContent, User user){
+        Thread thread = validateUserAuth(threadId, user);
         thread.updateThread(requestContent);
+        threadRepository.save(thread);
         return "Success";
     }
 
     //Thread 삭제
+//    @Override
+//    @Transactional
+//    public String deleteThread(Thread thread){
+//        threadRepository.delete(thread);
+//        return "Success";
+//    }
+
+
     @Override
     @Transactional
-    public String deleteThread(Thread thread){
+    public String deleteThread(Long threadId, User user) {
+        Thread thread = validateUserAuth(threadId, user);
         threadRepository.delete(thread);
         return "Success";
     }
+
+    @Transactional
+    public Thread validateUserAuth(Long threadId, User user) {
+        Thread thread = getThread(threadId);
+        if (!thread.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("수정할 수 있는 권한이 없습니다.");
+        }
+        return thread;
+    }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -76,5 +105,4 @@ public class ThreadServiceImpl implements ThreadService {
     public Thread findThreadById(Long id) {
         return threadRepository.findById(id).orElseThrow();
     }
-
 }
