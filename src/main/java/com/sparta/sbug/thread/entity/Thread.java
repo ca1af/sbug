@@ -8,6 +8,7 @@ import com.sparta.sbug.thread.dto.ThreadRequestDto;
 import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -42,12 +43,13 @@ public class Thread extends Timestamp {
     @OneToMany(mappedBy = "thread", orphanRemoval = true)
     private Set<ThreadEmoji> emojis = new LinkedHashSet<>();
 
+    @Builder
     public Thread(Channel channel, User user, String requestContent){
         this.channel = channel;
         this.user = user;
         this.content = requestContent;
     }
 
-    // Thread 수정 메소드
-    public void changeThread(String requestContent){this.content = requestContent;}
+
+    public void updateThread(String requestContent){this.content = requestContent;}
 }
