@@ -30,9 +30,8 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
-    private final static String REST_API_KEY = "36615bca254358f5c0260a0485d71aac";
-    private final static String REDIRECT_URI = "http://localhost:8080/api/user/kakao";
-
+    private final static String REST_API_KEY = "a6be9b62b761e5b5ee34bfa49d268617";
+    private final static String REDIRECT_URI = "http://localhost:8080/api/users/kakao";
     /**
      *
      * 작동 방식은 다음과 같습니다.
