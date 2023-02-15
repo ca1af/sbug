@@ -24,7 +24,7 @@ public class Channel {
     @Pattern(regexp = "^[a-zA-Z0-9]{4,10}$", message = "영문이나 숫자로 이루어져야 하고, 4~10글자여야 합니다.")
     private String channelName;
 
-    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
     private Set<Thread> threads = new LinkedHashSet<>();
 
     private String adminEmail;
