@@ -30,8 +30,8 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
-    private final static String REST_API_KEY = "36615bca254358f5c0260a0485d71aac";
-    private final static String REDIRECT_URI = "http://localhost:8080/api/user/kakao";
+    private final static String REST_API_KEY = "a6be9b62b761e5b5ee34bfa49d268617";
+    private final static String REDIRECT_URI = "http://localhost:8080/api/users/kakao";
 
     /**
      *
@@ -83,6 +83,7 @@ public class KakaoService {
                 kakaoTokenRequest,
                 String.class
         );
+        System.out.println("response = " + response);
 
         // HTTP 응답 (JSON) -> 액세스 토큰 파싱
         String responseBody = response.getBody();
