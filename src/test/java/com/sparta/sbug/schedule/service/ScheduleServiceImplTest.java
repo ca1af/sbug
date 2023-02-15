@@ -170,6 +170,33 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
+    @DisplayName("ServiceImpl.updateSchedule Test")
+    public void updateScheduleIncorrectId() {
+        //given
+
+        updatedSchedule = schedule;
+        updatedSchedule.updateSchedule(
+            request.getContent(),
+            request.getDate()
+        );
+
+        given(scheduleRepository.findById(scheduleId))
+            .willReturn(Optional.of(schedule));
+
+        //when
+        scheduleServiceImpl.updateSchedule(
+            request,
+            scheduleId,
+            9999L
+        );
+
+        //then
+        then(scheduleRepository).should(times(1))
+            .findById(eq(scheduleId));
+        then(scheduleRepository).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
     @DisplayName("serviceImpl.deleteSchedule Test")
     public void deleteSchedule() {
         //given
