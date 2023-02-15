@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="./css/login.css">
 </head>
 <body>
-    <div id="wrap" class="form">
+    <div id="wrap">
         <section class="login-box">
             <div class="user-box">
                 <input type="email" id="signInEmail" value="skycriper@naver.com">
@@ -21,8 +21,22 @@
             </div>
             <div class="singinbtn">
                 <button onclick="signIn()">로그인</button>
-                <button><a href="./signup.html">회원가입</a></button>
+                <button onclick="location.href='./signup.html'">회원가입</button>
+                <button onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=a6be9b62b761e5b5ee34bfa49d268617&redirect_uri=http://localhost:8080/api/users/kakao&response_type=code'">카카오톡로그인</button>            
+                <button onclick="changeport()">포트변경테스트</button>
             </div>
+            <script>
+                function changeport() {
+                    // 현재 URL에서 호스트와 포트 번호 추출
+                    const currentUrl = window.location.href;
+                    console.log(currentUrl);
+                    const currentHost = currentUrl.split('/')[2].split(':')[0];
+                    const currentPort = currentUrl.split('/')[2].split(':')[1];
+
+                    // 리디렉션할 URL 생성
+                    const redirectUrl = 'http://${currentHost}:5500/test.html';
+                }
+            </script>
         </section>
     </div>
 </body>

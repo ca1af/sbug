@@ -7,6 +7,7 @@ class MyComponent extends HTMLElement {
         <button onclick="">회원정보조회</button>
         <button onclick="location.href='updatemember.html'">회원정보수정</button>
         <button onclick="deleteMember()">회원탈퇴</button>
+        <button onclick="logoutMember()">로그아웃</button>
         <slot></slot>
       
     `;
