@@ -1,4 +1,4 @@
-package com.sparta.sbug.kakao.dto;
+package com.sparta.sbug.oauth2.dto;
 
 import lombok.Getter;
 

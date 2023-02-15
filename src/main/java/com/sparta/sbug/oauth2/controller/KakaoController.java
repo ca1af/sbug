@@ -1,7 +1,7 @@
-package com.sparta.sbug.kakao.controller;
+package com.sparta.sbug.oauth2.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sparta.sbug.kakao.service.KakaoService;
+import com.sparta.sbug.oauth2.service.KakaoService;
 import com.sparta.sbug.security.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

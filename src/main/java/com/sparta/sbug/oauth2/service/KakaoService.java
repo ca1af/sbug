@@ -1,9 +1,9 @@
-package com.sparta.sbug.kakao.service;
+package com.sparta.sbug.oauth2.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.sbug.kakao.dto.KakaoUserInfo;
+import com.sparta.sbug.oauth2.dto.KakaoUserInfo;
 import com.sparta.sbug.security.dto.TokenResponse;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.user.entity.User;
