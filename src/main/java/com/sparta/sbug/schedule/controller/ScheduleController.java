@@ -23,7 +23,7 @@ public class ScheduleController {
 
     //일정 등록
     @PostMapping("")
-    public String schedule(
+    public String registerSchedule(
         @RequestBody ScheduleRequestDto requestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -33,7 +33,7 @@ public class ScheduleController {
 
     //일정 수정
     @PutMapping("/{id}")
-    public String schedule(
+    public String updateSchedule(
         @RequestBody ScheduleRequestDto requestDto,
         @PathVariable Long id,
         @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -45,7 +45,7 @@ public class ScheduleController {
 
     //일정 삭제
     @DeleteMapping("/{id}")
-    public String schedule(
+    public String deleteSchedule(
         @PathVariable Long id,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -56,7 +56,7 @@ public class ScheduleController {
 
     //내 일정 조회 
     @GetMapping("")
-    public Page<ScheduleResponseDto> mySchedules(
+    public Page<ScheduleResponseDto> getMySchedules(
         Pageable pageable,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -66,7 +66,7 @@ public class ScheduleController {
 
     //일정 상세 조회
     @GetMapping("/{id}")
-    public ScheduleResponseDto schedule(@PathVariable Long id) {
+    public ScheduleResponseDto getSchedule(@PathVariable Long id) {
         return scheduleService.getSchedule(id);
     }
     //기간내 일정 조회
