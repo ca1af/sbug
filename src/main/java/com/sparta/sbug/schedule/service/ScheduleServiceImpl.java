@@ -45,7 +45,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("일정을 찾을 수 없습니다.")
             );
-        if (foundSchedule.getUser().getId() == userId) {
+        if (userId.equals(foundSchedule.getUser().getId())) {
             foundSchedule.updateSchedule(
                 requestDto.getContent(),
                 requestDto.getDate()
@@ -61,7 +61,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("일정을 찾을 수 없습니다.")
             );
-        if (foundSchedule.getUser().getId() == userId) {
+        if (userId.equals(foundSchedule.getUser().getId())) {
             scheduleRepository.delete(foundSchedule);
         }
 
@@ -103,8 +103,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         LocalDateTime startDate = periodDto.getStartDate();
         LocalDateTime endDate = periodDto.getEndDate();
         Page<Schedule> periodSchedules =
-            scheduleRepository.findAllByDateBetween(
-                startDate, endDate, pageable
+            scheduleRepository.findAllByUserIdAndDateBetween(
+                user.getId(), startDate, endDate, pageable
             );
         Page<ScheduleResponseDto> responseDtoList =
             ScheduleResponseDto.toDtoList(periodSchedules);

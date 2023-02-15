@@ -12,7 +12,8 @@ import java.util.Optional;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Optional<Schedule> findById(Long scheduleId);
     Page<Schedule> findAllByUserId(Long userId, Pageable pageable);
-    Page<Schedule> findAllByDateBetween(
+    Page<Schedule> findAllByUserIdAndDateBetween(
+        Long userId,
         LocalDateTime startDate,
         LocalDateTime endDate,
         Pageable pageable
