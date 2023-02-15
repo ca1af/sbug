@@ -218,6 +218,24 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
+    @DisplayName("serviceImpl.deleteSchedule Test")
+    public void deleteScheduleIncorrectId() {
+        //given
+        given(scheduleRepository.findById(scheduleId))
+            .willReturn(Optional.of(schedule));
+        //when
+        scheduleServiceImpl.deleteSchedule(
+            scheduleId,
+            9999L
+        );
+
+        //then
+        then(scheduleRepository).should(times(1))
+            .findById(eq(scheduleId));
+        then(scheduleRepository).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
     @DisplayName("serviceImpl.getMySchedules Test")
     public void getMySchedules() {
         //given
