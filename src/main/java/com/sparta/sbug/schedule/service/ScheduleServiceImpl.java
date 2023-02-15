@@ -51,6 +51,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 requestDto.getDate()
             );
             scheduleRepository.save(foundSchedule);
+        } else {
+            throw new IllegalStateException("User id가 일치하지 않습니다.");
         }
     }
 
@@ -63,6 +65,8 @@ public class ScheduleServiceImpl implements ScheduleService {
             );
         if (userId.equals(foundSchedule.getUser().getId())) {
             scheduleRepository.delete(foundSchedule);
+        } else {
+            throw new IllegalStateException("User id가 일치하지 않습니다.");
         }
 
     }
