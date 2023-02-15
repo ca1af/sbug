@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PutMapping("/api/users")
-    public String update(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserUpdateDto dto) {
+    public String update(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid UserUpdateDto dto) {
         userService.update(userDetails.getUser(), dto);
         return "updated";
     }

@@ -18,5 +18,6 @@ public class KakaoController {
     public TokenResponse kakaoLogin(@RequestParam String code) throws JsonProcessingException {
         return kakaoService.kakaoLogin(code);
     }
-
+    // 브라우저에서 로그인 호출하면...
+    // reissue를 뷰 로 해서< 다시 리이슈 하게 시킨다?
 }

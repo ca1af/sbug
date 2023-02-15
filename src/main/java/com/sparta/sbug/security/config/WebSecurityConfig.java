@@ -62,10 +62,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/api/users/kakao**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
-        // 401 Error 처리, Authorization 즉, 인증과정에서 실패할 시 처리
-        http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
-        // 403 Error 처리, 인증과는 별개로 추가적인 권한이 충족되지 않는 경우
-        http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
+
+        http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint).accessDeniedHandler(customAccessDeniedHandler);
+    //ArithmeticException<>
         return http.build();
     }
     @Override
