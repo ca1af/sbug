@@ -30,7 +30,19 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
-    public TokenResponse kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    /**
+     *
+     * 작동 방식은 다음과 같습니다.
+     * 1. 카카오에서 정해준 형식의 code로 인가 요청을 한다. 응답 받는 부분은 RestTemplate~ 부분.
+     * 2. 인가 요청을 할 시에 카카오에서는 액세스 토큰을 발급한다.
+     * 3. 그 엑세스 토큰 안에 있는 사용자의 정보를 파싱해서 nickname, email을 가져온다.
+     * 4. 우리가 만든 JwtProvider 안에 있는 토큰 생성 로직을 거쳐 atk, rtk를 발급한다.
+     * 5. 카카오 로그인 시에 userRepository 에서 카카오 이메일과 같은 이메일이 없다면, 새로 회원 가입을 한다.
+     * 6. 모든 요청이 완료되면 controller 에서 응답값으로 atk, rtk 를 Json 형식으로 응답한다.
+     * 7. 발급한 token 을 프론트단에서 사용자의 header 등에 넣고 사용한다.
+     */
+
+    public TokenResponse kakaoLogin(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
@@ -38,15 +50,13 @@ public class KakaoService {
         KakaoUserInfo kakaoUserInfo = getKakaoUserInfo(accessToken);
 
         // 3. 필요시에 회원가입
-        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
-
-        // 4. JWT 토큰 반환
-        //        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
+        registerKakaoUserIfNeeded(kakaoUserInfo);
 
         return jwtProvider.createTokenKakao(kakaoUserInfo.getEmail());
     }
 
     // 1. "인가 코드"로 "액세스 토큰" 요청
+    //인가 코드
     private String getToken(String code) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
@@ -55,8 +65,8 @@ public class KakaoService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "e8b477a80c26e1750fb125396f2399bd");
-        body.add("redirect_uri", "http://localhost:8080/api/user/kakao/callback");
+        body.add("client_id", "a6be9b62b761e5b5ee34bfa49d268617");
+        body.add("redirect_uri", "http://localhost:8080/api/users/kakao");
         body.add("code", code);
 
         // HTTP 요청 보내기
@@ -107,7 +117,7 @@ public class KakaoService {
     }
 
     // 3. 필요시에 회원가입
-    private User registerKakaoUserIfNeeded(KakaoUserInfo kakaoUserInfo) {
+    private void registerKakaoUserIfNeeded(KakaoUserInfo kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getId();
         User kakaoUser = userRepository.findByKakaoId(kakaoId)
@@ -134,6 +144,5 @@ public class KakaoService {
 
             userRepository.save(kakaoUser);
         }
-        return kakaoUser;
     }
 }

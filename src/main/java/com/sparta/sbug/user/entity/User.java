@@ -15,7 +15,6 @@ public class User extends Timestamp {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long kakaoId;
-
     @Column(nullable = false, unique = true)
     private String email;
     @Setter
