@@ -86,7 +86,7 @@ public class ChannelServiceImpl implements ChannelService {
     public String createThread(Long channelId, String requestContent, User user) {
         Channel channel = getChannelById(channelId);
         if (!userChannelService.isUserJoinedByChannel(user, channel)) {
-            throw new IllegalArgumentException("유저가 채널에 속해있지 않습니다. 쓰레드 생성권한이 없습니다.")
+            throw new IllegalArgumentException("유저가 채널에 속해있지 않습니다. 쓰레드 생성권한이 없습니다.");
         }
         return threadService.createThread(channel, requestContent, user);
     }
