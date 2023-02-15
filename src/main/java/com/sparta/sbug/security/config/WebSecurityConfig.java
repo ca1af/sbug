@@ -59,7 +59,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/chat/**").permitAll()
                 .requestMatchers("/api/users/sign-up").permitAll()
                 .requestMatchers("/api/users/login").permitAll()
-                .requestMatchers("/api/users/kakao").permitAll()
+                .requestMatchers("/api/users/kakao**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
         // 401 Error 처리, Authorization 즉, 인증과정에서 실패할 시 처리

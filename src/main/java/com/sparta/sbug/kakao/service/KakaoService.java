@@ -7,9 +7,7 @@ import com.sparta.sbug.kakao.dto.KakaoUserInfo;
 import com.sparta.sbug.security.dto.TokenResponse;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.user.entity.UserRole;
 import com.sparta.sbug.user.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,10 +15,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,6 +29,9 @@ public class KakaoService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
+
+    private final static String REST_API_KEY = "36615bca254358f5c0260a0485d71aac";
+    private final static String REDIRECT_URI = "http://localhost:8080/api/user/kakao";
 
     /**
      *
@@ -57,22 +60,23 @@ public class KakaoService {
 
     // 1. "인가 코드"로 "액세스 토큰" 요청
     //인가 코드
-    private String getToken(String code) throws JsonProcessingException {
+    public String getToken(String code) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         // HTTP Body 생성
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "authorization_code");
-        body.add("client_id", "a6be9b62b761e5b5ee34bfa49d268617");
-        body.add("redirect_uri", "http://localhost:8080/api/users/kakao");
-        body.add("code", code);
+        MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
+        param.add("grant_type", "authorization_code");
+        param.add("client_id", REST_API_KEY);
+        param.add("redirect_uri", REDIRECT_URI);
+        param.add("code", code);
 
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
-                new HttpEntity<>(body, headers);
+                new HttpEntity<>(param, headers);
         RestTemplate rt = new RestTemplate();
+
         ResponseEntity<String> response = rt.exchange(
                 "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
@@ -117,29 +121,28 @@ public class KakaoService {
     }
 
     // 3. 필요시에 회원가입
-    private void registerKakaoUserIfNeeded(KakaoUserInfo kakaoUserInfo) {
+    @Transactional
+    public void registerKakaoUserIfNeeded(KakaoUserInfo kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getId();
-        User kakaoUser = userRepository.findByKakaoId(kakaoId)
-                .orElse(null);
-        if (kakaoUser == null) {
+        Optional<User> optionalUser = userRepository.findByKakaoId(kakaoId);
+        User kakaoUser;
+        if (optionalUser.isEmpty()) {
             // 카카오 사용자 email 동일한 email 가진 회원이 있는지 확인
             String kakaoEmail = kakaoUserInfo.getEmail();
-            User sameEmailUser = userRepository.findByEmail(kakaoEmail).orElse(null);
-            if (sameEmailUser != null) {
-                kakaoUser = sameEmailUser;
+            Optional<User> optionalEmailUser = userRepository.findByEmail(kakaoEmail);
+            if (optionalEmailUser.isPresent()) {
                 // 기존 회원정보에 카카오 Id 추가
-                kakaoUser = kakaoUser.kakaoIdUpdate(kakaoId);
+                kakaoUser = optionalEmailUser.get().kakaoIdUpdate(kakaoId);
             } else {
                 // 신규 회원가입
                 // password: random UUID
-                String password = UUID.randomUUID().toString();
-                String encodedPassword = passwordEncoder.encode(password);
+                String password = passwordEncoder.encode(UUID.randomUUID().toString());
 
-                // email: kakao email
-                String email = kakaoUserInfo.getEmail();
-
-                kakaoUser = new User(kakaoUserInfo.getNickname(), kakaoId, encodedPassword, email);
+                kakaoUser = User.builder().nickname(kakaoUserInfo.getNickname())
+                        .email(kakaoUserInfo.getEmail())
+                        .password(password).build();
+                kakaoUser.kakaoIdUpdate(kakaoUserInfo.getId());
             }
 
             userRepository.save(kakaoUser);
