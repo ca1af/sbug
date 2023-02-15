@@ -1,6 +1,7 @@
 package com.sparta.sbug.channel.service;
 
 import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.thread.dto.ThreadRequestDto;
 import com.sparta.sbug.user.entity.User;
 
 public interface ChannelService {
@@ -36,4 +37,31 @@ public interface ChannelService {
      * @param user      : 요청자
      */
     void deleteChannel(Long channelId, User user);
+
+    /**
+     * Thread 생성
+     *
+     * @param channelId : 생성할 채널 ID
+     * @param requestContent : thread 내용
+     * @param user      : 요청자
+     */
+    String createThread(Long channelId, String requestContent, User user);
+
+    /**
+     * Thread 수정
+     *
+     * @param threadId : 생성할 채널 ID
+     * @param requestContent : thread 내용
+     * @param user      : 요청자
+     */
+    String editThread(Long threadId, String requestContent, User user);
+
+    /**
+     * Thread 삭제
+     *
+     * @param threadId : 생성할 채널 ID
+     * @param user      : 요청자
+     */
+    String deleteThread(Long threadId, User user);
+
 }
