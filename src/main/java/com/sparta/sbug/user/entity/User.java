@@ -14,6 +14,7 @@ public class User extends Timestamp {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private Long kakaoId;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -35,9 +36,17 @@ public class User extends Timestamp {
         this.nickname = nickname;
     }
 
+    public User(String nickname, Long kakaoId, String encodedPassword, String email) {
+        super();
+    }
+
     public void updateUser(String nickname, String password) {
         this.nickname = nickname;
         this.password = password;
+    }
+    public User kakaoIdUpdate(Long kakaoId){
+        this.kakaoId = kakaoId;
+        return this;
     }
 
     public void setUserRole(UserRole role) {

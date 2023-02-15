@@ -8,9 +8,11 @@ import lombok.Setter;
 @Setter
 public class ChannelResponseDto {
     private String channelName;
+    private Long channelId;
 
     private ChannelResponseDto(Channel channel) {
         this.channelName = channel.getChannelName();
+        this.channelId = channel.getId();
     }
 
     public static ChannelResponseDto of(Channel channel){
