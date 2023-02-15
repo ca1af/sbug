@@ -15,9 +15,11 @@ public interface ThreadService {
 
     String createThread(Channel channel, String requestContent, User user);
 
-    String editThread(Thread thread, String requestContent);
+    //String editThread(Thread thread, String requestContent);
+    String editThread(Long threadId, String requestContent, User user);
 
-    String deleteThread(Thread thread);
+    //String deleteThread(Thread thread);
+    String deleteThread(Long threadId, User user);
 
     List<ThreadResponseDto> getAllThreadsInChannel(Long channelId, PageDto pageDto);
 

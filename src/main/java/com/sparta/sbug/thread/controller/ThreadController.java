@@ -1,7 +1,6 @@
 package com.sparta.sbug.thread.controller;
 
 import com.sparta.sbug.channel.service.ChannelService;
-import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.thread.dto.ThreadRequestDto;
@@ -41,7 +40,7 @@ public class ThreadController {
         if (threadRequestDto.getContent().trim().equals("")) {
             throw new IllegalArgumentException("수정할 쓰레드 내용을 입력해주세요.");
         }
-        return channelService.editThread(id, threadRequestDto.getContent(), userDetails.getUser());
+        return threadService.editThread(id, threadRequestDto.getContent(), userDetails.getUser());
     }
 
     // Tread 삭제
@@ -50,7 +49,7 @@ public class ThreadController {
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails)
     {
-        return channelService.deleteThread(id, userDetails.getUser());
+        return threadService.deleteThread(id, userDetails.getUser());
     }
 
     @GetMapping("/{id}/threads")
