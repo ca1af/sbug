@@ -2,8 +2,6 @@ package com.sparta.sbug.user.entity;
 
 import com.sparta.sbug.common.entity.Timestamp;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
@@ -15,11 +13,15 @@ public class User extends Timestamp {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private Long kakaoId;
+
     @Column(nullable = false, unique = true)
     private String email;
+
     @Setter
     @Column(nullable = false)
     private String password;
+
     @Setter
     @Column(nullable = false)
     private String nickname;
@@ -38,6 +40,11 @@ public class User extends Timestamp {
     public void updateUser(String nickname, String password) {
         this.nickname = nickname;
         this.password = password;
+    }
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
     }
 
     public void setUserRole(UserRole role) {

@@ -60,6 +60,13 @@ public class JwtProvider {
         redisDao.setValues(email, rtk, Duration.ofMillis(rtkTime));
         return new TokenResponse(atk, rtk);
     }
+    public TokenResponse createTokenKakao(String email) throws JsonProcessingException {
+        String atk = createToken(email, atkTime);
+        String rtk = createToken(email, rtkTime);
+        redisDao.setValues(email, rtk, Duration.ofMillis(rtkTime));
+        return new TokenResponse(atk, rtk);
+    }
+
 
     private String createToken(String email, Long tokenLive) {
         //String subjectStr = objectMapper.writeValueAsString(email);
