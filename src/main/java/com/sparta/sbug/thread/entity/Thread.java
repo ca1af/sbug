@@ -37,10 +37,10 @@ public class Thread extends Timestamp {
     @JoinColumn(name = "channel_id")
     private Channel channel;
 
-    @OneToMany(mappedBy = "thread", orphanRemoval = true)
+    @OneToMany(mappedBy = "thread", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Comment> comments = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "thread", orphanRemoval = true)
+    @OneToMany(mappedBy = "thread", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<ThreadEmoji> emojis = new LinkedHashSet<>();
 
     @Builder
