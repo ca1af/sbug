@@ -6,6 +6,7 @@ import com.sparta.sbug.schedule.dto.ScheduleResponseDto;
 import com.sparta.sbug.schedule.dto.PeriodRequestDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.schedule.entity.Schedule;
+import com.sparta.sbug.schedule.entity.ScheduleStatus;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,6 +51,9 @@ public class ScheduleServiceImplTest {
     private Schedule schedule;
     private long scheduleId;
     private Schedule updatedSchedule;
+    
+    //Variable for completeSchedule(), incompleteSchedule() 
+    private Schedule doneSchedule;
 
     //Variables for paging methods
     private PageRequest pageable;
@@ -86,6 +90,7 @@ public class ScheduleServiceImplTest {
             .user(user)
             .content("123")
             .date(LocalDateTime.of(2023, 5, 5, 14, 40))
+            .status(ScheduleStatus.UNDONE)
             .build();
         ReflectionTestUtils.setField(schedule, "id", 4545L);
 
@@ -170,7 +175,7 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
-    @DisplayName("ServiceImpl.updateSchedule Test")
+    @DisplayName("ServiceImpl.updateSchedule w/Incorrect Id Test")
     public void updateScheduleIncorrectId() {
         //given
 
@@ -202,6 +207,101 @@ public class ScheduleServiceImplTest {
     }
 
     @Test
+    @DisplayName("serviceImpl.completeSchedule Test")
+    public void completeSchedule() {
+        //given
+        doneSchedule = schedule;
+        doneSchedule.complete();
+        
+        given(scheduleRepository.findById(scheduleId))
+            .willReturn(Optional.of(schedule));
+        given(scheduleRepository.save(doneSchedule))
+            .willReturn(doneSchedule);
+
+        //when
+        scheduleServiceImpl.completeSchedule(scheduleId, userId);
+
+        //then
+        then(scheduleRepository).should(times(1))
+            .findById(eq(scheduleId));
+        then(scheduleRepository).should(times(1))
+            .save(eq(doneSchedule));
+
+    }
+
+    @Test
+    @DisplayName("serviceImpl.completeSchedule w/Incorrect Id Test")
+    public void completeScheduleIncorrectId() {
+        //given
+        doneSchedule = schedule;
+        doneSchedule.complete();
+        
+        given(scheduleRepository.findById(scheduleId))
+            .willReturn(Optional.of(schedule));
+
+        //when
+        try {
+            scheduleServiceImpl.completeSchedule(scheduleId, 9999L);
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        //then
+        then(scheduleRepository).should(times(1))
+            .findById(eq(scheduleId));
+        then(scheduleRepository).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    @DisplayName("serviceImpl.incompleteSchedule Test")
+    public void incompleteSchedule() {
+        //given
+        doneSchedule = schedule;
+        doneSchedule.complete();
+
+        given(scheduleRepository.findById(scheduleId))
+            .willReturn(Optional.of(schedule));
+        given(scheduleRepository.save(schedule))
+            .willReturn(schedule);
+
+        //when
+        scheduleServiceImpl.incompleteSchedule(scheduleId, userId);
+
+        //then
+        then(scheduleRepository).should(times(1))
+            .findById(eq(scheduleId));
+        then(scheduleRepository).should(times(1))
+            .save(eq(schedule));
+
+    }
+    
+    @Test
+    @DisplayName("serviceImpl.incompleteSchedule w/Incorrect Test")
+    public void incompleteScheduleIncorrectId() {
+        //given
+        doneSchedule = schedule;
+        doneSchedule.complete();
+
+        given(scheduleRepository.findById(scheduleId))
+            .willReturn(Optional.of(schedule));
+
+        //when
+        try {
+            scheduleServiceImpl.incompleteSchedule(scheduleId, 9999L);
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        //then
+        then(scheduleRepository).should(times(1))
+            .findById(eq(scheduleId));
+        then(scheduleRepository).shouldHaveNoMoreInteractions();
+
+    }
+
+    @Test
     @DisplayName("serviceImpl.deleteSchedule Test")
     public void deleteSchedule() {
         //given
@@ -219,11 +319,10 @@ public class ScheduleServiceImplTest {
             .findById(eq(scheduleId));
         then(scheduleRepository).should(times(1))
             .delete(schedule);
-
     }
 
     @Test
-    @DisplayName("serviceImpl.deleteSchedule Test")
+    @DisplayName("serviceImpl.deleteSchedule w/Incorrect Id Test")
     public void deleteScheduleIncorrectId() {
         //given
         given(scheduleRepository.findById(scheduleId))
