@@ -21,7 +21,7 @@ import java.util.List;
 // lombok
 @RequiredArgsConstructor
 
-// springframework
+// springframework web bind
 @RestController
 @RequestMapping("/api/rooms")
 public class ChatRoomController {
@@ -35,8 +35,9 @@ public class ChatRoomController {
      * - 이미 채팅 방이 존재할 때   : 해당 채팅 방의 ID를 반환받고 이전에 채팅한 내역을 불러옵니다.
      * - 채팅 방이 존재하지 않을 때 : 새로 채팅 방을 만들고 그 ID를 반환합니다.
      *
-     * @param id          : 상대방의 ID
-     * @param userDetails : 요청자 정보
+     * @param id          상대방의 ID
+     * @param userDetails 요청자 정보
+     * @return ChatRoomResponseDto
      */
     @GetMapping("/receivers/{id}")
     public ChatRoomResponseDto enter(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {

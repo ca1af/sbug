@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 // lombok
 @RequiredArgsConstructor
 
-// springframework
+// springframework web bind
 @RestController
 public class ChatMessageController {
 
@@ -31,12 +31,13 @@ public class ChatMessageController {
      * 클라이언트(유저)가 보낸 메세지를 받아 처리하는 메소드입니다.
      * 다음과 같은 순서로 동작합니다.
      * 1. 먼저 메세지(Chat)를 만들기 위해 다음 과정을 진행합니다.
-     * a. 전달 받은 DTO 내 수신자 ID를 이용해 수신자(User)를 찾습니다.
-     * b. 송신자(=요청자, User)을 찾기 위해 헤더로 전달 받은 JWT 토큰에서 요청자의 ID를 찾습니다.
-     * c. 요청자의 ID로 송신자(User)를 찾습니다.
-     * d. DTO 내 채팅방 ID를 이용해 송신자와 수신자가 구독 중인 채팅방을 찾습니다.
-     * e. Chat Service의 메서드를 이용해 메세지를 저장하고 응답 DTO를 받습니다.
+     *      a. 전달 받은 DTO 내 수신자 ID를 이용해 수신자(User)를 찾습니다.
+     *      b. 송신자(=요청자, User)을 찾기 위해 헤더로 전달 받은 JWT 토큰에서 요청자의 ID를 찾습니다.
+     *      c. 요청자의 ID로 송신자(User)를 찾습니다.
+     *      d. DTO 내 채팅방 ID를 이용해 송신자와 수신자가 구독 중인 채팅방을 찾습니다.
+     *      e. Chat Service의 메서드를 이용해 메세지를 저장하고 응답 DTO를 받습니다.
      * 2. SimpMessagingTemplate를 이용해 응답 DTO를 사용자들이 구독 중인 토픽으로 보냅니다.
+     * [MESSAGE] app/chats
      *
      * @param requestDto : 방 ID, 수신자 ID, 메세지 내용
      * @param rawToken   : Header의 Authorization의 값

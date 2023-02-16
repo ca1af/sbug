@@ -13,49 +13,75 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+// lombok
 @RequiredArgsConstructor
+
+// springframework web bind
+@RestController
 @RequestMapping("/api/channels")
 public class ThreadController {
-    private final ThreadService threadService;
 
+    private final ThreadService threadService;
     private final ChannelService channelService;
 
-   // Thread 작성
+    /**
+     * 대상 채널에 쓰레드를 생성
+     * [POST] /api/channels/{id}/threads
+     *
+     * @param id               대상 채널 ID
+     * @param threadRequestDto 요청 DTO (쓰레드 내용)
+     * @param userDetails      요청자 정보
+     */
     @PostMapping("/{id}/threads")
-    public String createThread(
-            @PathVariable Long id,@RequestBody @Valid ThreadRequestDto threadRequestDto,
+    public void createThread(
+            @PathVariable Long id, @RequestBody @Valid ThreadRequestDto threadRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if (threadRequestDto.getContent().trim().equals("")){
+        if (threadRequestDto.getContent().trim().equals("")) {
             throw new IllegalArgumentException("작성할 쓰레드 내용을 입력해주세요.");
         }
-        return channelService.createThread(id, threadRequestDto.getContent(), userDetails.getUser());
+        channelService.createThread(id, threadRequestDto.getContent(), userDetails.getUser());
     }
 
-    // Thread 수정
+    /**
+     * 대상 쓰레드를 수정
+     * [PATCH] /api/channels/threads/{id}
+     *
+     * @param id               대상 쓰레드 ID
+     * @param threadRequestDto 요청 DTO (수정될 쓰레드 내용)
+     * @param userDetails      요청자 정보
+     */
     @PatchMapping("/threads/{id}")
-    public String updateThread(
+    public void updateThread(
             @PathVariable Long id, @RequestBody ThreadRequestDto threadRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (threadRequestDto.getContent().trim().equals("")) {
             throw new IllegalArgumentException("수정할 쓰레드 내용을 입력해주세요.");
         }
-        return threadService.editThread(id, threadRequestDto.getContent(), userDetails.getUser());
+        threadService.editThread(id, threadRequestDto.getContent(), userDetails.getUser());
     }
 
-    // Tread 삭제
+    /**
+     * 대상 쓰레드를 삭제
+     * [DELETE] /api/channels/threads/{id}
+     *
+     * @param id          대상 쓰레드 ID
+     * @param userDetails 요청자 정보
+     */
     @DeleteMapping("/threads/{id}")
-    public String deleteThread(
-            @PathVariable Long id,
-            @AuthenticationPrincipal UserDetailsImpl userDetails)
-    {
-        return threadService.deleteThread(id, userDetails.getUser());
+    public void deleteThread(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        threadService.deleteThread(id, userDetails.getUser());
     }
 
+    /**
+     * 대상 채널 아래 모든 쓰레드를 조회
+     * [GET] /api/channels/{id}/threads
+     *
+     * @param id      대상 채널
+     * @param pageDto 페이징 DTO
+     * @return List&lt;ThreadResponseDto&gt;
+     */
     @GetMapping("/{id}/threads")
-    public List<ThreadResponseDto> getAllThreadsInChannel(
-            @PathVariable Long id, @ModelAttribute PageDto pageDto){
+    public List<ThreadResponseDto> getAllThreadsInChannel(@PathVariable Long id, @ModelAttribute PageDto pageDto) {
         return threadService.getAllThreadsInChannel(id, pageDto);
     }
-
 }

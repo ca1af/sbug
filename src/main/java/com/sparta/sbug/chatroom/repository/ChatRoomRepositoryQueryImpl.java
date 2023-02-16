@@ -2,14 +2,13 @@ package com.sparta.sbug.chatroom.repository;
 
 import static com.sparta.sbug.chatroom.entity.QChatRoom.chatRoom;
 
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.sbug.chatroom.entity.ChatRoom;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
 import java.util.Optional;
 
+// lombok
 @RequiredArgsConstructor
 public class ChatRoomRepositoryQueryImpl implements ChatRoomRepositoryQuery {
 

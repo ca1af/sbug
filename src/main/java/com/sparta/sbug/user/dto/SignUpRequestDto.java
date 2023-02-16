@@ -1,13 +1,13 @@
 package com.sparta.sbug.user.dto;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import org.springframework.validation.annotation.Validated;
 
+/**
+ * 회원가입 요청 DTO
+ */
+// lombok
 @Getter
 @AllArgsConstructor
 public class SignUpRequestDto {

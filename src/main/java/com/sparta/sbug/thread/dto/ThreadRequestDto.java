@@ -4,6 +4,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 쓰레드 요청 DTO
+ */
+// lombok
 @Getter
 @NoArgsConstructor
 public class ThreadRequestDto {

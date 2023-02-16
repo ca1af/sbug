@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * 쓰레드 반환 DTO
+ */
+// lombok
 @Getter
 @NoArgsConstructor
 public class ThreadResponseDto {
@@ -16,7 +20,7 @@ public class ThreadResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    private ThreadResponseDto(Thread thread){
+    private ThreadResponseDto(Thread thread) {
         this.threadId = thread.getId();
         this.userNickname = thread.getUser().getNickname(); // 이름으로 넣을지 확인
         this.content = thread.getContent();
@@ -24,7 +28,12 @@ public class ThreadResponseDto {
         this.modifiedAt = thread.getModifiedAt();
     }
 
-    public static ThreadResponseDto of(Thread thread){
+    /**
+     * 쓰레드 객체를 받아 응답 DTO로 반환하는 메서드
+     *
+     * @param thread 대상 객체
+     */
+    public static ThreadResponseDto of(Thread thread) {
         return new ThreadResponseDto(thread);
     }
 

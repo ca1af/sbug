@@ -18,11 +18,10 @@ import java.util.stream.Collectors;
 // lombok
 @RequiredArgsConstructor
 
-// springframework
+// springframework stereotype
 @Service
 public class ChatServiceImpl implements ChatService {
-
-
+    
     private final ChatRepository chatRepository;
 
     @Override
@@ -63,21 +62,19 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public String updateMessage(Long messageId, User user, String message) {
+    public void updateMessage(Long messageId, User user, String message) {
         Chat chat = findChatById(messageId);
         validateUserIsSender(chat, user);
         chat.updateMessage(message);
         chatRepository.save(chat);
-        return "Success";
     }
 
     @Override
     @Transactional
-    public String deleteMessage(Long messageId, User user) {
+    public void deleteMessage(Long messageId, User user) {
         Chat chat = findChatById(messageId);
         validateUserIsSender(chat, user);
         chatRepository.delete(chat);
-        return "Success";
     }
 
     @Override

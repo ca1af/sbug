@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 댓글 응답 DTO
+ */
 // lombok
 @Getter
 @RequiredArgsConstructor
