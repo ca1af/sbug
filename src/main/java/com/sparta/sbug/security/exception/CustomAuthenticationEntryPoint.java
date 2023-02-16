@@ -1,7 +1,7 @@
 package com.sparta.sbug.security.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.sbug.common.exceptions.dto.ExceptionDto;
+import com.sparta.sbug.common.exceptions.dto.ExceptionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -16,8 +16,8 @@ import java.io.OutputStream;
 // springframework stereotype
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    private static final ExceptionDto exceptionDto =
-            new ExceptionDto(HttpStatus.UNAUTHORIZED.getReasonPhrase(), HttpStatus.UNAUTHORIZED.value());
+    private static final ExceptionResponse EXCEPTION_RESPONSE =
+            new ExceptionResponse(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.name(), 401, HttpStatus.UNAUTHORIZED.getReasonPhrase());
 
     /**
      * 발생한 <code>AuthenticationException</code>을 처리하기 위한 메서드
@@ -36,7 +36,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         try (OutputStream os = response.getOutputStream()) {
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.writeValue(os, exceptionDto);
+            objectMapper.writeValue(os, EXCEPTION_RESPONSE);
             os.flush();
         }
     }
