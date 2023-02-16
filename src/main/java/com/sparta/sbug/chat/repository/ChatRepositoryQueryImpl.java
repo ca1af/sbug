@@ -15,7 +15,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
-
+// lombok
 @RequiredArgsConstructor
 public class ChatRepositoryQueryImpl implements ChatRepositoryQuery {
 
@@ -46,9 +46,14 @@ public class ChatRepositoryQueryImpl implements ChatRepositoryQuery {
         return query.fetch().get(0);
     }
 
+
     /**
-     * 주고 받은 메세지를 찾는 쿼리를 제작하는 메서드
-     * 두 유저 서로가 서로의 수신자 혹은 발신자인 데이터를 찾는 쿼리
+     * 채팅방의 ID를 이용해 해당 채팅방의 채팅 내역을 불러오는 JPA 쿼리를 제작하는 메서드
+     *
+     * @param expr   쿼리 인스턴스 표현식
+     * @param roomId 채팅방 ID
+     * @param <T>    쿼리 인스턴스의 제네릭 타입
+     * @return JPAQuery
      */
     private <T> JPAQuery<T> buildQueryForSelectExchangedMessages(Expression<T> expr, Long roomId) {
         return jpaQueryFactory.select(expr)

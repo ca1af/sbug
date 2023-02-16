@@ -17,13 +17,14 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
-@Service
+// lombok
 @RequiredArgsConstructor
+
+// springframework stereotype
+@Service
 public class ThreadServiceImpl implements ThreadService {
 
     private final ThreadRepository threadRepository;
-
 
     @Override
     @Transactional(readOnly = true)
@@ -35,66 +36,49 @@ public class ThreadServiceImpl implements ThreadService {
         return optionalThread.get();
     }
 
-    //Thread 생성
     @Override
     @Transactional
-    public String createThread(Channel channel, String requestContent, User user) {
+    public void createThread(Channel channel, String requestContent, User user) {
         Thread thread = Thread.builder()
                 .requestContent(requestContent)
                 .user(user)
                 .channel(channel).build();
         threadRepository.save(thread);
-        return "Success";
     }
 
-    //Thread 수정
-//    @Override
-//    @Transactional
-//    public String editThread(Thread thread, String requestContent){
-//        thread.updateThread(requestContent);
-//        return "Success";
-//    }
-
-    // Thread 수정
     @Override
     @Transactional
-    public String editThread(Long threadId, String requestContent, User user){
+    public void editThread(Long threadId, String requestContent, User user) {
         Thread thread = validateUserAuth(threadId, user);
         thread.updateThread(requestContent);
-        threadRepository.save(thread);
-        return "Success";
     }
-
-    //Thread 삭제
-//    @Override
-//    @Transactional
-//    public String deleteThread(Thread thread){
-//        threadRepository.delete(thread);
-//        return "Success";
-//    }
-
 
     @Override
     @Transactional
-    public String deleteThread(Long threadId, User user) {
+    public void deleteThread(Long threadId, User user) {
         Thread thread = validateUserAuth(threadId, user);
         threadRepository.delete(thread);
-        return "Success";
     }
 
+    /**
+     * 요청자가 대상 쓰레드를 수정 혹은 삭제할 수 있는 권한이 있는지 확인합니다.
+     *
+     * @param threadId 대상 쓰레드 ID
+     * @param user     요청자
+     * @return Thread
+     */
     @Transactional
     public Thread validateUserAuth(Long threadId, User user) {
         Thread thread = getThread(threadId);
         if (!thread.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("수정할 수 있는 권한이 없습니다.");
+            throw new IllegalArgumentException("권한이 없습니다.");
         }
         return thread;
     }
 
-
     @Override
     @Transactional(readOnly = true)
-    public List<ThreadResponseDto> getAllThreadsInChannel(Long channelId, PageDto pageDto){
+    public List<ThreadResponseDto> getAllThreadsInChannel(Long channelId, PageDto pageDto) {
         Page<Thread> threadPages = threadRepository.findThreadsByChannelId(channelId, pageDto.toPageable());
         List<Thread> threads = threadPages.getContent();
         return threads.stream().map(ThreadResponseDto::of).collect(Collectors.toList());
@@ -105,4 +89,5 @@ public class ThreadServiceImpl implements ThreadService {
     public Thread findThreadById(Long id) {
         return threadRepository.findById(id).orElseThrow();
     }
+
 }

@@ -8,6 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 
+/**
+ * 페이징 DTO
+ */
 //lombok
 @Builder
 @Getter
@@ -17,6 +20,13 @@ public class PageDto {
     private int size;
     private String sortBy;
 
+    /**
+     * 생성자
+     *
+     * @param currentPage 현재 페이지 (default = 1)
+     * @param size        한 페이지의 사이즈 (default = 5)
+     * @param sortBy      정렬 기준 (default = "createdAt")
+     */
     public PageDto(int currentPage, int size, String sortBy) {
         if (currentPage <= 0) {
             currentPage = 1;
@@ -38,6 +48,8 @@ public class PageDto {
     /**
      * 나타낼 페이지, 한 페이지에서의 크기(size), 정렬의 기준이 될 속성(sortBy)으로
      * PageRequest(Pageable 인터페이스의 구현체)를 만듭니다.
+     *
+     * @return Pageable
      */
     public Pageable toPageable() {
         // 페이지는 index:0부터 시작하기 때문에 값에서 -1을 해주면서 넣습니다.

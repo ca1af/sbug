@@ -30,6 +30,11 @@ public class Chat extends Timestamp {
 
     /**
      * 생성자
+     *
+     * @param room     채팅방
+     * @param sender   발신자
+     * @param message  채팅 내용
+     * @param receiver 수신자
      */
     @Builder
     public Chat(ChatRoom room, User sender, String message, User receiver) {
@@ -41,6 +46,9 @@ public class Chat extends Timestamp {
 
     /**
      * 연관관계
+     * chat : chat_room = N : 1 단방향 연관관계
+     * chat : user(receiver) = N : 1 단방향 연관관계
+     * chat : user(sender) = N : 1 단방향 연관관계
      */
     @ManyToOne
     @JoinColumn(name = "room_id")
@@ -55,7 +63,10 @@ public class Chat extends Timestamp {
     private User sender;
 
     /**
-     * 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
+     * 서비스 메소드
+     * 채팅 내용을 수정합니다.
+     *
+     * @param message 메세지
      */
     public void updateMessage(String message) {
         this.message = message;

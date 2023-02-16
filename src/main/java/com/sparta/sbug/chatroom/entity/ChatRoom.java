@@ -15,14 +15,17 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ChatRoom {
     /**
-     * 컬럼 - 연관관계 컬럼을 제외한 컬럼을 정의합니다.
+     * 컬럼
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     /**
-     * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
+     * 생성자
+     *
+     * @param user1 유저 1
+     * @param user2 유저 2
      */
     @Builder
     public ChatRoom(User user1, User user2) {
@@ -32,6 +35,8 @@ public class ChatRoom {
 
     /**
      * 연관관계
+     * chatroom : user1 = N:1 단방향 연관 관계
+     * chatroom : user2 = N:1 단방향 연관 관계
      */
     @ManyToOne
     @JoinColumn(name = "user1_id")
@@ -41,12 +46,4 @@ public class ChatRoom {
     @JoinColumn(name = "user2_id")
     private User user2;
 
-    /**
-     * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
-     */
-
-
-    /**
-     * 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
-     */
 }

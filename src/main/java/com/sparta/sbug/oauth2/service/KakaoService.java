@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.sbug.oauth2.dto.KakaoUserInfo;
-import com.sparta.sbug.security.dto.TokenResponse;
+import com.sparta.sbug.security.dto.TokenResponseDto;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
@@ -31,7 +31,7 @@ public class KakaoService {
     private final JwtProvider jwtProvider;
 
     private final static String REST_API_KEY = "a6be9b62b761e5b5ee34bfa49d268617";
-    private final static String REDIRECT_URI = "http://localhost:8080/api/users/kakao";
+    private final static String REDIRECT_URI = "http://localhost:5500/login.html";
     /**
      *
      * 작동 방식은 다음과 같습니다.
@@ -43,8 +43,7 @@ public class KakaoService {
      * 6. 모든 요청이 완료되면 controller 에서 응답값으로 atk, rtk 를 Json 형식으로 응답한다.
      * 7. 발급한 token 을 프론트단에서 사용자의 header 등에 넣고 사용한다.
      */
-
-    public TokenResponse kakaoLogin(String code) throws JsonProcessingException {
+    public TokenResponseDto kakaoLogin(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
@@ -65,15 +64,15 @@ public class KakaoService {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         // HTTP Body 생성
-        MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
-        param.add("grant_type", "authorization_code");
-        param.add("client_id", REST_API_KEY);
-        param.add("redirect_uri", REDIRECT_URI);
-        param.add("code", code);
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "authorization_code");
+        body.add("client_id", REST_API_KEY);
+        body.add("redirect_uri", REDIRECT_URI);
+        body.add("code", code);
 
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
-                new HttpEntity<>(param, headers);
+                new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
 
         ResponseEntity<String> response = rt.exchange(

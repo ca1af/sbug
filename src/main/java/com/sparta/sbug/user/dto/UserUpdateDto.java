@@ -1,12 +1,13 @@
 package com.sparta.sbug.user.dto;
 
-import com.sparta.sbug.user.entity.User;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.util.Objects;
 
+/**
+ * 유저 정보 수정 DTO
+ */
 @Data
 public class UserUpdateDto {
     @Pattern(regexp = "^[a-zA-Z0-9]{4,10}$", message = "닉네임은 영문이나 숫자로 이루어져야 하고, 4~10글자여야 합니다.")
@@ -16,6 +17,9 @@ public class UserUpdateDto {
     private String password;
     // 프론트에서, 수정 갈 때 인증 객체의 네임과 패스워드 받아서 자동으로 채워주는 형식이 자연스럽지 않을까? <
 
+    /**
+     * 생성자
+     */
     public UserUpdateDto(String nickname, String password) {
         this.nickname = Objects.requireNonNullElse(nickname, "");
         this.password = password;

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 // lombok
 @RequiredArgsConstructor
 
-// springframework
+// springframework stereotype
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -35,27 +35,25 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public String createComment(Thread thread, String content, User user) {
+    public void createComment(Thread thread, String content, User user) {
         Comment comment = Comment.builder()
                 .content(content)
                 .user(user)
-                .thread(thread).build();
+                .build();
+        comment.setThread(thread);
         commentRepository.save(comment);
-        return "Success";
     }
 
     @Override
     @Transactional
-    public String updateComment(Comment comment, String content) {
+    public void updateComment(Comment comment, String content) {
         comment.updateContent(content);
-        return "Success";
     }
 
     @Override
     @Transactional
-    public String deleteComment(Comment comment) {
+    public void deleteComment(Comment comment) {
         commentRepository.delete(comment);
-        return "Success";
     }
 
     @Override

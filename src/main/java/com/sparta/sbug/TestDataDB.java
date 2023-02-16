@@ -94,8 +94,8 @@ public class TestDataDB {
             savedChannel1.addThread(savedThread);
             savedChannel2.addThread(savedThread2);
 
-            Comment comment1 = new Comment("코멘트1", user1, thread);
-
+            Comment comment1 = new Comment("코멘트1", user1);
+            comment1.setThread(thread);
             commentRepository.save(comment1);
 
             ThreadEmoji threadEmoji = new ThreadEmoji("Emoji1", user1, thread);

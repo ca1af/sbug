@@ -24,7 +24,7 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
 
     // CommentEmoji 생성
     @Override
-    public String createCommentEmoji(String emojiType, User user, Long commentId){
+    public void createCommentEmoji(String emojiType, User user, Long commentId){
         Comment comment = commentService.getComment(commentId);
         Optional<CommentEmoji> optionalEmoji = commentEmojiRepository.findByEmojiTypeAndCommentAndUser(EmojiType.valueOf(emojiType), comment, user);
         if (optionalEmoji.isPresent()) {
@@ -32,18 +32,16 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
         }
         CommentEmoji commentEmoji = new CommentEmoji(emojiType, user, comment);
         commentEmojiRepository.save(commentEmoji);
-        return "Success";
     }
 
     // CommentEmoji 삭제
     @Override
-    public String deleteCommentEmoji(String emojiType, User user, Long commentId) {
+    public void deleteCommentEmoji(String emojiType, User user, Long commentId) {
         Comment comment = commentService.getComment(commentId);
         Optional<CommentEmoji> optionalEmoji = commentEmojiRepository.findByEmojiTypeAndCommentAndUser(EmojiType.valueOf(emojiType), comment, user);
         if (optionalEmoji.isEmpty()) {
             throw new NoSuchElementException("해당 이모지 반응을 찾을 수 없습니다.");
         }
         commentEmojiRepository.delete(optionalEmoji.get());
-        return "Success";
     }
 }

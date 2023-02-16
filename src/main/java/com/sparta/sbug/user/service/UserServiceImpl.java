@@ -20,8 +20,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
+// lombok
 @RequiredArgsConstructor
+
+// springframework stereotype
+@Service
+
+// springframework transaction
 @Transactional
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
@@ -29,7 +34,7 @@ public class UserServiceImpl implements UserService {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public String signup(SignUpRequestDto requestDto) {
+    public void signup(SignUpRequestDto requestDto) {
         String email = requestDto.getEmail();
         String password = passwordEncoder.encode(requestDto.getPassword());
         String nickName = requestDto.getNickname();
@@ -46,7 +51,6 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         userRepository.save(user);
-        return "login-page";
     }
 
     @Override
@@ -66,9 +70,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String unregister(User user) {
+    public void unregister(User user) {
         userRepository.deleteByEmail(user.getEmail());
-        return "home";
     }
 
     @Override
