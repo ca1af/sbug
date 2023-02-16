@@ -30,9 +30,22 @@ public interface ScheduleService {
             Long scheduleId,
             Long userId
     );
-    //일정 완료표시
+
+    /**
+    * 대상 일정의 상태를 완료로 표시
+    * 
+    * @param scheduleId 수정할 일정의 ID
+    * @param userId 요청자 ID
+    */
     void completeSchedule(Long scheduleId, Long userId);
-    //일정 미완표시
+
+
+    /**
+    * 대상 일정의 상태를 미완으로 표시
+    *
+    * @param scheduleId 수정할 일정의 ID
+    * @param userId 요청자 ID
+    */
     void incompleteSchedule(Long scheduleId, Long userId);
 
     /**

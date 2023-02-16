@@ -211,7 +211,7 @@ public class ScheduleServiceImplTest {
     public void completeSchedule() {
         //given
         doneSchedule = schedule;
-        doneSchedule.complete();
+        doneSchedule.checkDoneSchedule();
         
         given(scheduleRepository.findById(scheduleId))
             .willReturn(Optional.of(schedule));
@@ -234,7 +234,7 @@ public class ScheduleServiceImplTest {
     public void completeScheduleIncorrectId() {
         //given
         doneSchedule = schedule;
-        doneSchedule.complete();
+        doneSchedule.checkDoneSchedule();
         
         given(scheduleRepository.findById(scheduleId))
             .willReturn(Optional.of(schedule));
@@ -257,9 +257,6 @@ public class ScheduleServiceImplTest {
     @DisplayName("serviceImpl.incompleteSchedule Test")
     public void incompleteSchedule() {
         //given
-        doneSchedule = schedule;
-        doneSchedule.complete();
-
         given(scheduleRepository.findById(scheduleId))
             .willReturn(Optional.of(schedule));
         given(scheduleRepository.save(schedule))
@@ -280,9 +277,6 @@ public class ScheduleServiceImplTest {
     @DisplayName("serviceImpl.incompleteSchedule w/Incorrect Test")
     public void incompleteScheduleIncorrectId() {
         //given
-        doneSchedule = schedule;
-        doneSchedule.complete();
-
         given(scheduleRepository.findById(scheduleId))
             .willReturn(Optional.of(schedule));
 

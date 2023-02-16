@@ -70,9 +70,18 @@ public class Schedule extends Timestamp {
         this.date = date;
     }
 
-
+    /**
+     * 서비스 메소드
+     */
     public void checkDoneSchedule() {
         this.status = ScheduleStatus.DONE;
         this.doneAt = LocalDateTime.now();
+    }
+
+    /**
+     * 서비스 메소드
+     */
+    public void uncheckDoneSchedule() {
+        this.status = ScheduleStatus.UNDONE;
     }
 }
