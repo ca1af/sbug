@@ -88,6 +88,13 @@ public class JwtProvider {
         return new TokenResponseDto(atk, rtk);
     }
 
+    public TokenResponseDto createTokenAdmin(String email) {
+        String atk = createToken(email, atkTime);
+        String rtk = createToken(email, rtkTime);
+        redisDao.setValues("ADMIN" + email, rtk, Duration.ofMillis(rtkTime));
+        return new TokenResponseDto(atk, rtk);
+    }
+
 
     /**
      * 토큰을 만드는 메서드

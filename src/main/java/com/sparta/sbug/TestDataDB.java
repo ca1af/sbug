@@ -64,11 +64,9 @@ public class TestDataDB {
 
             // 채널 생성
             Channel channel = Channel.builder()
-                    .adminEmail(savedUser1.getEmail())
                     .channelName("channel").build();
 
             Channel channel2 = Channel.builder()
-                    .adminEmail(savedUser3.getEmail())
                     .channelName("channel2").build();
 
             Channel savedChannel1 = channelRepository.save(channel);
@@ -102,6 +100,8 @@ public class TestDataDB {
             threadEmojiRepository.save(threadEmoji);
             CommentEmoji commentEmoji = new CommentEmoji("Emoji1", user1, comment1);
             commentEmojiRepository.save(commentEmoji);
+
+
         }
 
         private String getEncode(String password) {

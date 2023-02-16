@@ -27,18 +27,15 @@ public class Channel {
     @Column(nullable = false)
     private String channelName;
 
-    @Column(nullable = false)
-    private String adminEmail;
+
 
     /**
      * 생성자
      *
-     * @param adminEmail  관리자 이메일
      * @param channelName 채널 이름
      */
     @Builder
-    public Channel(String adminEmail, String channelName) {
-        this.adminEmail = adminEmail;
+    public Channel( String channelName) {
         this.channelName = channelName;
     }
 

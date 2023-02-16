@@ -39,7 +39,7 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
     @Override
     @Transactional
     public void createChannelAndUserChannelForRequester(User user, String channelName) {
-        Channel channel = channelService.createChannel(user, channelName);
+        Channel channel = channelService.createChannel(channelName);
         userChannelService.createUserChannel(user, channel);
     }
 
@@ -70,16 +70,16 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
         userChannelService.deleteUserChannelByUserAndChannel(user, channel);
     }
 
-    @Override
-    @Transactional
-    public void kickUser(User admin, Long id, String email) {
-        Channel channel = channelService.getChannelById(id);
-        if (channel.getAdminEmail().equals(admin.getEmail())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
-        }
-
-        User user = userService.getUser(email);
-        userChannelService.deleteUserChannelByUserAndChannel(user, channel);
-    }
+//    @Override
+//    @Transactional
+//    public void kickUser(User admin, Long id, String email) {
+//        Channel channel = channelService.getChannelById(id);
+//        if (channel.getAdminEmail().equals(admin.getEmail())) {
+//            throw new IllegalArgumentException("권한이 없습니다.");
+//        }
+//
+//        User user = userService.getUser(email);
+//        userChannelService.deleteUserChannelByUserAndChannel(user, channel);
+//    }
 
 }
