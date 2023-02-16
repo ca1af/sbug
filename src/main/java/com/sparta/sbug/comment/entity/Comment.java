@@ -9,18 +9,19 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Entity
+// lombok
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+
+// jpa
+@Entity
 public class Comment extends Timestamp {
     /**
-     * 컬럼 - 연관관계 컬럼을 제외한 컬럼을 정의합니다.
+     * 컬럼
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,23 +31,28 @@ public class Comment extends Timestamp {
     private String content;
 
     /**
-     * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
+     * 생성자
+     *
+     * @param content 내용
+     * @param user    댓글을 남긴 사용자
      */
     @Builder
-    public Comment(String content, User user, Thread thread) {
+    public Comment(String content, User user) {
         this.content = content;
         this.user = user;
-        this.thread = thread;
     }
 
 
     /**
-     * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
+     * 연관관계
+     * comment : comment_emoji = 1:N 양방향 연관 관계
+     * comment : thread = N:1 양방향 연관 관계
+     * comment : user = N:1 단방향 연관 관계
      */
-    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
     private Set<CommentEmoji> emojis = new LinkedHashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread_id")
     private Thread thread;
 
@@ -55,14 +61,27 @@ public class Comment extends Timestamp {
     private User user;
 
     /**
-     * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
+     * 연관관계 편의 메소드
+     * setThread : comment - thread
+     * addEmoji : comment - emoji
      */
-
+    public void setThread(Thread thread) {
+        this.thread = thread;
+        thread.addChannel(this);
+    }
 
     /**
-     * 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
+     * 연관관계 편의 메소드
+     */
+    public void addEmoji(CommentEmoji emoji) {
+        this.emojis.add(emoji);
+    }
+
+    /**
+     * 서비스 메소드
      */
     public void updateContent(String content) {
         this.content = content;
     }
+
 }

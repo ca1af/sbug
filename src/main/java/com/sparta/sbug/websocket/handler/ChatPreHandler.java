@@ -1,7 +1,6 @@
 package com.sparta.sbug.websocket.handler;
 
 import com.sparta.sbug.security.jwt.JwtProvider;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -15,14 +14,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+// lombok
 @RequiredArgsConstructor
+
+// springframework stereotype
 @Component
 public class ChatPreHandler implements ChannelInterceptor {
 
     private final JwtProvider jwtProvider;
     private static final Map<String, String> sessions = new HashMap<>();
 
-    // 전송 받은 메세지에서 JWT 토큰을 검증하는 메서드 (보내진 메세지를 전처리하는 메서드)
+    /**
+     * 보내진 메세지를 전처리하는 메서드
+     * 전송 받은 메세지에서 JWT 토큰을 검증하기 위해 사용합니다.
+     *
+     * @param message 보내진 메세지
+     * @param channel 메세지 채널
+     * @return Message 전처리 후 메세지를 다시 반환함
+     */
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
@@ -39,7 +48,7 @@ public class ChatPreHandler implements ChannelInterceptor {
         // 헤더에서 토큰을 가져옴
         String authorizationHeader = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
 
-        if(authorizationHeader == null || authorizationHeader.equals("null")) {
+        if (authorizationHeader == null || authorizationHeader.equals("null")) {
             throw new MessageDeliveryException("메세지: 토큰 없음");
         }
 
@@ -52,8 +61,7 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         // 연결 메세지일 시 세션 ID를 저장하고 콘솔에 로그를 남김
         if (Objects.requireNonNull(headerAccessor.getMessageType()).equals(SimpMessageType.CONNECT)) {
-            Claims info = jwtProvider.getUserInfoFromToken(token);
-            var email = info.getSubject();
+            var email = jwtProvider.getSubject(token);
             var sessionId = headerAccessor.getSessionId();
             sessions.put(sessionId, email);
             System.out.printf("[Chat] %s : %s CONNECT%s", email, sessionId, System.lineSeparator());

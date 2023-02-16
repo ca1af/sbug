@@ -9,6 +9,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
+/**
+ * 일정 응답 DTO
+ */
+// lombok
 @Getter
 @RequiredArgsConstructor
 public class ScheduleResponseDto {
@@ -25,6 +29,9 @@ public class ScheduleResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime doneAt;
 
+    /**
+     * 생성자
+     */
     public ScheduleResponseDto(Schedule schedule) {
         this.scheduleId = schedule.getId();
         this.content = schedule.getContent();
@@ -32,8 +39,15 @@ public class ScheduleResponseDto {
         this.status = schedule.getStatus();
         this.doneAt = schedule.getDoneAt();
     }
+
+    /**
+     * 일정 엔티티들을 DTO에 담아 반환하는 메서드
+     *
+     * @param mySchedules 일정 엔티티
+     * @return Page&lt;ScheduleResponseDto&gt;
+     */
     public static Page<ScheduleResponseDto> toDtoList(
-        Page<Schedule> mySchedules
+            Page<Schedule> mySchedules
     ) {
         return mySchedules.map(ScheduleResponseDto::new);
     }

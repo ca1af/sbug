@@ -23,29 +23,37 @@ public class ThreadCommentUpperLayerServiceImpl implements ThreadCommentUpperLay
 
     @Override
     @Transactional
-    public String createComment(Long threadId, String content, User user) {
-        Thread thread = threadService.findThreadById(threadId);
+    public void createComment(Long threadId, String content, User user) {
+        Thread thread = threadService.getThread(threadId);
         if (!userChannelService.isUserJoinedByChannel(user, thread.getChannel())) {
             throw new IllegalArgumentException("유저가 채널에 속해있지 않습니다. 권한이 없습니다");
         }
 
-        return commentService.createComment(thread, content, user);
+        commentService.createComment(thread, content, user);
     }
 
     @Override
     @Transactional
-    public String updateComment(Long commentId, String content, User user) {
+    public void updateComment(Long commentId, String content, User user) {
         Comment comment = validateUserAuth(commentId, user);
-        return commentService.updateComment(comment, content);
+        commentService.updateComment(comment, content);
     }
 
     @Override
     @Transactional
-    public String deleteComment(Long commentId, User user) {
+    public void deleteComment(Long commentId, User user) {
         Comment comment = validateUserAuth(commentId, user);
-        return commentService.deleteComment(comment);
+        commentService.deleteComment(comment);
     }
 
+    /**
+     * 유저가 대상 댓글을 수정/삭제할 수 있는 권한을 가졌는지 확인하고
+     * 권한을 가졌다면 대상 댓글 엔티티를 반환합니다.
+     *
+     * @param commentId 대상 댓글
+     * @param user      사용자
+     * @return Comment
+     */
     @Transactional
     public Comment validateUserAuth(Long commentId, User user) {
         Comment comment = commentService.getComment(commentId);

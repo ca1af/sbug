@@ -17,8 +17,13 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Service
+// lombok
 @RequiredArgsConstructor
+
+// springframework stereotype
+@Service
+
+// springframework transaction
 @Transactional
 public class ScheduleServiceImpl implements ScheduleService {
 
@@ -28,20 +33,20 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public void registerSchedule(ScheduleRequestDto requestDto, User user) {
         Schedule newSchedule = Schedule.builder()
-            .user(user)
-            .content(requestDto.getContent())
-            .date(requestDto.getDate())
-            .status(ScheduleStatus.UNDONE)
-            .build();
+                .user(user)
+                .content(requestDto.getContent())
+                .date(requestDto.getDate())
+                .status(ScheduleStatus.UNDONE)
+                .build();
         scheduleRepository.save(newSchedule);
     }
 
     //일정 수정(내용, 날짜)
     @Override
     public void updateSchedule(
-        ScheduleRequestDto requestDto,
-        Long scheduleId,
-        Long userId
+            ScheduleRequestDto requestDto,
+            Long scheduleId,
+            Long userId
     ) {
         Schedule foundSchedule =
             scheduleRepository.findById(scheduleId).orElseThrow(
@@ -49,8 +54,8 @@ public class ScheduleServiceImpl implements ScheduleService {
             );
         if (userId.equals(foundSchedule.getUser().getId())) {
             foundSchedule.updateSchedule(
-                requestDto.getContent(),
-                requestDto.getDate()
+                    requestDto.getContent(),
+                    requestDto.getDate()
             );
             scheduleRepository.save(foundSchedule);
         } else {
@@ -107,13 +112,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional(readOnly = true)
     public Page<ScheduleResponseDto> getMySchedules(
-        Pageable pageable,
-        User user
+            Pageable pageable,
+            User user
     ) {
         Page<Schedule> mySchedules =
-            scheduleRepository.findAllByUserId(user.getId(), pageable);
+                scheduleRepository.findAllByUserId(user.getId(), pageable);
         Page<ScheduleResponseDto> responseDtoList =
-            ScheduleResponseDto.toDtoList(mySchedules);
+                ScheduleResponseDto.toDtoList(mySchedules);
         return responseDtoList;
     }
 
@@ -122,20 +127,20 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleResponseDto getSchedule(Long scheduleId) {
         Schedule foundSchedule =
-            scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("일정을 찾을 수 없습니다.")
-            );
+                scheduleRepository.findById(scheduleId).orElseThrow(
+                        () -> new IllegalStateException("일정을 찾을 수 없습니다.")
+                );
         ScheduleResponseDto responseDto =
-            new ScheduleResponseDto(foundSchedule);
+                new ScheduleResponseDto(foundSchedule);
         return responseDto;
     }
 
     //기간내 일정 조회
     @Override
     public Page<ScheduleResponseDto> getPeriodSchedules(
-        Pageable pageable,
-        User user,
-        PeriodRequestDto periodDto
+            Pageable pageable,
+            User user,
+            PeriodRequestDto periodDto
     ) {
         LocalDateTime startDate = periodDto.getStartDate();
         LocalDateTime endDate = periodDto.getEndDate();
@@ -144,7 +149,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 user.getId(), startDate, endDate, pageable
             );
         Page<ScheduleResponseDto> responseDtoList =
-            ScheduleResponseDto.toDtoList(periodSchedules);
+                ScheduleResponseDto.toDtoList(periodSchedules);
         return responseDtoList;
     }
 }

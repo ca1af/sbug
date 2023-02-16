@@ -85,7 +85,7 @@
 
             $("#button-send").on("click", function (e) {
                 let msg = document.getElementById("chat-message");
-                stomp.send('/app/chats/messages', {Authorization: auth1}, JSON.stringify({
+                stomp.send('/app/chats', {Authorization: auth1}, JSON.stringify({
                     roomId: roomId,
                     receiverId: userId,
                     message: msg.value

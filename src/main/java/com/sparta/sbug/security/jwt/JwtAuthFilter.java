@@ -1,7 +1,5 @@
 package com.sparta.sbug.security.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.sbug.security.dto.SecurityExceptionDto;
 import com.sparta.sbug.security.userDetails.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
@@ -19,13 +17,22 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Base64;
 
-
+// lombok
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
+
     private final JwtProvider jwtProvider;
     private final UserDetailsServiceImpl userDetailsImpl;
 
+    /**
+     * JWT 권한 필터
+     * Access Token, Refresh Token의 검증을 수행합니다.
+     *
+     * @param request     Http 서블릿 요청
+     * @param response    Http 서블릿 응답
+     * @param filterChain 필터 체인
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = request.getHeader("Authorization");
@@ -67,6 +74,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
 
+    /**
+     * 토큰을 검증하는 메서드
+     *
+     * @param token 검증할 토큰
+     * @return boolean : true = 검증 성공, false = 검증 실패
+     */
     public boolean validateToken(String token) {
         try {
             var encodeKey = Base64.getEncoder().encodeToString(jwtProvider.byteKey);
@@ -74,26 +87,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return true;
         } catch (SecurityException | MalformedJwtException e) {// 전: 권한 없다면 발생 , 후: JWT가 올바르게 구성되지 않았다면 발생
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
-
         } catch (ExpiredJwtException e) {// JWT만료
             log.info("Expired JWT token, 만료된 JWT token 입니다.");
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
-
         } catch (IllegalArgumentException e) {
             log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
         }
         return false;
     }
 
-    public void jwtExceptionHandler(HttpServletResponse response, String msg, int statusCode) {
-        response.setStatus(statusCode);
-        response.setContentType("application/json");
-        try {
-            String json = new ObjectMapper().writeValueAsString(new SecurityExceptionDto(statusCode, msg));
-            response.getWriter().write(json);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-    }
+    /**
+     * JWT 관련 작업 중에 발생한 예외를 처리하기 위한 메서드
+     *
+     * @param response   HTTP 서블릿 응답
+     * @param msg        메세지
+     * @param statusCode 상태 코드
+     */
+
 }

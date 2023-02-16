@@ -4,6 +4,9 @@ import com.sparta.sbug.chat.entity.Chat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 채팅 응답 DTO
+ */
 // lombok
 @Getter
 @RequiredArgsConstructor

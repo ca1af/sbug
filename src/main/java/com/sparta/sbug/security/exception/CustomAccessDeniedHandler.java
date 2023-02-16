@@ -1,7 +1,7 @@
 package com.sparta.sbug.security.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.sbug.security.dto.SecurityExceptionDto;
+import com.sparta.sbug.common.exceptions.dto.ExceptionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -13,11 +13,19 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.OutputStream;
 
+// springframework stereotype
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
-    private static final SecurityExceptionDto exceptionDto =
-            new SecurityExceptionDto(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.getReasonPhrase());
+    private static final ExceptionResponse EXCEPTION_RESPONSE =
+            new ExceptionResponse(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.name(), 403, HttpStatus.FORBIDDEN.getReasonPhrase());
 
+    /**
+     * 발생한 <code>AccessDeniedException</code>을 처리하기 위한 메서드
+     *
+     * @param request               <code>AccessDeniedException</code>이 발생한 요청
+     * @param response              사용자에게 오류를 알릴 응답
+     * @param accessDeniedException 처리기 호출의 원인이 된 예외
+     */
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
@@ -27,7 +35,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         try (OutputStream os = response.getOutputStream()) {
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.writeValue(os, exceptionDto);
+            objectMapper.writeValue(os, EXCEPTION_RESPONSE);
             os.flush();
         }
     }

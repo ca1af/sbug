@@ -22,11 +22,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+// lombok
 @RequiredArgsConstructor
+
+// springframework context
+@Configuration
+
+// springframework security
 @EnableWebSecurity // 스프링 Security 지원을 가능하게 함
-//@EnableGlobalMethodSecurity(prePostEnabled = true) // @Secured 어노테이션 활성화
 @EnableMethodSecurity // 위 어노테이션은 Deprecated
+
+// springframework scheduling
 @EnableScheduling // @Scheduled 어노테이션 활성화
 public class WebSecurityConfig implements WebMvcConfigurer {
 
@@ -35,11 +41,21 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final UserDetailsServiceImpl userDetailsService;
 
+    /**
+     * PasswordEncoder를 빈으로 주입
+     *
+     * @return BCryptPasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * web.ignoring() 설정으로 필터 적용을 제외해줄 요청을 정의합니다.
+     *
+     * @return WebSecurityCustomizer
+     */
     // 가장 먼저 시큐리티를 사용하기 위해선 선언해준다.
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -48,6 +64,13 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
+    /**
+     * HttpSecurity에 대한 보안 설정들을 정의합니다.
+     *
+     * @param http : HttpSecurity
+     * @return SecurityFilterChain
+     * @throws Exception 발생 가능한 예외
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
@@ -59,18 +82,24 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/chat/**").permitAll()
                 .requestMatchers("/api/users/sign-up").permitAll()
                 .requestMatchers("/api/users/login").permitAll()
+                .requestMatchers("/api/users/kakao**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
-        // 401 Error 처리, Authorization 즉, 인증과정에서 실패할 시 처리
-        http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
-        // 403 Error 처리, 인증과는 별개로 추가적인 권한이 충족되지 않는 경우
-        http.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler);
+
+        http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint).accessDeniedHandler(customAccessDeniedHandler);
+    //ArithmeticException<>
         return http.build();
     }
+
+    /**
+     * 다른 출처의 자원들을 공유할 수 있도록 CORS 설정을 정의합니다.
+     *
+     * @param registry : CorsRegistry
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedMethods("GET","POST","PUT","DELETE","OPTIONS","HEAD")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
                 .exposedHeaders("Authorization")
                 .exposedHeaders("RTK");
         WebMvcConfigurer.super.addCorsMappings(registry);

@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 메세지 요청 DTO
+ */
 // lombok
 @Getter
 @Setter

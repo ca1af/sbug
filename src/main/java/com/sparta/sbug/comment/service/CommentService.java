@@ -10,13 +10,44 @@ import java.util.List;
 
 public interface CommentService {
 
+    /**
+     * 대상 쓰레드에 달린 모든 댓글을 조회하는 메서드
+     *
+     * @param threadId 대상 쓰레드 ID
+     * @param pageDto  페이징 DTO
+     * @return List&lt;CommentResponseDto&gt;
+     */
     List<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto);
 
-    String createComment(Thread thread, String content, User user);
+    /**
+     * 대상 쓰레드 밑에 댓글을 생성하는 메서드
+     *
+     * @param thread  대상 쓰레드
+     * @param content 댓글 내용
+     * @param user    요청자
+     */
+    void createComment(Thread thread, String content, User user);
 
-    String updateComment(Comment comment, String content);
+    /**
+     * 대상 댓글을 수정하는 메서드
+     *
+     * @param comment 대상 댓글
+     * @param content 수정할 내용
+     */
+    void updateComment(Comment comment, String content);
 
-    String deleteComment(Comment comment);
+    /**
+     * 대상 댓글을 삭제하는 메서드
+     *
+     * @param comment 대상 댓글
+     */
+    void deleteComment(Comment comment);
 
+    /**
+     * 댓글 엔티티를 조회하는 메서드
+     *
+     * @param commentId 대상 댓글 ID
+     * @return Comment
+     */
     Comment getComment(Long commentId);
 }

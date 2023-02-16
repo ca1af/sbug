@@ -4,8 +4,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
-
+/**
+ * 댓글 요청 DTO
+ */
 // lombok
 @Getter
 @NoArgsConstructor
