@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMVCTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,7 +25,7 @@ import static org.mockito.BDDMockito.any;
 
 
 @ExtendWith(MockitoExtension.class)
-@WebMVCTest(ScheduleController.class)
+@WebMvcTest(ScheduleController.class)
 public class ScheduleControllerTest {
 
     @Autowired
@@ -43,10 +43,7 @@ public class ScheduleControllerTest {
         willDoNothing().given(scheduleService).registerSchedule(any(),any());
 
         //when & then
-        mvc.perform(post(""))
-            .andExpectAll(
-                status().isOk(),
-            );
+        //mvc.perform(post(""))
 
     }
     

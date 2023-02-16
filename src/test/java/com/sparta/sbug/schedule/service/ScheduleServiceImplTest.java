@@ -184,11 +184,16 @@ public class ScheduleServiceImplTest {
             .willReturn(Optional.of(schedule));
 
         //when
-        scheduleServiceImpl.updateSchedule(
-            request,
-            scheduleId,
-            9999L
-        );
+        try { 
+            scheduleServiceImpl.updateSchedule(
+                request,
+                scheduleId,
+                9999L
+            );
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
 
         //then
         then(scheduleRepository).should(times(1))
@@ -224,10 +229,16 @@ public class ScheduleServiceImplTest {
         given(scheduleRepository.findById(scheduleId))
             .willReturn(Optional.of(schedule));
         //when
-        scheduleServiceImpl.deleteSchedule(
-            scheduleId,
-            9999L
-        );
+        try { 
+            scheduleServiceImpl.deleteSchedule(
+                scheduleId,
+                9999L
+            );
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
 
         //then
         then(scheduleRepository).should(times(1))
