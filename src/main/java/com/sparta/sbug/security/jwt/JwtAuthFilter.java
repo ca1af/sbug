@@ -1,7 +1,5 @@
 package com.sparta.sbug.security.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.sbug.security.dto.SecurityExceptionDto;
 import com.sparta.sbug.security.userDetails.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
@@ -106,14 +104,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
      * @param msg        메세지
      * @param statusCode 상태 코드
      */
-    public void jwtExceptionHandler(HttpServletResponse response, String msg, int statusCode) {
-        response.setStatus(statusCode);
-        response.setContentType("application/json");
-        try {
-            String json = new ObjectMapper().writeValueAsString(new SecurityExceptionDto(statusCode, msg));
-            response.getWriter().write(json);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-    }
+
 }
