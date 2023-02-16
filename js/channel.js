@@ -1,32 +1,49 @@
-// 채널개설 //완성안된듯?
+// 채널개설
 function createChannel(){
-	var settings = {
-		"url": "http://localhost:8080/api/channels",
-		"method": "POST",
-		"timeout": 0,
-		"headers": {
-      		"Content-Type": "application/json",
-			"Authorization": localStorage.getItem('accessToken'),
-		},
-    "data": JSON.stringify({
-      "channelName": $('.createchannelname').val()
-    })
-	  };
-	$.ajax(settings).done(function (response) {
-	console.log(response);
-  });
+  var url = "http://localhost:8080/api/channels";
+
+  console.log($('.createchannelname').val());
+
+  $.ajax({
+    type: "POST",
+    url: url,
+    headers: {
+		"Authorization": getCookie('accessToken'),
+		"RTK": getCookie('refreshToken')
+    },
+	contentType: "application/json",
+	data: JSON.stringify({
+		"channelName" : $('.createchannelname').val()
+	}),
+    success: function (response, xhr) {
+		alert("채널 생성 완료");
+		//window.location.reload();
+		getChannelList();
+    },
+    error: function (response) {
+		alert(response.responseJSON.message)
+		$('.createchannelname').val("");
+    }
+  })
 }
 
 
 // 전체 채널 조회
 function getChannelList(){
+	const ul = document.getElementsByClassName('chanelbox');
+	const items = ul[0].getElementsByTagName('li');
+	while (items.length > 1) {
+		items[items.length - 1].remove;
+	}
+
 	var settings = {
 		"url": "http://localhost:8080/api/users/channels",
 		"method": "GET",
 		"timeout": 0,
 		"headers": {
       		"Content-Type": "application/json",
-			"Authorization": localStorage.getItem('accessToken'),
+			  "Authorization": getCookie('accessToken'),
+			  "RTK": getCookie('refreshToken')
 			},
 		};
 		$.ajax(settings).done(function (response) {
@@ -53,7 +70,8 @@ function SearchChannelList(){
 		"timeout": 0,
 		"headers": {
       		"Content-Type": "application/json",
-			"Authorization": localStorage.getItem('accessToken'),
+			  "Authorization": getCookie('accessToken'),
+			  "RTK": getCookie('refreshToken')
 			}
 		};
 		$.ajax(settings).done(function (response) {
