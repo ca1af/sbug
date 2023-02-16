@@ -1,8 +1,9 @@
 package com.sparta.sbug.security.jwt;
 
+import com.sparta.sbug.common.exceptions.ErrorCode;
 import com.sparta.sbug.security.RedisDao;
 import com.sparta.sbug.security.dto.TokenResponseDto;
-import com.sparta.sbug.security.exception.ForbiddenException;
+import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.user.dto.UserResponseDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -60,7 +61,7 @@ public class JwtProvider {
     public TokenResponseDto reissueAtk(UserResponseDto userResponseDto) {
         String email = userResponseDto.getEmail();
         String rtkInRedis = redisDao.getValues(email);
-        if (Objects.isNull(rtkInRedis)) throw new ForbiddenException("인증 정보가 만료되었습니다.");
+        if (Objects.isNull(rtkInRedis)) throw new CustomException(ErrorCode.CREDENTIAL_EXPIRATION);
         String atk = createToken(email, atkTime);
         String rtk = createToken(email, rtkTime);
         redisDao.setValues(email, rtk, Duration.ofMillis(rtkTime));
