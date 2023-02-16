@@ -21,6 +21,10 @@ public interface ScheduleService {
         Long scheduleId,
         Long userId
     );
+    //일정 완료표시
+    void completeSchedule(Long scheduleId, Long userId);
+    //일정 미완표시
+    void incompleteSchedule(Long scheduleId, Long userId);
     //일정 삭제
     void deleteSchedule(Long scheduleId, Long userId);
     //내 일정 조회

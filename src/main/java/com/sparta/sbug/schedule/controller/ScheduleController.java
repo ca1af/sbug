@@ -43,6 +43,28 @@ public class ScheduleController {
         return "/user/schedule";
     }
 
+    //일정 완료 표시
+    @PutMapping("/{id}/done")
+    public String completeSchedule(
+        @PathVariable Long id,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long userId = userDetails.getUser().getId();
+        scheduleService.completeSchedule(id, userId);
+        return "/user/schedule";
+    }
+
+    //일정 미완 표시
+    @PutMapping("/{id}/undone")
+    public String incompleteSchedule(
+        @PathVariable Long id,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long userId = userDetails.getUser().getId();
+        scheduleService.incompleteSchedule(id, userId);
+        return "/user/schedule";
+    }
+
     //일정 삭제
     @DeleteMapping("/{id}")
     public String deleteSchedule(

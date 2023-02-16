@@ -35,14 +35,27 @@ public class Schedule extends Timestamp {
     private LocalDateTime doneAt;
 
     @Builder
-    public Schedule(User user, String content, LocalDateTime date) {
+    public Schedule(
+        User user, String content, LocalDateTime date, ScheduleStatus status
+    ) {
         this.user = user;
         this.content = content;
         this.date = date;
+        this.status = status;
     }
-    public void updateSchedule(String content, LocalDateTime date) {
+
+    public void updateSchedule(
+        String content, LocalDateTime date
+    ) {
         this.content = content;
         this.date = date;
+    }
+
+    public void complete() {
+        this.status = ScheduleStatus.DONE;
+    }
+    public void incomplete() {
+        this.status = ScheduleStatus.UNDONE;
     }
 
 }
