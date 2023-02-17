@@ -1,5 +1,6 @@
 package com.sparta.sbug.upperlayerservice;
 
+import com.sparta.sbug.channel.service.ChannelAdminService;
 import com.sparta.sbug.channel.service.ChannelService;
 import com.sparta.sbug.comment.service.CommentAdminService;
 import com.sparta.sbug.comment.service.CommentService;
@@ -14,14 +15,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class AdminUpperLayerServiceImpl implements AdminUpperLayerService{
-    private final ChannelService channelService;
+    private final ChannelAdminService channelService;
     private final UserChannelService userChannelService;
     private final ThreadAdminService threadService;
     private final CommentAdminService commentService;
     @Override
     public void disableChannelAndDependentUserChannel(Long channelId) {
         // thread 개수만큼 thread 비활성화 쿼리가 나가야 하나? <
-
+        commentService.disableCommentByChannelId(channelId);
+        threadService.disableThreadsByChannelId(channelId);
+        channelService.disableChannel(channelId);
     }
 
     @Override

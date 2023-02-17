@@ -27,4 +27,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Modifying(clearAutomatically = true)
     @Query("update Comment c set c.inUse = false where c.thread.id = :id")
     void disableCommentByThreadId(@Param("id") Long threadId);
+
+    @Modifying(clearAutomatically = true)
+    @Query("update Comment c set c.inUse = false where c.channel.id = :id")
+    void disableCommentByChannelId(@Param("id") Long channelId);
 }

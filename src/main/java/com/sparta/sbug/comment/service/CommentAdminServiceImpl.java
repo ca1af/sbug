@@ -22,4 +22,9 @@ public class CommentAdminServiceImpl implements CommentAdminService{
     public void disableCommentByThreadId(Long threadId){
         commentRepository.disableCommentByThreadId(threadId);
     }
+
+    @Override
+    public void disableCommentByChannelId(Long channelId) {
+        commentRepository.disableCommentByChannelId(channelId);
+    }
 }
