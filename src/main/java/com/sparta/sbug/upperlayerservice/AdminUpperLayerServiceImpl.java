@@ -6,6 +6,7 @@ import com.sparta.sbug.comment.service.CommentAdminService;
 import com.sparta.sbug.comment.service.CommentService;
 import com.sparta.sbug.thread.service.ThreadAdminService;
 import com.sparta.sbug.thread.service.ThreadService;
+import com.sparta.sbug.userchannel.service.UserChannelAdminService;
 import com.sparta.sbug.userchannel.service.UserChannelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AdminUpperLayerServiceImpl implements AdminUpperLayerService{
     private final ChannelAdminService channelService;
-    private final UserChannelService userChannelService;
+    private final UserChannelAdminService userChannelService;
     private final ThreadAdminService threadService;
     private final CommentAdminService commentService;
     @Override
@@ -24,6 +25,7 @@ public class AdminUpperLayerServiceImpl implements AdminUpperLayerService{
         // thread 개수만큼 thread 비활성화 쿼리가 나가야 하나? <
         commentService.disableCommentByChannelId(channelId);
         threadService.disableThreadsByChannelId(channelId);
+        userChannelService.disableUserChannelByChannelAbsence(channelId);
         channelService.disableChannel(channelId);
     }
 

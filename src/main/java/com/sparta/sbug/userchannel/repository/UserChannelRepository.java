@@ -66,7 +66,7 @@ public interface UserChannelRepository extends JpaRepository<UserChannel, Long> 
      */
     @Query("update UserChannel uc set uc.inUse = false where uc.user.id = :userId")
     @Modifying(clearAutomatically = true)
-    void disableAllChannelByUserIdAndInUse(@Param("userId") Long userId);
+    void disableAllUserChannelByUserIdAndInUse(@Param("userId") Long userId);
 
     /**
      * 위와 비슷한 로직으로, 채널 id 가 일치하는 모든 객체를 비활성화 합니다.
@@ -76,6 +76,6 @@ public interface UserChannelRepository extends JpaRepository<UserChannel, Long> 
 
     @Query("update UserChannel uc set uc.inUse = false where uc.channel.id = :channelId")
     @Modifying(clearAutomatically = true)
-    void disableAllChannelByChannelIdAndInUse(@Param("channelId") Long channelId);
+    void disableAllUserChannelByChannelIdAndInUse(@Param("channelId") Long channelId);
 
 }

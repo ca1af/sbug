@@ -20,6 +20,17 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     private final UserChannelRepository userChannelRepository;
 
+//    // 1. 유저가 채널에서 나간 경우
+//    @Override
+//    public void leaveChannel(Long channelId, Long userId) {
+//
+//    }
+//    // 4. 유저가 탈퇴한 경우
+//    @Override
+//    public void disableUserChannelByUserAbsence(Long userId) {
+//
+//    }
+
     @Override
     public List<UserChannel> getUserChannelsByUserId(Long userId) {
         return userChannelRepository.findAllChannelByUserIdAndInUseIsTrue(userId);
