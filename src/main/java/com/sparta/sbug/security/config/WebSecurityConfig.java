@@ -2,8 +2,10 @@ package com.sparta.sbug.security.config;
 
 import com.sparta.sbug.security.exception.CustomAccessDeniedHandler;
 import com.sparta.sbug.security.exception.CustomAuthenticationEntryPoint;
+import com.sparta.sbug.security.jwt.AdminJwtAuthFilter;
 import com.sparta.sbug.security.jwt.JwtAuthFilter;
 import com.sparta.sbug.security.jwt.JwtProvider;
+import com.sparta.sbug.security.userDetails.AdminDetailsServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -17,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -40,6 +43,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final UserDetailsServiceImpl userDetailsService;
+    private final AdminDetailsServiceImpl adminDetailsService;
 
     /**
      * PasswordEncoder를 빈으로 주입
@@ -83,11 +87,14 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/api/users/sign-up").permitAll()
                 .requestMatchers("/api/users/login").permitAll()
                 .requestMatchers("/api/users/kakao**").permitAll()
+                .requestMatchers("/api/admins/login").permitAll()
                 .anyRequest().authenticated()
-                .and().addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .and()
+                        .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+//                .addFilterBefore(new AdminJwtAuthFilter(jwtProvider, adminDetailsService), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), AdminJwtAuthFilter.class);
 
         http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint).accessDeniedHandler(customAccessDeniedHandler);
-    //ArithmeticException<>
         return http.build();
     }
 

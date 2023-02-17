@@ -27,10 +27,9 @@ class ChannelServiceImplTest {
     @DisplayName("Channel Service : Get Channel By Channel ID")
     void getChannelById() {
         // give
-        User user = userRepository.findByEmail("user1").orElseThrow();
+        User user = userRepository.findByEmailAndInUseIsTrue("user1").orElseThrow();
 
         Channel newChannel = Channel.builder()
-                .adminEmail(user.getEmail())
                 .channelName("test channel").build();
 
         Channel savedChannel = channelRepository.saveAndFlush(newChannel);
@@ -50,17 +49,16 @@ class ChannelServiceImplTest {
     @DisplayName("Channel Service : Create Channel")
     void createChannel() {
         // give
-        User user = userRepository.findByEmail("user1").orElseThrow();
+        User user = userRepository.findByEmailAndInUseIsTrue("user1").orElseThrow();
         String channelName = "new test channel";
 
         // when
         System.out.println("======================== test query start =============================");
-        Channel newChannel = channelService.createChannel(user, channelName);
+        Channel newChannel = channelService.createChannel(channelName);
         System.out.println("=======================================================================");
 
         // then
         assert newChannel.getChannelName().equals(channelName);
-        assert newChannel.getAdminEmail().equals(user.getEmail());
 
     }
 
@@ -68,7 +66,7 @@ class ChannelServiceImplTest {
     @DisplayName("Channel Service : Update Channel Name")
     void updateChannelName() {
         // give
-        User user1 = userRepository.findByEmail("user1").orElseThrow();
+        User user1 = userRepository.findByEmailAndInUseIsTrue("user1").orElseThrow();
         Channel channel = channelRepository.findById(1L).orElseThrow();
         String newChannelName = "New Channel Name";
 
@@ -87,9 +85,8 @@ class ChannelServiceImplTest {
     // 채널을 삭제하는 메서드 테스트입니다, Thread 등과 매핑되지 않은 빈 채널로 테스트 해야 합니다.
     void deleteChannel() {
         // give
-        User user1 = userRepository.findByEmail("user1").orElseThrow();
+        User user1 = userRepository.findByEmailAndInUseIsTrue("user1").orElseThrow();
         Channel newChannel = Channel.builder()
-                .adminEmail(user1.getEmail())
                 .channelName("test channel").build();
 
         Channel savedChannel = channelRepository.saveAndFlush(newChannel);

@@ -1,5 +1,7 @@
 package com.sparta.sbug;
 
+import com.sparta.sbug.admin.entity.Admin;
+import com.sparta.sbug.admin.respository.AdminRepository;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.repository.ChannelRepository;
 import com.sparta.sbug.comment.entity.Comment;
@@ -43,7 +45,7 @@ public class TestDataDB {
         private final CommentRepository commentRepository;
         private final ThreadEmojiRepository threadEmojiRepository;
         private final CommentEmojiRepository commentEmojiRepository;
-
+        private final AdminRepository adminRepository;
         public void init() {
             // 유저 생성
             User user1 = User.builder().email("user1").password(getEncode("password1")).nickname("뽀로로")
@@ -64,11 +66,9 @@ public class TestDataDB {
 
             // 채널 생성
             Channel channel = Channel.builder()
-                    .adminEmail(savedUser1.getEmail())
                     .channelName("channel").build();
 
             Channel channel2 = Channel.builder()
-                    .adminEmail(savedUser3.getEmail())
                     .channelName("channel2").build();
 
             Channel savedChannel1 = channelRepository.save(channel);
@@ -102,6 +102,9 @@ public class TestDataDB {
             threadEmojiRepository.save(threadEmoji);
             CommentEmoji commentEmoji = new CommentEmoji("Emoji1", user1, comment1);
             commentEmojiRepository.save(commentEmoji);
+            Admin admin = Admin.builder().email("admin@naver.com").password("adminpass").build();
+            adminRepository.save(admin);
+
         }
 
         private String getEncode(String password) {

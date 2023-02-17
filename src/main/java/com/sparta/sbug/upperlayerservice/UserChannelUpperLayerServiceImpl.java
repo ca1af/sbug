@@ -2,6 +2,7 @@ package com.sparta.sbug.upperlayerservice;
 
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.channel.service.ChannelService;
 import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserService;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 // springframework
 @Service
 public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerService {
-    private final ChannelServiceImpl channelService;
+    private final ChannelService channelService;
     private final UserChannelService userChannelService;
     private final UserService userService;
 
@@ -39,7 +40,7 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
     @Override
     @Transactional
     public void createChannelAndUserChannelForRequester(User user, String channelName) {
-        Channel channel = channelService.createChannel(user, channelName);
+        Channel channel = channelService.createChannel(channelName);
         userChannelService.createUserChannel(user, channel);
     }
 
@@ -70,16 +71,16 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
         userChannelService.deleteUserChannelByUserAndChannel(user, channel);
     }
 
-    @Override
-    @Transactional
-    public void kickUser(User admin, Long id, String email) {
-        Channel channel = channelService.getChannelById(id);
-        if (channel.getAdminEmail().equals(admin.getEmail())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
-        }
-
-        User user = userService.getUser(email);
-        userChannelService.deleteUserChannelByUserAndChannel(user, channel);
-    }
+//    @Override
+//    @Transactional
+//    public void kickUser(User admin, Long id, String email) {
+//        Channel channel = channelService.getChannelById(id);
+//        if (channel.getAdminEmail().equals(admin.getEmail())) {
+//            throw new IllegalArgumentException("권한이 없습니다.");
+//        }
+//
+//        User user = userService.getUser(email);
+//        userChannelService.deleteUserChannelByUserAndChannel(user, channel);
+//    }
 
 }

@@ -37,18 +37,15 @@ class UserChannelUpperLayerServiceImplTest {
     @Transactional
     void getChannelsByUserId() {
         // give
-        User user = userRepository.findByEmail("user1").orElseThrow();
+        User user = userRepository.findByEmailAndInUseIsTrue("user1").orElseThrow();
 
         Channel channel1 = Channel.builder()
-                .adminEmail(user.getEmail())
                 .channelName("test channel1").build();
 
         Channel channel2 = Channel.builder()
-                .adminEmail(user.getEmail())
                 .channelName("test channel1").build();
 
         Channel channel3 = Channel.builder()
-                .adminEmail(user.getEmail())
                 .channelName("test channel1").build();
 
         Channel savedChannel1 = channelRepository.save(channel1);

@@ -52,9 +52,9 @@ class CommentServiceImplTest {
     public void getAllCommentsInThread() {
         // give
         Comment comment1 = Comment.builder()
-                .user(user1).thread(thread).content("comment1").build();
+                .user(user1).content("comment1").build();
         Comment comment2 = Comment.builder()
-                .user(user2).thread(thread).content("comment2").build();
+                .user(user2).content("comment2").build();
 
         // when
         List<CommentResponseDto> responseDtoList = commentService.getAllCommentsInThread(this.thread.getId(), pageDto);

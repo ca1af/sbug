@@ -1,20 +1,17 @@
 package com.sparta.sbug.security.userDetails;
 
-import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.user.repository.UserRepository;
+import com.sparta.sbug.admin.entity.Admin;
+import com.sparta.sbug.admin.respository.AdminRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-// lombok
 @RequiredArgsConstructor
-
-// springframework stereotype
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UserRepository userRepository;
+public class AdminDetailsServiceImpl implements UserDetailsService {
+    private final AdminRepository adminRepository;
 
     /**
      * 이메일로 사용자 객체를 찾아 UserDetails 구현체에 담습니다.
@@ -24,8 +21,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmailAndInUseIsTrue(email)
+        Admin admin = adminRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
-        return new UserDetailsImpl(user, user.getEmail());
+        return new AdminDetailsImpl(admin, admin.getEmail());
     }
 }

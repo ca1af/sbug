@@ -57,5 +57,5 @@ public interface UserChannelUpperLayerService {
      * @param id    채널
      * @param email 강퇴할 사용자
      */
-    void kickUser(User user, Long id, String email);
+//    void kickUser(User user, Long id, String email);
 }
