@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -40,10 +41,15 @@ public class ScheduleControllerTest {
     @DisplayName("@PostMapping('') schedule() Test: registerSchedule")
     public void registerSchedule() {
         //given
+        LinkedMultiValueMap<String, String> requestParams =
+            new LinkedMultiValueMap<>();
+
+
         willDoNothing().given(scheduleService).registerSchedule(any(),any());
 
+
         //when & then
-        //mvc.perform(post(""))
+        mvc.perform(post("").param())
 
     }
     
