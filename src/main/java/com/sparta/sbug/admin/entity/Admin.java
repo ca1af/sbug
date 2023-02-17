@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Admin {
     @Id
+    @GeneratedValue
     private Long id;
 
     @Column(nullable = false)

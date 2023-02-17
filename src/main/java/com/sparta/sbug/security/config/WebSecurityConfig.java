@@ -19,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -86,11 +87,14 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/api/users/sign-up").permitAll()
                 .requestMatchers("/api/users/login").permitAll()
                 .requestMatchers("/api/users/kakao**").permitAll()
-                .requestMatchers("/api/admin/login").permitAll()
+                .requestMatchers("/api/admins/login").permitAll()
                 .anyRequest().authenticated()
-                .and().addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new AdminJwtAuthFilter(jwtProvider, adminDetailsService), AdminJwtAuthFilter.class);
+                .and()
+                        .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+//                .addFilterBefore(new AdminJwtAuthFilter(jwtProvider, adminDetailsService), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), AdminJwtAuthFilter.class);
 
+        http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint).accessDeniedHandler(customAccessDeniedHandler);
         return http.build();
     }
 

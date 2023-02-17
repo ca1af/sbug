@@ -58,4 +58,10 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     public ExceptionDto handleNoSuchElementException(NoSuchElementException e) {
         return new ExceptionDto(e.getMessage(), 404);
     }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @org.springframework.web.bind.annotation.ExceptionHandler(RuntimeException.class)
+    public ExceptionDto runtimeExceptionHandler(RuntimeException e){
+        return new ExceptionDto(e.getMessage(), 500);
+    }
 }
