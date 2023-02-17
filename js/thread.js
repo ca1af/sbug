@@ -1,11 +1,14 @@
-var userInfo = getUserInformation();
-var channelId = new URL(location.href).searchParams.get("id");
+// var userInfo = getUserInformation();
+
+var threadId = new URL(location.href).searchParams.get("threadId");
+var channelId = new URL(location.href).searchParams.get("channelId");
+
 getChannelList();
-getThreads();
+getThread();
+getComments(1);
 
 // 전체 채널 조회
 function getChannelList() {
-  var channelId = new URL(location.href).searchParams.get("id");
   var url = "http://localhost:8080/api/users/channels";
   $.ajax({
     type: "GET",
@@ -39,8 +42,8 @@ function makeChannelHtml(id, channelName) {
 }
 
 // 쓰레드 조회
-function getThreads() {
-  var url = "http://localhost:8080/api/channels/" + channelId + "/threads";
+function getThread() {
+  var url = "http://localhost:8080/api/channels/" + channelId + "/threads/" + threadId;
 
   $.ajax({
     type: "GET",
@@ -49,65 +52,16 @@ function getThreads() {
       "Authorization": getCookie('accessToken'),
       "RTK": getCookie('refreshToken')
     },
-    success: function (response, xhr) {
-      const ul = document.getElementById('thread-history');
-      const items = ul.getElementsByTagName('li');
-      if (items.length > 0) {
-        items[0].remove();
-      }
-
-      let threads = response;
-      if (threads.length > 0) {
-        $("#welcome").hide();
-      }
-      for (let i = 0; i < threads.length; i++) {
-        let thread = threads[i];
-        let time = toStringByFormatting(new Date(thread.createdAt));
-        let tempHtml = makeThread(thread.threadId, thread.userNickname, time, thread.content, thread.emojis);
-        $('#thread-history').append(tempHtml);
-      }
-
-      $('.chat-history').scrollTop($('.chat-history')[0].scrollHeight)
+    success: function (response) {
+      let time = toStringByFormatting(new Date(response.createdAt));
+      let tempHtml = makeThread(response.threadId, response.userNickname, time, response.content, response.emojis);
+      $('#thread-history').append(tempHtml);
     },
     error: function (response) {
       if (response.responseJSON) {
         validateStatus(response.responseJSON);
       } else {
         alert("쓰레드 로딩 실패! 서버의 응답이 없습니다😭");
-      }
-    }
-  })
-}
-
-function publishThread() {
-  var url = "http://localhost:8080/api/channels/" + channelId + "/threads";
-  var text = $('#message-to-send').val();
-  text = text.replaceAll(/(\n|\r\n)/g, "<br>");
-
-  let body = { 'content': text };
-
-  $.ajax({
-    type: "POST",
-    url: url,
-    contentType: "application/json",
-    headers: {
-      "Authorization": getCookie('accessToken'),
-      "RTK": getCookie('refreshToken')
-    },
-    data: JSON.stringify(body),
-    success: function (response) {
-      $("#welcome").hide();
-      let thread = response;
-      let time = toStringByFormatting(new Date(thread.createdAt));
-      let tempHtml = makeThread(thread.threadId, thread.userNickname, time, thread.content, thread.emojis);
-      $('#thread-history').append(tempHtml);
-      $('.chat-history').scrollTop($('.chat-history')[0].scrollHeight)
-    },
-    error: function (response) {
-      if (response.responseJSON) {
-        validateStatus(response.responseJSON);
-      } else {
-        alert("쓰레드 작성 실패! 서버의 응답이 없습니다😭");
       }
     }
   })
@@ -140,7 +94,7 @@ function makeThread(id, nickname, time, content, emojis) {
       }
     }
   }
-  
+
   return `<li>
             <div class="message-data">
               <div class="thread-profile-box" style="background: #BDBDBD;">
@@ -151,7 +105,7 @@ function makeThread(id, nickname, time, content, emojis) {
               <span class="message-data-name">${nickname}</span>
               <span class="message-data-time">${time}</span>
             </div>
-            <div class="message my-message"> <a class="message-content" href="http://localhost:5500/thread.html?channelId=${channelId}&threadId=${id}"> ${content} </a> </div>
+            <div class="message my-message"> <a class="message-content" href="https://localhost:5500/thread?id=${id}"> ${content} </a> </div>
             <div class="message my-message">
               <span class="emoji" onclick="reactEmoji('SMILE', ${id})">😄 <i id="SMILE-${id}">${countSmile}</i></span>
               <span class="emoji" onclick="reactEmoji('CRY', ${id})">😭 <i id="CRY-${id}">${countCry}</i></span>
@@ -161,6 +115,94 @@ function makeThread(id, nickname, time, content, emojis) {
           </li>`
 }
 
+// 댓글 조회
+function getComments(page) {
+  var url = "http://localhost:8080/api/threads/" + threadId + "/comments?currentPage=" + page + "&size=3&sortBy=createdAt&order=asc";
+
+  $.ajax({
+    type: "GET",
+    url: url,
+    headers: {
+      "Authorization": getCookie('accessToken'),
+      "RTK": getCookie('refreshToken')
+    },
+    success: function (response) {
+      const ul = document.getElementById('comment-history');
+      const items = ul.getElementsByTagName('li');
+      if (items.length > 0) {
+        items[0].remove();
+      }
+
+      let comments = response;
+      if (comments.length > 0) {
+        $("#welcome").hide();
+      }
+      for (let i = 0; i < comments.length; i++) {
+        let comment = comments[i];
+        let time = toStringByFormatting(new Date(comment.createdAt));
+        let tempHtml = makeComment(comment.id, comment.userNickname, time, comment.content, comment.emojis);
+        $('#comment-history').append(tempHtml);
+      }
+    },
+    error: function (response) {
+      if (response.responseJSON) {
+        validateStatus(response.responseJSON);
+      } else {
+        alert("쓰레드 로딩 실패! 서버의 응답이 없습니다😭");
+      }
+    }
+  })
+}
+
+function makeComment(id, nickname, time, content, emojis) {
+  var countSmile = 0;
+  var countCry = 0;
+  var countHeart = 0;
+  var countLike = 0;
+
+  if (emojis) {
+    for (let i = 0; i < emojis.length; i++) {
+      const element = emojis[i];
+      switch (element.emojiType) {
+        case 'SMILE':
+          countSmile++;
+          break;
+        case 'CRY':
+          countCry++;
+          break;
+        case 'HEART':
+          countHeart++;
+          break;
+        case 'LIKE':
+          countLike++;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  return `<li>
+            <div class="message-data">
+              <div class="thread-profile-box" style="background: #BDBDBD;">
+                <img class="btn btn-secondary thread-profile-img"
+                  src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
+              </div>
+
+              <span class="message-data-name">${nickname}</span>
+              <span class="message-data-time">${time}</span>
+            </div>
+            <div class="message my-message"> <a class="message-content"> ${content} </a> </div>
+            <div class="message my-message">
+              <span class="emoji" onclick="reactEmoji('SMILE', ${id})">😄 <i id="SMILE-${id}">${countSmile}</i></span>
+              <span class="emoji" onclick="reactEmoji('CRY', ${id})">😭 <i id="CRY-${id}">${countCry}</i></span>
+              <span class="emoji" onclick="reactEmoji('HEART', ${id})">❤️ <i id="HEART-${id}">${countHeart}</i></span>
+              <span class="emoji" onclick="reactEmoji('LIKE', ${id})">👍 <i id="LIKE-${id}">${countLike}</i></span>
+            </div>
+          </li>`
+}
+
+// 날짜 포매팅
 function toStringByFormatting(source, delimiter = '-') {
   const year = source.getFullYear() - 2000;
   const month = source.getMonth();
@@ -289,7 +331,7 @@ function validateStatus(response) {
       success: function (response) {
         setCookie('accessToken', response.atk);
         setCookie('refreshToken', response.rtk);
-        location.href = "./index.html";
+        //location.href = "./home.html";
       },
       error: function (response) {
         if (response.responseJSON) {

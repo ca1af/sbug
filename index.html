@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,15 +13,17 @@
     <script src="./js/channel.js"></script>
     <script>
         $(document).ready(function () {
-            getUserInformation();
-            // getChannelList();
-            // const urlParams = new URL(location.href).searchParams;
-            // const name = urlParams.get('id');
-            // console.log(name);
-
+            var response = getUserInformation();
+            $('.login-name p:first-child').empty();
+            $('.login-name p:first-child').html(response.nickname)
+            $('.username').html(response.nickname)
+            loginuserid = response.userId;
+            allMember();
+            getChannelList();
         });
     </script>
 </head>
+
 <body>
     <div id="wrap">
         <!-- 회원&메뉴 섹션 시작 -->
@@ -31,7 +34,7 @@
                         <p>Sbug</p>
                     </div>
                     <div class="top-searchbox">
-                        <input type="text" class="search" placeholder="검색" value=""/>
+                        <input type="text" class="search" placeholder="검색" value="" />
                     </div>
                     <div class="top-personalmenu">
                         <p id="welcome" style="padding-left:20px;">img</p>
@@ -46,30 +49,31 @@
             <section id="section-two-member-channellist">
                 <!-- 로그인 회원 표시 -->
                 <article class="loginmemberbox">
-                        <ul>
-                            <li class="login-img">
-                                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg" alt="avatar"/>
-                            </li>
-                            <li class="login-name">
-                                <p>Mike Thomas</p>
-                                <p>▼</p>
-                            </li>
-                            <!-- 이름 클릭시 나오는 메뉴 시작-->
-                            <div class="personalmenu-chioce">
-                                <my-component>
-                                </my-component>                    
-                            </div>
+                    <ul>
+                        <li class="login-img">
+                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_03.jpg"
+                                alt="avatar" />
+                        </li>
+                        <li class="login-name">
+                            <p>Mike Thomas</p>
+                            <p>▼</p>
+                        </li>
+                        <!-- 이름 클릭시 나오는 메뉴 시작-->
+                        <div class="personalmenu-chioce">
+                            <my-component>
+                            </my-component>
+                        </div>
 
-                            <!-- /이름 클릭시 나오는 메뉴 끝-->
-                            <li class="loginmember-plus">
-                                <p>+</p>
-                            </li>
-                            <script>
-                                $('.login-name').click(function(){
-                                    $('.personalmenu-chioce').toggle();
-                                });
-                            </script>
-                        </ul>
+                        <!-- /이름 클릭시 나오는 메뉴 끝-->
+                        <li class="loginmember-plus">
+                            <p>+</p>
+                        </li>
+                        <script>
+                            $('.login-name').click(function () {
+                                $('.personalmenu-chioce').toggle();
+                            });
+                        </script>
+                    </ul>
                 </article>
                 <!-- /로그인 회원표시 끝 -->
 
@@ -113,11 +117,11 @@
                 </article>
                 <script>
                 </script>
-                <!-- /멤버리스트 끝 -->    
+                <!-- /멤버리스트 끝 -->
             </section>
 
 
-             <!-- /멤버&채널 섹션 끝 -->
+            <!-- /멤버&채널 섹션 끝 -->
 
             <!-- 채팅방섹션 시작 -->
             <section id="section-three-chatroom">
@@ -141,7 +145,7 @@
                     </div>
                 </article>
                 <!-- /채팅내역 끝 -->
-                
+
                 <!-- 채팅입력/보내기 시작 -->
                 <article class="chatwritebox">
                     <div>
@@ -157,10 +161,11 @@
 
     </div>
 </body>
+
 </html>
 
-                        <!-- /로그인 회원 표시 -->
-                <!-- <div class="menubtn cf">
+<!-- /로그인 회원 표시 -->
+<!-- <div class="menubtn cf">
                         <button onclick="">회원정보조회</button>
                         <button onclick="deleteMember()">회원탈퇴</button>
                         <button onclick="location.href='updatemember.html'">회원정보수정</button>
@@ -168,7 +173,7 @@
                         <button onclick="">채널초대</button>
                         <button onclick="">ㅇㅇㅇㅇ</button>
                     </div> -->
-        <!-- /멤버&채널 섹션 끝 -->
+<!-- /멤버&채널 섹션 끝 -->
 
 
 <script src="./js/chat.js"></script>

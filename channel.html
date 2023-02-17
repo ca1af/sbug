@@ -6,7 +6,7 @@
   <title>SBug</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
-  <link rel="stylesheet" href="./css/thread.css">
+  <link rel="stylesheet" href="./css/channel.css">
 </head>
 
 <body>
@@ -38,14 +38,10 @@
       </div> <!-- end chat-header -->
 
       <div class="chat-history">
-        <hr>
-        <div style="color: gray"> 쓰레드 </div>
         <ul id="thread-history">
-        </ul>
-        <hr>
-        <h1 style="color: gray"> 댓글 </h1>
-        <ul id="comment-history">
-        </ul>
+          <li>
+            <div class="welcome-message" id="welcome"> 첫 쓰레드를 작성해보세요! </div>
+          </li>
       </div> <!-- end chat-history -->
 
       <div class="chat-message clearfix">
@@ -56,11 +52,37 @@
     </div> <!-- end chat -->
 
   </div> <!-- end container -->
+
+  <script id="message-template" type="text/x-handlebars-template">
+  <li class="clearfix">
+    <div class="message-data align-right">
+      <span class="message-data-time" >{{time}}, Today</span> &nbsp; &nbsp;
+      <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
+    </div>
+    <div class="message other-message float-right">
+      {{messageOutput}}
+    </div>
+  </li>
+</script>
+
+  <script id="message-response-template" type="text/x-handlebars-template">
+  <li>
+    <div class="message-data">
+      <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
+      <span class="message-data-time">{{time}}, Today</span>
+    </div>
+    <div class="message my-message">
+      {{response}}
+    </div>
+  </li>
+</script>
   <!-- partial -->
   <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
   <script src='//cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js'></script>
   <script src='//cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js'></script>
-  <script src="./js/thread.js"></script>
+  <script src="./js/channel.js"></script>
+  <script src="./js/cookie.js"></script>
+  <script src="./js/user.js"></script>
 </body>
 
 </html>

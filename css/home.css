@@ -1,0 +1,154 @@
+@import url("https://fonts.googleapis.com/css?family=Fira+Sans");
+
+html,
+body {
+  position: relative;
+  min-height: 100vh;
+  background-color: #E1E8EE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Fira Sans", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.form-structor {
+  background-color: #EFD;
+  border-radius: 15px;
+  height: 800px;
+  width: 700px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 2px 2px 4px gray;
+}
+
+.headline {
+  padding: 20px;
+  position: relative;
+  border-bottom: 1px solid gray;
+}
+
+.form-title {
+  justify-content: center;
+  color: #000;
+  font-size: 1.7em;
+  text-align: center;
+}
+
+.profile-box {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 70%;
+  overflow: hidden;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.chat-box {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 70%;
+}
+
+.chat-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.new-message {
+  display: flex;
+  position: absolute;
+  top: -30%;
+  right: -15%;
+  box-shadow: 2px 2px 2px #000;
+  border-radius: 70%;
+  background-color: red;
+  width: 25px;
+  height: 25px;
+  justify-content: center;
+  align-items: center;
+  color: #FFF;
+}
+
+.bodyline {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  display: block;
+  justify-content: center;
+  align-items: center;
+}
+
+.channel-header {
+  padding: 5px;
+  margin: 10px 10px;
+}
+
+.channel-list {
+  padding: 0px 0px 0px 0px;
+}
+
+.channel {
+  padding: 5px;
+  cursor: pointer;
+  text-decoration-line: none;
+  color: #000;
+}
+
+.channel:hover {
+  font-size: 20px;
+  transition: all 0.3s ease;
+}
+
+.footerline {
+  position: relative;
+  bottom: -77%;
+  padding: 20px;
+  border-top: 1px solid gray;
+}
+
+.logout-btn {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+  border: 0;
+  border-radius: 15px;
+  position: absolute;
+  transform: translateY(-20%);
+  padding: 10px;
+  width: 15%;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: rgba(0, 0, 0, 1);
+  transition: all 0.3s ease;
+}
+
+.team-logo {
+  position: absolute;
+  color: gray;
+  font-size: 13px;
+  font-weight: bold;
+  right: 0px;
+  width: 150px;
+  height: 60px;
+  border-radius: 70%;
+}

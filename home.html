@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Sbug</title>
+	<link rel="stylesheet" href="./css/home.css">
+	<script src="./js/cookie.js"></script>
+	<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+	<script src="./js/home.js"></script>
+
+	<script>
+		$(document).ready(function () {
+			var response = getUserInformation();
+			getChannelList();
+		});
+	</script>
+</head>
+
+<body>
+	<div class="form-structor">
+		<div class="headline">
+			<h2 class="form-title" id="signup">SBug🐛</h2>
+			<div class="chat-box">
+				<p class="new-message">
+					1
+				</p>
+				<img class="chat-img" src="./images/asdfsaf (1).png" alt="chat" />
+			</div>
+			<div class="profile-box" style="background: #BDBDBD;">
+				<img class="btn btn-secondary profile-img"
+					src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
+			</div>
+		</div>
+
+		<div class="bodyline">
+			<h2 class="channel-header"> ☁️ 채널 목록 </h2>
+			<ul class="channel-list" id="channel-list">
+				
+			</ul>
+		</div>
+
+		<div class="footerline">
+			<button class="logout-btn" onclick="logout()">로그아웃</button>
+			<div class="team-logo">@Sparta Coding Club</p>
+			</div>
+		</div>
+</body>
+
+</html>

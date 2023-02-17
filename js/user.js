@@ -36,8 +36,6 @@ function signIn() {
     data: JSON.stringify(body),
     success: function (response, xhr) {
       console.log(response);
-      console.log(response.atk);
-      console.log(response.rtk);
       setCookie('accessToken', response.atk);
       setCookie('refreshToken', response.rtk);
       location.href = "./index.html";
@@ -61,8 +59,6 @@ function kakaoSignIn() {
     },
     success: function (response, xhr) {
       console.log(response);
-      console.log(response.atk);
-      console.log(response.rtk);
       setCookie('accessToken', response.atk);
       setCookie('refreshToken', response.rtk);
       clearCookie('code');
@@ -72,7 +68,7 @@ function kakaoSignIn() {
       console.log(response);
       alert("로그인 실패하였습니다.");
       clearCookie('code');
-      //location.href = "./login.html";
+      location.href = "./login.html";
     }
   })
 }
@@ -83,29 +79,8 @@ function kakaoSignIn() {
 var loginuserid = '';
 
 function getUserInformation() {
-  var settings = {
-    "url": "http://localhost:8080/api/users/my-page",
-    "method": "GET",
-    "timeout": 0,
-    "headers": {
-      "Authorization": getCookie('accessToken'),
-      "RTK": getCookie('refreshToken')
-    },
-  };
-  //   $.ajax(settings).done(function (response) {
-  // 	console.log("회원정보조회");	
-  // 	console.log(response);
-  // 	// console.log(response.userId);
-  //   // loginuserid = response.userid;
-  //   // $('.login-name p:first-child').empty();
-  //   $('.login-name p:first-child').html(response.nickname)
-  //   $('.username').html(response.nickname)
-  //   loginuserid = response.userId;
-  //   allMember();// 따로 실행시키니 loginuserid 할당전에 allMember()가 실행되서 오류가남
-  //   getChannelList();
-  // });
-
   var url = "http://localhost:8080/api/users/my-page";
+  var userInfo;
   $.ajax({
     type: "GET",
     url: url,
@@ -115,18 +90,15 @@ function getUserInformation() {
       "RTK": getCookie('refreshToken')
     },
     success: function (response) {
-      console.log(response.nickname);
-      $('.login-name p:first-child').empty();
-      $('.login-name p:first-child').html(response.nickname)
-      $('.username').html(response.nickname)
-      loginUserId = response.userId;
-      allMember();
-      getChannelList();
+      userInfo = response;
     },
     fail: function (response) {
-      alert("사용자 정보를 가져올 수 없었습니다.")
+      console.log(response);
+      alert("");
     }
   })
+
+  return userInfo;
 }
 
 
@@ -184,6 +156,9 @@ function updateMember() {
 
 // 로그아웃
 function logoutMember() {
+  clearCookie('accessToken');
+  clearCookie('refreshToken');
+
   var settings = {
     "url": "http://localhost:8080/api/users/logout",
     "method": "POST",
@@ -196,11 +171,6 @@ function logoutMember() {
   $.ajax(settings).done(function (response) {
     console.log(response);
     alert("로그아웃완료");
-    // console.log(response.userId);
-    // loginuserid = response.userid;
-    // $('.login-name p:first-child').empty();
-    clearCookie('accessToken');
-    clearCookie('refreshToken');
     location.href = "./login.html";
   });
 }

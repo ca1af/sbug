@@ -13,10 +13,8 @@
         $(document).ready(function () {
             const urlParams = new URL(location.href).searchParams;
             const code = urlParams.get('code');
-            console.log(code)
             if (code) {
                 setCookie('code', code);
-                console.log(getCookie('code'));
                 kakaoSignIn();
             }
 
