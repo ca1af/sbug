@@ -33,8 +33,8 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     @Transactional
-    public Channel createChannel(User user, String channelName) {
-        Channel channel = Channel.builder().adminEmail(user.getEmail()).channelName(channelName).build();
+    public Channel createChannel( String channelName) {
+        Channel channel = Channel.builder().channelName(channelName).build();
         return channelRepository.save(channel);
     }
 
@@ -42,7 +42,6 @@ public class ChannelServiceImpl implements ChannelService {
     @Transactional
     public void updateChannelName(Long channelId, User user, String channelName) {
         Channel channel = getChannelById(channelId);
-        validateUserIsChannelAdmin(channel, user);
         channel.updateChannelName(channelName);
     }
 
@@ -50,15 +49,14 @@ public class ChannelServiceImpl implements ChannelService {
     @Transactional
     public void deleteChannel(Long channelId, User user) {
         Channel channel = getChannelById(channelId);
-        validateUserIsChannelAdmin(channel, user);
         channelRepository.delete(channel);
     }
 
-    private static void validateUserIsChannelAdmin(Channel channel, User user) {
-        if (!channel.getAdminEmail().equals(user.getEmail())) {
-            throw new IllegalArgumentException("채널 관리자만 수정 할 수 있습니다.");
-        }
-    }
+//    private static void validateUserIsChannelAdmin(Channel channel, User user) {
+//        if (!channel.getAdminEmail().equals(user.getEmail())) {
+//            throw new IllegalArgumentException("채널 관리자만 수정 할 수 있습니다.");
+//        }
+//    }
 
     // Thread 생성
     @Override

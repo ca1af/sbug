@@ -54,12 +54,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
 
+
             // try 들어가기 전에 토큰 밸리데이션 로직 필요함.
             try {
                 String email = jwtProvider.getSubject(atk);
                 UserDetails userDetails = userDetailsImpl.loadUserByUsername(email);
-                Authentication token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(token);
+                Authentication authentication = jwtProvider.createAuthentication(userDetails);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JwtException e) {
                 request.setAttribute("exception", e.getMessage());
             }

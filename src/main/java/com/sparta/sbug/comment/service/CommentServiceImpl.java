@@ -30,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto) {
-        Page<Comment> pageComments = commentRepository.findCommentsByThreadId(threadId, pageDto.toPageable());
+        Page<Comment> pageComments = commentRepository.findCommentsByThreadIdAndInUseIsTrue(threadId, pageDto.toPageable());
         List<Comment> comments = pageComments.getContent();
         List<CommentResponseDto> responseDtos = new ArrayList<>();
         for (Comment comment : comments) {

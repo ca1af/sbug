@@ -7,6 +7,13 @@ import com.sparta.sbug.userchannel.enttiy.UserChannel;
 import java.util.List;
 
 public interface UserChannelService {
+    // TODO: 2023-02-17 유저가 채널에서 나간 경우, 탈퇴한 경우 작업
+
+    //    // 1. 유저가 채널에서 나간 경우
+    //    void leaveChannel(Long channelId, Long userId);
+    //    // 4. 유저가 탈퇴한 경우
+    //    void disableUserChannelByUserAbsence(Long userId);
+
     /**
      * 유저가 속해있는 모든 채널을 반환하는 메서드
      *

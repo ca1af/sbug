@@ -58,6 +58,12 @@ public class PageDto {
         this.order = "asc";
     }
 
+    public PageDto() {
+        this.currentPage = 1;
+        this.size = 5;
+        this.sortBy = "createdAt";
+    }
+
     /**
      * 나타낼 페이지, 한 페이지에서의 크기(size), 정렬의 기준이 될 속성(sortBy)으로
      * PageRequest(Pageable 인터페이스의 구현체)를 만듭니다.

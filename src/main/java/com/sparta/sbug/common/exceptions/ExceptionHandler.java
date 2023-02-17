@@ -71,4 +71,10 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("[CustomException] ", e.getMessage());
         return ExceptionResponse.toResponseEntity(e.getErrorCode());
     }
+
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    @org.springframework.web.bind.annotation.ExceptionHandler(RuntimeException.class)
+//    public ExceptionResponse runtimeExceptionHandler(RuntimeException e){
+//        return ExceptionResponse.toResponseEntity(e.getMessage())
+//    }
 }

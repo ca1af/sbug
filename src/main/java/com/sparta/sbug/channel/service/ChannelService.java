@@ -22,7 +22,7 @@ public interface ChannelService {
      * @param channelName 채널 이름
      * @return Channel
      */
-    Channel createChannel(User user, String channelName);
+    Channel createChannel( String channelName);
 
     /**
      * 채널 이름을 수정하는 메서드

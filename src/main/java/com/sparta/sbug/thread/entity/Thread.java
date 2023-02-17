@@ -6,10 +6,8 @@ import com.sparta.sbug.common.entity.Timestamp;
 import com.sparta.sbug.emoji.entity.ThreadEmoji;
 import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -29,6 +27,10 @@ public class Thread extends Timestamp {
 
     @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
+    @Setter
+    private boolean inUse = true;
 
     /**
      * 생성자
@@ -66,7 +68,7 @@ public class Thread extends Timestamp {
      * addChannel : thread - comment 편의 메소드
      * addEmoji : thread - thread_emoji 편의 메소드
      */
-    public void addChannel(Comment comment) {
+    public void addComment(Comment comment) {
         this.comments.add(comment);
     }
 

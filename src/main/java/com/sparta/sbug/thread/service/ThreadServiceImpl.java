@@ -59,9 +59,9 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional
-    public void deleteThread(Long threadId, User user) {
-        Thread thread = validateUserAuth(threadId, user);
-        threadRepository.delete(thread);
+    public void disableThread(Long threadId, User user) {
+        validateUserAuth(threadId, user);
+        threadRepository.disableThreadById(threadId);
     }
 
     /**
@@ -83,7 +83,7 @@ public class ThreadServiceImpl implements ThreadService {
     @Override
     @Transactional(readOnly = true)
     public List<ThreadResponseDto> getAllThreadsInChannel(Long channelId, PageDto pageDto) {
-        Page<Thread> threadPages = threadRepository.findThreadsByChannelId(channelId, pageDto.toPageable());
+        Page<Thread> threadPages = threadRepository.findThreadsByChannelIdAndInUseIsTrue(channelId, pageDto.toPageable());
         List<Thread> threads = threadPages.getContent();
         List<ThreadResponseDto> responseDtos = new ArrayList<>();
         for (Thread thread : threads) {

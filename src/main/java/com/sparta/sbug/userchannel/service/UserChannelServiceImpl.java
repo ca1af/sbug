@@ -20,15 +20,26 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     private final UserChannelRepository userChannelRepository;
 
+//    // 1. 유저가 채널에서 나간 경우
+//    @Override
+//    public void leaveChannel(Long channelId, Long userId) {
+//
+//    }
+//    // 4. 유저가 탈퇴한 경우
+//    @Override
+//    public void disableUserChannelByUserAbsence(Long userId) {
+//
+//    }
+
     @Override
     public List<UserChannel> getUserChannelsByUserId(Long userId) {
-        return userChannelRepository.findAllChannelByUserId(userId);
+        return userChannelRepository.findAllChannelByUserIdAndInUseIsTrue(userId);
     }
 
     @Override
     @Transactional
     public Long createUserChannel(User user, Channel channel) {
-        if (userChannelRepository.findByUserAndChannel(user, channel).isPresent()) {
+        if (userChannelRepository.findByUserAndChannelAndInUseIsTrue(user, channel).isPresent()) {
             throw new IllegalArgumentException("중복된 리소스가 존재합니다.");
         }
         UserChannel userChannel = UserChannel.builder().user(user).channel(channel).build();
@@ -48,14 +59,14 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     public void deleteUserChannelByUserAndChannel(User user, Channel channel) {
-        UserChannel userChannel = userChannelRepository.findByUserAndChannel(user, channel).orElseThrow(
+        UserChannel userChannel = userChannelRepository.findByUserAndChannelAndInUseIsTrue(user, channel).orElseThrow(
                 () -> new NoSuchElementException("찾는 유저 채널이 없습니다.")
         );
         userChannelRepository.delete(userChannel);
     }
 
     @Override
-    public boolean isUserJoinedByChannel(User user, Long channelId) {
-        return userChannelRepository.existsByUserAndChannelId(user, channelId);
+    public boolean isUserJoinedByChannel(User user, Channel channel) {
+        return userChannelRepository.existsByUserAndChannelAndInUseIsTrue(user, channel);
     }
 }

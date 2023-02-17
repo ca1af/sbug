@@ -71,7 +71,7 @@ public class ThreadController {
      */
     @DeleteMapping("/threads/{id}")
     public void deleteThread(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        threadService.deleteThread(id, userDetails.getUser());
+        threadService.disableThread(id, userDetails.getUser());
     }
 
     /**

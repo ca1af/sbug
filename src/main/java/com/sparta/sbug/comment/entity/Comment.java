@@ -1,14 +1,12 @@
 package com.sparta.sbug.comment.entity;
 
+import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.common.entity.Timestamp;
 import com.sparta.sbug.emoji.entity.CommentEmoji;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -29,6 +27,10 @@ public class Comment extends Timestamp {
 
     @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
+    @Setter
+    private boolean inUse = true;
 
     /**
      * 생성자
@@ -60,6 +62,9 @@ public class Comment extends Timestamp {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "channel_id")
+    private Channel channel;
     /**
      * 연관관계 편의 메소드
      * setThread : comment - thread
@@ -67,7 +72,8 @@ public class Comment extends Timestamp {
      */
     public void setThread(Thread thread) {
         this.thread = thread;
-        thread.addChannel(this);
+        this.channel = thread.getChannel();
+        thread.addComment(this);
     }
 
     /**

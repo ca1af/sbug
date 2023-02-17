@@ -1,11 +1,9 @@
 package com.sparta.sbug.channel.entity;
 
+import com.sparta.sbug.common.entity.Timestamp;
 import com.sparta.sbug.thread.entity.Thread;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -16,7 +14,7 @@ import java.util.Set;
 
 // jpa
 @Entity
-public class Channel {
+public class Channel extends Timestamp {
     /**
      * 컬럼
      */
@@ -26,19 +24,18 @@ public class Channel {
 
     @Column(nullable = false)
     private String channelName;
-
     @Column(nullable = false)
-    private String adminEmail;
+    @Setter
+    private boolean inUse = true;
+
 
     /**
      * 생성자
      *
-     * @param adminEmail  관리자 이메일
      * @param channelName 채널 이름
      */
     @Builder
-    public Channel(String adminEmail, String channelName) {
-        this.adminEmail = adminEmail;
+    public Channel( String channelName) {
         this.channelName = channelName;
     }
 
