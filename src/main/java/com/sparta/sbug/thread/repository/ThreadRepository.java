@@ -16,11 +16,11 @@ public interface ThreadRepository extends JpaRepository<Thread, Long> {
      * @param pageable  : 페이저블
      */
     Page<Thread> findThreadsByChannelIdAndInUseIsTrue(Long channelId, Pageable pageable);
-    @Query("update Thread t set t.inUse = false where t.id = :id")
+    @Query("update Thread t set t.inUse = false where t.id = :threadId")
     @Modifying(clearAutomatically = true)
     void disableThreadById(@Param("id") Long threadId);
 
-    @Query("update Thread t set t.inUse = false where t.channel.id = :id")
+    @Query("update Thread t set t.inUse = false where t.channel.id = :channelId")
     @Modifying(clearAutomatically = true)
     void disableThreadByChannelId(@Param("id") Long channelId);
 }

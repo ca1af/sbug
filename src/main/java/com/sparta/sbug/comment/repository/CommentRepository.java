@@ -21,14 +21,14 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findCommentsByThreadIdAndInUseIsTrue(Long threadId, Pageable pageable);
 
     @Modifying(clearAutomatically = true)
-    @Query("update Comment c set c.inUse = false where c.id = :id")
+    @Query("update Comment c set c.inUse = false where c.id = :commentId")
     void disableCommentByCommentId(@Param("id") Long commentId);
 
     @Modifying(clearAutomatically = true)
-    @Query("update Comment c set c.inUse = false where c.thread.id = :id")
+    @Query("update Comment c set c.inUse = false where c.thread.id = :threadId")
     void disableCommentByThreadId(@Param("id") Long threadId);
 
     @Modifying(clearAutomatically = true)
-    @Query("update Comment c set c.inUse = false where c.channel.id = :id")
+    @Query("update Comment c set c.inUse = false where c.channel.id = :channelId")
     void disableCommentByChannelId(@Param("id") Long channelId);
 }
