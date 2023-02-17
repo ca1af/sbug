@@ -16,7 +16,7 @@ public interface ThreadService {
      * @param threadId 대상 쓰레드 ID
      * @return Thread
      */
-    Thread getThread(Long threadId);
+    Thread findThreadById(Long threadId);
 
     /**
      * 대상 채널에 새로운 쓰레드를 작성
@@ -25,7 +25,7 @@ public interface ThreadService {
      * @param requestContent 쓰레드 내용
      * @param user           요청자(=작성자)
      */
-    void createThread(Channel channel, String requestContent, User user);
+    ThreadResponseDto createThread(Channel channel, String requestContent, User user);
 
     /**
      * 대상 쓰레드를 수정
@@ -54,11 +54,11 @@ public interface ThreadService {
     List<ThreadResponseDto> getAllThreadsInChannel(Long channelId, PageDto pageDto);
 
     /**
-     * 쓰레드 ID로 쓰레드 엔티티를 조회
+     * 대상 쓰레드를 조회
      *
-     * @param threadId 대상 쓰레드 ID
-     * @return Thread
+     * @param threadId 대상 쓰레드
+     * @return ThreadResponseDto
      */
-    Thread findThreadById(Long threadId);
+    ThreadResponseDto getThread(Long threadId);
 
 }

@@ -53,8 +53,8 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
     @Override
     @Transactional
     public void inviteUser(User user, Long channelId, String email) {
-        Channel channel = channelService.getChannelById(channelId);
-        if (userChannelService.isUserJoinedByChannel(user, channel)) {
+        if (userChannelService.isUserJoinedByChannel(user, channelId)) {
+            Channel channel = channelService.getChannelById(channelId);
             User invitedUser = userService.getUser(email);
             userChannelService.createUserChannel(invitedUser, channel);
         } else {

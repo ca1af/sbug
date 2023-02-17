@@ -27,22 +27,25 @@ public class ThreadEmojiServiceImpl implements ThreadEmojiService {
     private final ThreadServiceImpl threadService;
 
 
-    // ThreadEmoji 생성
+    // ThreadEmoji 생성 혹은 삭제
     @Override
-    public void createThreadEmoji(String emojiType, User user, Long threadId) {
-        Thread thread = threadService.getThread(threadId);
+    public boolean reactThreadEmoji(String emojiType, User user, Long threadId) {
+        Thread thread = threadService.findThreadById(threadId);
         Optional<ThreadEmoji> optionalThreadEmoji = threadEmojiRepository.findByEmojiTypeAndThreadAndUser(EmojiType.valueOf(emojiType),thread, user);
         if (optionalThreadEmoji.isPresent()) {
-            throw new IllegalArgumentException("이미 동일한 이모지 반응이 존재합니다.");
+            threadEmojiRepository.delete(optionalThreadEmoji.get());
+            return false;
+        } else {
+            ThreadEmoji threadEmoji = new ThreadEmoji(emojiType, user, thread);
+            threadEmojiRepository.save(threadEmoji);
+            return true;
         }
-        ThreadEmoji threadEmoji = new ThreadEmoji(emojiType, user, thread);
-        threadEmojiRepository.save(threadEmoji);
     }
 
     // ThreadEmoji 삭제
     @Override
     public void deleteThreadEmoji(String emojiType, User user, Long threadId) {
-        Thread thread = threadService.getThread(threadId);
+        Thread thread = threadService.findThreadById(threadId);
         Optional<ThreadEmoji> optionalThreadEmoji = threadEmojiRepository.findByEmojiTypeAndThreadAndUser(EmojiType.valueOf(emojiType), thread, user);
         if (optionalThreadEmoji.isEmpty()) {
             throw new IllegalArgumentException("해당 이모지 반응을 찾을 수 없습니다.");

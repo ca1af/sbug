@@ -7,6 +7,7 @@ import com.sparta.sbug.upperlayerservice.UserChannelUpperLayerService;
 import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.List;
 
 // lombok
 @RequiredArgsConstructor
+@Slf4j
 
 // springframework web bind
 @RestController
@@ -46,6 +48,7 @@ public class ChannelController {
      */
     @GetMapping("/users/channels")
     public List<ChannelResponseDto> allMyChannel(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("[GET] /users/channels");
         return userChannelUpperLayerService.getChannelsByUserId(userDetails.getUser().getId());
     }
 

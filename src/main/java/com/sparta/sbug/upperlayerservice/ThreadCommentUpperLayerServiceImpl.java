@@ -24,8 +24,8 @@ public class ThreadCommentUpperLayerServiceImpl implements ThreadCommentUpperLay
     @Override
     @Transactional
     public void createComment(Long threadId, String content, User user) {
-        Thread thread = threadService.getThread(threadId);
-        if (!userChannelService.isUserJoinedByChannel(user, thread.getChannel())) {
+        Thread thread = threadService.findThreadById(threadId);
+        if (!userChannelService.isUserJoinedByChannel(user, thread.getChannel().getId())) {
             throw new IllegalArgumentException("유저가 채널에 속해있지 않습니다. 권한이 없습니다");
         }
 

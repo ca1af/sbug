@@ -98,9 +98,15 @@ public class TestDataDB {
             comment1.setThread(thread);
             commentRepository.save(comment1);
 
-            ThreadEmoji threadEmoji = new ThreadEmoji("Emoji1", user1, thread);
+            ThreadEmoji threadEmoji = new ThreadEmoji("SMILE", user1, thread);
             threadEmojiRepository.save(threadEmoji);
-            CommentEmoji commentEmoji = new CommentEmoji("Emoji1", user1, comment1);
+            ThreadEmoji threadEmoji1 = new ThreadEmoji("CRY", user1, thread);
+            threadEmojiRepository.save(threadEmoji1);
+            ThreadEmoji threadEmoji2 = new ThreadEmoji("HEART", user1, thread);
+            threadEmojiRepository.save(threadEmoji2);
+            ThreadEmoji threadEmoji3 = new ThreadEmoji("LIKE", user1, thread);
+            threadEmojiRepository.save(threadEmoji3);
+            CommentEmoji commentEmoji = new CommentEmoji("SMILE", user1, comment1);
             commentEmojiRepository.save(commentEmoji);
         }
 

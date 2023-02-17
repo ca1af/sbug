@@ -4,6 +4,7 @@ import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.repository.CommentRepository;
 import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.emoji.dto.EmojiResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -30,7 +32,13 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto) {
         Page<Comment> pageComments = commentRepository.findCommentsByThreadId(threadId, pageDto.toPageable());
         List<Comment> comments = pageComments.getContent();
-        return comments.stream().map(CommentResponseDto::of).collect(Collectors.toList());
+        List<CommentResponseDto> responseDtos = new ArrayList<>();
+        for (Comment comment : comments) {
+            CommentResponseDto dto = CommentResponseDto.of(comment);
+            dto.setEmojis(comment.getEmojis().stream().map(EmojiResponseDto::of).collect(Collectors.toList()));
+            responseDtos.add(dto);
+        }
+        return responseDtos;
     }
 
     @Override

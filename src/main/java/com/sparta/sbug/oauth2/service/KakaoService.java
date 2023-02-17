@@ -31,7 +31,7 @@ public class KakaoService {
     private final JwtProvider jwtProvider;
 
     private final static String REST_API_KEY = "a6be9b62b761e5b5ee34bfa49d268617";
-    private final static String REDIRECT_URI = "http://localhost:5500/login.html";
+    private final static String REDIRECT_URI = "http://localhost:5500/frontdoor.html";
     /**
      *
      * 작동 방식은 다음과 같습니다.

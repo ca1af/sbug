@@ -21,14 +21,14 @@ public class ThreadEmoji extends Emoji{
      */
     public ThreadEmoji(String emojiType, User user, Thread thread){
         super(emojiType, user);
-        this.thread = thread;
+        setThread(thread);
     }
 
     /**
      * 연관관계
      * thread_emoji : thread = N:1 양방향 연관 관계
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "thread_id")
     private Thread thread;
 

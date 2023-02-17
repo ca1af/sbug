@@ -54,14 +54,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
 
-
             // try 들어가기 전에 토큰 밸리데이션 로직 필요함.
             try {
                 String email = jwtProvider.getSubject(atk);
-                String requestURI = request.getRequestURI();
-                if (email.equals("RTK") && !requestURI.equals("/account/reissue")) {
-                    throw new JwtException("토큰을 확인하세요.");
-                }
                 UserDetails userDetails = userDetailsImpl.loadUserByUsername(email);
                 Authentication token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(token);
@@ -96,13 +91,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         return false;
     }
-
-    /**
-     * JWT 관련 작업 중에 발생한 예외를 처리하기 위한 메서드
-     *
-     * @param response   HTTP 서블릿 응답
-     * @param msg        메세지
-     * @param statusCode 상태 코드
-     */
 
 }

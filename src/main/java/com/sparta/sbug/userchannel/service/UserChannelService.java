@@ -50,8 +50,8 @@ public interface UserChannelService {
      * 특정 사용자가 채널에 속해있는지 확인합니다.
      *
      * @param user    사용자
-     * @param channel 채널
+     * @param channelId 채널
      * @return boolean
      */
-    boolean isUserJoinedByChannel(User user, Channel channel);
+    boolean isUserJoinedByChannel(User user, Long channelId);
 }

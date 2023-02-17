@@ -11,7 +11,7 @@ public interface CommentEmojiService {
      * @param user      반응한 유저
      * @param commentId 대상 댓글
      */
-    void createCommentEmoji(String emojiType, User user, Long commentId);
+    boolean reactCommentEmoji(String emojiType, User user, Long commentId);
 
     /**
      * 대상 댓글에 이모지 반응을 삭제합니다
