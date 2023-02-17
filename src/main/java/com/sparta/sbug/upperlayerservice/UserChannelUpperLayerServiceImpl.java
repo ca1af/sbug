@@ -2,6 +2,7 @@ package com.sparta.sbug.upperlayerservice;
 
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.channel.service.ChannelService;
 import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserService;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 // springframework
 @Service
 public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerService {
-    private final ChannelServiceImpl channelService;
+    private final ChannelService channelService;
     private final UserChannelService userChannelService;
     private final UserService userService;
 

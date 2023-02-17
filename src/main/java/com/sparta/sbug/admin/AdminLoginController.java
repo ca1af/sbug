@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class AdminController {
+public class AdminLoginController {
     private final AdminService adminService;
     private final JwtProvider jwtProvider;
 

@@ -42,7 +42,7 @@ public interface ThreadService {
      * @param threadId 대상 쓰레드 ID
      * @param user     요청자
      */
-    void deleteThread(Long threadId, User user);
+    void disableThread(Long threadId, User user);
 
     /**
      * 대상 채널의 모든 쓰레드를 조회

@@ -28,7 +28,7 @@ public class AdminJwtAuthFilter extends OncePerRequestFilter {
             if (adminToken != null) {
                 String email = jwtProvider.getSubject(atk);
                 UserDetails userDetails = adminDetailsService.loadUserByUsername(email);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                Authentication authentication = jwtProvider.createAuthentication(userDetails);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {

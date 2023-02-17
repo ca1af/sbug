@@ -64,8 +64,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 //                    throw new JwtException("토큰을 확인하세요.");
 //                }
                 UserDetails userDetails = userDetailsImpl.loadUserByUsername(email);
-                Authentication token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(token);
+                Authentication authentication = jwtProvider.createAuthentication(userDetails);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JwtException e) {
                 request.setAttribute("exception", e.getMessage());
             }

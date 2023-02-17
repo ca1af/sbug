@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         String password = passwordEncoder.encode(requestDto.getPassword());
         String nickName = requestDto.getNickname();
 
-        Optional<User> found = userRepository.findByEmail(email);
+        Optional<User> found = userRepository.findByEmailAndInUseIsTrue(email);
         if (found.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
 
-        User user = userRepository.findByEmail(email).orElseThrow(
+        User user = userRepository.findByEmailAndInUseIsTrue(email).orElseThrow(
                 () -> new IllegalArgumentException("사용자를 찾을수 없습니다.")
         );
         if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(String email) {
-        return userRepository.findByEmail(email).orElseThrow(
+        return userRepository.findByEmailAndInUseIsTrue(email).orElseThrow(
                 () -> new IllegalArgumentException("유저를 찾을 수 없습니다.")
         );
     }

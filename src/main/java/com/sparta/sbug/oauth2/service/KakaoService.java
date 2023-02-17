@@ -123,12 +123,12 @@ public class KakaoService {
     public void registerKakaoUserIfNeeded(KakaoUserInfo kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getId();
-        Optional<User> optionalUser = userRepository.findByKakaoId(kakaoId);
+        Optional<User> optionalUser = userRepository.findByKakaoIdAndInUseIsTrue(kakaoId);
         User kakaoUser;
         if (optionalUser.isEmpty()) {
             // 카카오 사용자 email 동일한 email 가진 회원이 있는지 확인
             String kakaoEmail = kakaoUserInfo.getEmail();
-            Optional<User> optionalEmailUser = userRepository.findByEmail(kakaoEmail);
+            Optional<User> optionalEmailUser = userRepository.findByEmailAndInUseIsTrue(kakaoEmail);
             if (optionalEmailUser.isPresent()) {
                 // 기존 회원정보에 카카오 Id 추가
                 kakaoUser = optionalEmailUser.get().kakaoIdUpdate(kakaoId);
