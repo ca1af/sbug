@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
+
 public interface ThreadRepository extends JpaRepository<Thread, Long> {
     /**
      * 대상 채널에 작성된 모든 쓰레드를 조회
@@ -23,4 +25,8 @@ public interface ThreadRepository extends JpaRepository<Thread, Long> {
     @Query("update Thread t set t.inUse = false where t.channel.id = :channelId")
     @Modifying(clearAutomatically = true)
     void disableThreadByChannelId(@Param("id") Long channelId);
+
+    @Modifying(clearAutomatically = true)
+    @Query("delete from Thread t where t.inUse = false and t.modifiedAt < :localDateTime ")
+    void deleteThreads(@Param("localDateTime") LocalDateTime localDateTime);
 }

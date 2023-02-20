@@ -32,19 +32,18 @@ public class AdminInquiryController {
         return adminInquiryService.getAllComments(threadId, pageDto);
     }
 
-    @GetMapping("{admin/{channelId}/threads/{threadId}")
+    @GetMapping("admin/{channelId}")
     @PreAuthorize("hasRole('ADMIN')")
     public Slice<ThreadResponseDto> getThreads(@PathVariable Long channelId,
-                                        @ModelAttribute PageDto pageDto,
-                                        @PathVariable Long threadId) {
+                                        @ModelAttribute PageDto pageDto) {
 
-        String logBuilder = "[GET] /api/channels/" + channelId + "/threads/" + threadId;
+        String logBuilder = "[GET] /api/channels/" + channelId + "/threads/";
         log.info(logBuilder);
 
-        return adminInquiryService.getAllThreads(threadId, pageDto);
+        return adminInquiryService.getAllThreads(channelId, pageDto);
     }
 
-    @GetMapping("/channels")
+    @GetMapping("channels")
     @PreAuthorize("hasRole('ADMIN')")
     public Slice<ChannelResponseDto> channels(@ModelAttribute PageDto pageDto){
         return adminInquiryService.getAllChannels(pageDto);

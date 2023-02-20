@@ -64,4 +64,9 @@ public interface ChannelService {
      */
     @Transactional(readOnly = true)
     Channel validateUserInChannel(Long channelId, User user);
+
+    /**
+     * 채널 자동 삭제를 위한 매서드.
+     */
+    void autoDelete();
 }

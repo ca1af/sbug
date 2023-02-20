@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
+
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     /**
@@ -31,4 +33,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Modifying(clearAutomatically = true)
     @Query("update Comment c set c.inUse = false where c.channel.id = :channelId")
     void disableCommentByChannelId(@Param("id") Long channelId);
+
+    @Modifying(clearAutomatically = true)
+    @Query("delete from Comment c where c.inUse = false and c.modifiedAt < :localDateTime ")
+    void deleteComments(@Param("localDateTime")LocalDateTime localDateTime);
 }

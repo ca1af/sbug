@@ -7,6 +7,8 @@ import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import org.springframework.data.domain.Slice;
 
+import java.time.LocalDateTime;
+
 public interface CommentService {
 
     /**
@@ -49,4 +51,6 @@ public interface CommentService {
      * @return Comment
      */
     Comment getComment(Long commentId);
+
+    void autoDelete();
 }
