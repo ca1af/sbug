@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -120,7 +121,7 @@ public class ThreadController {
      * @return ThreadResponseDto
      */
     @GetMapping("{channelId}/threads/{threadId}")
-    public ThreadResponseDto getThread(@PathVariable Long channelId,
+    public ThreadResponseDto getThreads(@PathVariable Long channelId,
                                        @PathVariable Long threadId,
                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
@@ -131,4 +132,22 @@ public class ThreadController {
 
         return threadService.getThread(threadId);
     }
+
+    /**
+     * 모든 쓰레드 조회하기(어드민용)
+     * @param channelId
+     * @param threadId
+     * @return ThreadResponseDto
+     */
+    @GetMapping("{admin/{channelId}/threads/{threadId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ThreadResponseDto getThreads(@PathVariable Long channelId,
+                                        @PathVariable Long threadId) {
+
+        String logBuilder = "[GET] /api/channels/" + channelId + "/threads/" + threadId;
+        log.info(logBuilder);
+
+        return threadService.getThread(threadId);
+    }
+
 }
