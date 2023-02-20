@@ -1,13 +1,9 @@
-package com.sparta.sbug.upperlayerservice;
+package com.sparta.sbug.admin.service;
 
 import com.sparta.sbug.channel.service.ChannelAdminService;
-import com.sparta.sbug.channel.service.ChannelService;
 import com.sparta.sbug.comment.service.CommentAdminService;
-import com.sparta.sbug.comment.service.CommentService;
 import com.sparta.sbug.thread.service.ThreadAdminService;
-import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.userchannel.service.UserChannelAdminService;
-import com.sparta.sbug.userchannel.service.UserChannelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class AdminUpperLayerServiceImpl implements AdminUpperLayerService{
+public class AdminUpperLayerServiceImpl implements AdminUpperLayerService {
     private final ChannelAdminService channelService;
     private final UserChannelAdminService userChannelService;
     private final ThreadAdminService threadService;

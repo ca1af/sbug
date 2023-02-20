@@ -8,6 +8,7 @@ import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,11 @@ public class ChannelController {
         Channel channel = channelService.getChannelById(id);
         return ChannelResponseDto.of(channel);
     }
+
+    /**
+     * 모든 채널 조회하기 (어드민용)
+     * @return List&lt;ChannelResponseDto&gt;
+     */
 
     /**
      * 내가 속한 채널의 리스트를 불러오기

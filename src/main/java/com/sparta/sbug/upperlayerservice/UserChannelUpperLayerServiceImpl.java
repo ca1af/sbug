@@ -3,11 +3,13 @@ package com.sparta.sbug.upperlayerservice;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.service.ChannelService;
+import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserService;
 import com.sparta.sbug.userchannel.enttiy.UserChannel;
 import com.sparta.sbug.userchannel.service.UserChannelService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,7 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
         }
         return channels.stream().map(ChannelResponseDto::of).collect(Collectors.toList());
     }
+
 
     @Override
     @Transactional

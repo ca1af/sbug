@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,19 @@ public class CommentController {
 
         log.info(logBuilder);
         channelService.validateUserInChannel(channelId, userDetails.getUser());
+        return commentService.getAllCommentsInThread(threadId, pageDto);
+    }
+
+    @GetMapping("admin/{channelId}/threads/{threadId}/comments")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Slice<CommentResponseDto> getAllCommentsInThreadAdmin(
+            @PathVariable Long channelId,
+            @PathVariable Long threadId,
+            @ModelAttribute PageDto pageDto) {
+
+        String logBuilder = "[GET] /api/channels/" + channelId + "/threads/" + threadId + "/comments";
+
+        log.info(logBuilder);
         return commentService.getAllCommentsInThread(threadId, pageDto);
     }
 

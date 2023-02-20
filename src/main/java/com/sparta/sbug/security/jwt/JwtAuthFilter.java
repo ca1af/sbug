@@ -1,5 +1,6 @@
 package com.sparta.sbug.security.jwt;
 
+import com.sparta.sbug.security.userDetails.AdminDetailsServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
@@ -23,6 +24,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final UserDetailsServiceImpl userDetailsImpl;
+    private final AdminDetailsServiceImpl adminDetailsService;
 
     /**
      * JWT 권한 필터
@@ -44,7 +46,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String refreshToken = request.getHeader("RTK");
                 if (refreshToken != null) {
                     rtk = refreshToken.substring(7);
-                    jwtProvider.getSubject(rtk);
                 }
 
                 if (!validateToken(rtk)) {
@@ -73,9 +74,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private void setAuthentication(HttpServletRequest request, String token) {
         try {
             String email = jwtProvider.getSubject(token);
-            UserDetails userDetails = userDetailsImpl.loadUserByUsername(email);
-            Authentication authentication = jwtProvider.createAuthentication(userDetails);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (email.contains("@")){
+                UserDetails userDetails = userDetailsImpl.loadUserByUsername(email);
+                Authentication authentication = jwtProvider.createAuthentication(userDetails);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                UserDetails userDetails = adminDetailsService.loadUserByUsername(email);
+                Authentication authentication = jwtProvider.createAuthentication(userDetails);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         } catch (JwtException e) {
             request.setAttribute("exception", e.getMessage());
         }

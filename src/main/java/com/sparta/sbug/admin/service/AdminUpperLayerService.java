@@ -1,4 +1,4 @@
-package com.sparta.sbug.upperlayerservice;
+package com.sparta.sbug.admin.service;
 
 import com.sparta.sbug.user.entity.User;
 
