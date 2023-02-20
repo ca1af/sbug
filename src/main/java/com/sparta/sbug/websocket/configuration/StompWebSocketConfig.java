@@ -1,6 +1,7 @@
 package com.sparta.sbug.websocket.configuration;
 
 import com.sparta.sbug.websocket.handler.ChatPreHandler;
+import com.sparta.sbug.websocket.handler.HandShakeHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -34,6 +35,7 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
 
         registry.addEndpoint(ENDPOINT)
+                .addInterceptors(new HandShakeHandler())
                 // CORS 설정
                 .setAllowedOriginPatterns("*")
                 // SockJS 사용

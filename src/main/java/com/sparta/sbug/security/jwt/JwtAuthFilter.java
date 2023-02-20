@@ -38,10 +38,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (accessToken != null) {
             log.info("AccessToken in JwtAuthFilter = " + accessToken);
-            var atk = accessToken.substring(7);
+            String atk = accessToken.substring(7);
+            String rtk = "";
             if (!this.validateToken(atk)) {
                 String refreshToken = request.getHeader("RTK");
-                String rtk = "";
                 if (refreshToken != null) {
                     rtk = refreshToken.substring(7);
                     jwtProvider.getSubject(rtk);
@@ -54,20 +54,32 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
 
-            // try 들어가기 전에 토큰 밸리데이션 로직 필요함.
-            try {
-                String email = jwtProvider.getSubject(atk);
-                UserDetails userDetails = userDetailsImpl.loadUserByUsername(email);
-                Authentication authentication = jwtProvider.createAuthentication(userDetails);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            } catch (JwtException e) {
-                request.setAttribute("exception", e.getMessage());
+            if (!request.getRequestURI().equals("/account/reissue")) {
+                setAuthentication(request, atk);
+            } else {
+                setAuthentication(request, rtk);
             }
         }
 
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * 토큰에서 정보를 꺼내 UserDetails를 만들고 Security Context Holder에 Authentication을 담기
+     *
+     * @param request Http 서블릿 요청
+     * @param token   토큰 (atk 또는 rtk)
+     */
+    private void setAuthentication(HttpServletRequest request, String token) {
+        try {
+            String email = jwtProvider.getSubject(token);
+            UserDetails userDetails = userDetailsImpl.loadUserByUsername(email);
+            Authentication authentication = jwtProvider.createAuthentication(userDetails);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (JwtException e) {
+            request.setAttribute("exception", e.getMessage());
+        }
+    }
 
     /**
      * 토큰을 검증하는 메서드

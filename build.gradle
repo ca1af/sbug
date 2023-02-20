@@ -25,6 +25,7 @@ dependencies {
 
 	// security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.security:spring-security-messaging'
 
 	// web, websocket
 	implementation 'org.springframework.boot:spring-boot-starter-web'

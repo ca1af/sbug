@@ -57,6 +57,6 @@ public class ChatMessageController {
         /* responseDto : id(메세지 ID), sender(보낸 사람 닉네임), receiver(받는 사람 닉네임), message(내용),
                        receiverId(받는 사람 ID), status(이미 읽은 메세지인지 상태) */
         ChatResponseDto responseDto = chatService.createMessage(room, sender, receiver, requestDto.getMessage());
-        template.convertAndSend("/topic/chat/room/" + room.getId(), responseDto);
+        template.convertAndSend("/topic/chats/rooms/" + room.getId(), responseDto);
     }
 }
