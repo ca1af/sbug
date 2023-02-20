@@ -4,6 +4,8 @@ import com.sparta.sbug.chat.entity.Chat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * 채팅 응답 DTO
  */
@@ -17,6 +19,7 @@ public class ChatResponseDto {
     private Long receiverId;
     private String message;
     private String status;
+    private LocalDateTime createdAt;
 
     /**
      * 생성자
@@ -28,6 +31,7 @@ public class ChatResponseDto {
         this.receiver = chat.getReceiver().getNickname();
         this.receiverId = chat.getReceiver().getId();
         this.status = chat.getStatus().toString();
+        this.createdAt = chat.getCreatedAt();
     }
 
     public static ChatResponseDto of(Chat chat){
