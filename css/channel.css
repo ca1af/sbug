@@ -10,7 +10,7 @@ body {
   color: white;
 }
 
-.container {
+.container-box {
   margin: 0 auto;
   width: 1500px;
   background: #444753;
@@ -39,7 +39,7 @@ body {
   left: -25px;
 }
 
-.people-list ul {
+.people-list .list {
   padding: 20px;
   height: 770px;
 }
@@ -291,5 +291,59 @@ body {
 
 .message-content:hover {
   color:rgba(0, 0, 0, 1);
+  transition: all 0.3s ease;
+}
+
+.more-btn {
+  background-color: rgba(0, 50, 100, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+  border: 0;
+  border-radius: 15px;
+  position: relative;
+  bottom: 1%;
+  left: 45%;
+  padding: 6px;
+  width: 9%;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.more-btn:hover {
+  background-color: rgba(0, 50, 100, 1);
+  transition: all 0.3s ease;
+}
+
+.chat .chat-history .message-data-btn {
+  position: relative;
+  left: 5%;
+  color: #a8aab1;
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+.chat .chat-history .message-data-btn:hover {
+  text-decoration: underline;
+}
+
+.update-textarea {
+  width: 100%;
+  border: none;
+  padding: 10px 20px;
+  font: 14px/22px "Lato", Arial, sans-serif;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  resize: none;
+}
+
+.channel-btn {
+  font-size: 19px;
+  position: relative;
+  left: 60%;
+  cursor: pointer;
+}
+
+.channel-btn:hover {
+  color:rgba(255, 255, 255, 0.7);
   transition: all 0.3s ease;
 }

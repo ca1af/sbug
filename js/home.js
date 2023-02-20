@@ -32,29 +32,28 @@ function getChannelList() {
 }
 
 function makeChannelHtml(id, channelName) {
-	return `<a class="channel" href="http://localhost:5500/channel.html?id=${id}"> ⭐${channelName}</div>`
+	return `<div> <a class="channel" href="http://localhost:5500/channel.html?id=${id}"> ⭐${channelName} </a></div>`
 }
 
 // 로그아웃
 function logout() {
-	clearCookie('accessToken');
-	clearCookie('refreshToken');
-
 	var settings = {
-	  "url": "http://localhost:8080/api/users/logout",
-	  "method": "POST",
-	  "timeout": 0,
-	  "headers": {
-		"Authorization": getCookie('accessToken'),
-		"RTK": getCookie('refreshToken')
-	  },
+		"url": "http://localhost:8080/api/users/logout",
+		"method": "POST",
+		"timeout": 0,
+		"headers": {
+			"Authorization": getCookie('accessToken'),
+			"RTK": getCookie('refreshToken')
+		},
 	};
 	$.ajax(settings).done(function (response) {
-	  console.log(response);
-	  alert("로그아웃완료");
-	  location.href = "./frontdoor.html";
+		console.log(response);
+		alert("로그아웃완료");
+		clearCookie('accessToken');
+		clearCookie('refreshToken');
+		location.href = "./frontdoor.html";
 	});
-  }
+}
 
 // 로그인 회원 정보조회
 var loginuserid = '';
@@ -75,10 +74,12 @@ function getUserInformation() {
 		},
 		error: function (response) {
 			if (response.responseJSON) {
-				validateToken(response.responseJSON.status);
+				validateErrorResponse(response.responseJSON);
 			} else {
 				alert("로그인 실패! 서버의 응답이 없습니다😭");
 			}
+			clearCookie('accessToken');
+			clearCookie('refreshToken');
 			location.href = "./frontdoor.html"
 		}
 	})
@@ -86,12 +87,12 @@ function getUserInformation() {
 	return userInfo;
 }
 
-function validateToken(status) {
+function validateErrorResponse(response) {
 
-	if (status === 403) {
-		alert("토큰이 만료되었습니다. 다시 로그인해주세요.");
+	if (response.status === 403) {
+		alert("토큰이 만료되었습니다🤔. 다시 로그인해주세요.");
 		location.href = "./frontdoor.html"
-	} else if (status === 401) {
+	} else if (response.status === 401) {
 		var url = "http://localhost:8080/account/reissue";
 		$.ajax({
 			type: "GET",
@@ -102,18 +103,21 @@ function validateToken(status) {
 				"RTK": getCookie('refreshToken')
 			},
 			success: function (response) {
-				// setCookie('accessToken', response.atk);
-				// setCookie('refreshToken', response.rtk);
-				// location.href = "./index.html";
+				setCookie('accessToken', response.atk);
+				setCookie('refreshToken', response.rtk);
+				location.href = "./frontdoor.html";
 			},
 			error: function (response) {
 				if (response.responseJSON) {
-					alert(response.responseJSON.message);
+					console.log("리이슈 실패! : " + response.responseJSON.message);
+					alert("로그인 실패! 인증 정보에 문제가 있습니다😨")
 				} else {
 					alert("로그인 실패! 서버의 응답이 없습니다😭");
 				}
 			}
 		})
+	} else {
+		alert("인증 문제가 아닌 오류 : " + response.message);
 	}
 }
 
@@ -146,11 +150,6 @@ function getCookie(key) {
 		if (end === -1) end = cookieData.length;
 		value = cookieData.substring(cookie, end);
 	}
-
-	// kakao 로그인 사용한 경우 Bearer 추가
-	// if (value.indexOf('Bearer') === -1 && value !== '') {
-	//   value = 'Bearer ' + value;
-	// }
 
 	return value;
 }

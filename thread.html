@@ -37,7 +37,7 @@
         </div>
       </div> <!-- end chat-header -->
 
-      <div class="chat-history">
+      <div class="chat-history" id="comment-box">
         <hr>
         <div style="color: gray"> 쓰레드 </div>
         <ul id="thread-history">
@@ -50,7 +50,7 @@
 
       <div class="chat-message clearfix">
         <textarea name="message-to-send" id="message-to-send" placeholder="Type your message" rows="3"></textarea>
-        <button onclick="publishThread()">Send</button>
+        <button onclick="publishComment()">Send</button>
       </div> <!-- end chat-message -->
 
     </div> <!-- end chat -->

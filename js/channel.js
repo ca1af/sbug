@@ -1,11 +1,31 @@
 var userInfo = getUserInformation();
+
+// 쓰레드 조회를 위한 변수
 var channelId = new URL(location.href).searchParams.get("id");
+var currentScroll;
+var currentPage = 1;
+var today = new Date();
+var recentDate = new Date(today.setDate(today.getDate() + 1));
+today = new Date();
+
+// 수정을 위한 변수
+var updatingId = -1;
+
 getChannelList();
-getThreads();
+getThreads(currentPage);
+
+// 엔터키 이벤트
+$('#message-to-send').on("keyup", function (key) {
+  if (key.keyCode == 13) {
+    if (!key.shiftKey) {
+      key.preventDefault();
+      publishThread();
+    }
+  }
+});
 
 // 전체 채널 조회
 function getChannelList() {
-  var channelId = new URL(location.href).searchParams.get("id");
   var url = "http://localhost:8080/api/users/channels";
   $.ajax({
     type: "GET",
@@ -26,7 +46,7 @@ function getChannelList() {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON)
+        validateErrorResponse(response.responseJSON)
       } else {
         alert("채널 리스트 조회 실패! 서버의 응답이 없습니다😭");
       }
@@ -34,13 +54,75 @@ function getChannelList() {
   })
 }
 
+// 채널 만들기
+function createChannel() {
+  var url = "http://localhost:8080/api/channels"
+  var text = $('#channel-create-name').val();
+  let body = { 'channelName': text };
+
+  $.ajax({
+    type: "POST",
+    url: url,
+    contentType: "application/json",
+    headers: {
+      "Authorization": getCookie('accessToken'),
+      "RTK": getCookie('refreshToken')
+    },
+    data: JSON.stringify(body),
+    success: function (response) {
+      var tempHtml = makeChannelHtml(response.id, response.channelName)
+      $('#list').append(tempHtml);
+      $("#channel-create-name").val("");
+      $("#createModal").modal('hide');
+    },
+    error: function (response) {
+      if (response.responseJSON) {
+        console.log(response.responseJSON)
+        //validateErrorResponse(response.responseJSON);
+      } else {
+        alert("채널 생성 실패! 서버의 응답이 없습니다😭");
+      }
+    }
+  })
+}
+
+// 채널 초대
+function inviteUserInChannel() {
+  var url = "http://localhost:8080/api/channels/" + channelId + "/users"
+  var text = $('#invite-email').val();
+  let body = { 'email': text };
+  
+  $.ajax({
+    type: "POST",
+    url: url,
+    contentType: "application/json",
+    headers: {
+      "Authorization": getCookie('accessToken'),
+      "RTK": getCookie('refreshToken')
+    },
+    data: JSON.stringify(body),
+    success: function (response) {
+      $("#invite-email").val("");
+      $("#inviteModal").modal('hide');
+      alert("사용자 초대 완료!")
+    },
+    error: function (response) {
+      if (response.responseJSON) {
+        validateErrorResponse(response.responseJSON);
+      } else {
+        alert("사용자 초대 실패! 서버의 응답이 없습니다😭");
+      }
+    }
+  })
+}
+
 function makeChannelHtml(id, channelName) {
-  return `<a class="channel" href="http://localhost:5500/channel.html?id=${id}"> ⭐ ${channelName}</div>`
+  return `<div> <a class="channel" href="http://localhost:5500/channel.html?id=${id}"> ⭐ ${channelName} </a> </div>`
 }
 
 // 쓰레드 조회
-function getThreads() {
-  var url = "http://localhost:8080/api/channels/" + channelId + "/threads";
+function getThreads(page) {
+  var url = "http://localhost:8080/api/channels/" + channelId + "/threads?currentPage=" + page + "&size=5&sortBy=createdAt&order=desc";
 
   $.ajax({
     type: "GET",
@@ -49,29 +131,46 @@ function getThreads() {
       "Authorization": getCookie('accessToken'),
       "RTK": getCookie('refreshToken')
     },
-    success: function (response, xhr) {
-      const ul = document.getElementById('thread-history');
-      const items = ul.getElementsByTagName('li');
-      if (items.length > 0) {
-        items[0].remove();
-      }
+    success: function (response) {
+      console.log(response);
+      console.log(userInfo);
+      let threads = response['content'];
 
-      let threads = response;
-      if (threads.length > 0) {
-        $("#welcome").hide();
-      }
       for (let i = 0; i < threads.length; i++) {
         let thread = threads[i];
-        let time = toStringByFormatting(new Date(thread.createdAt));
-        let tempHtml = makeThread(thread.threadId, thread.userNickname, time, thread.content, thread.emojis);
-        $('#thread-history').append(tempHtml);
+        let date = new Date(thread.createdAt)
+        var tempDateHtml = makeDateHtml(date);
+        let time = toStringTime(date);
+        let tempHtml = makeThread(thread.threadId, thread.userNickname, thread.userId, time, thread.content, thread.emojis);
+        $('#thread-history').prepend(tempHtml);
+        if (isDifferentDate(recentDate, date)) {
+          recentDate = date;
+          $('#thread-history').prepend(tempDateHtml);
+        } else {
+          $('#hr-' + date.getFullYear() + date.getMonth() + date.getDate()).remove();
+          $('#h2-' + date.getFullYear() + date.getMonth() + date.getDate()).remove();
+          $('#thread-history').prepend(tempDateHtml);
+        }
       }
 
-      $('.chat-history').scrollTop($('.chat-history')[0].scrollHeight)
+      var afterScroll = document.querySelector('#thread-box').scrollHeight
+
+      if (response.last) {
+        $('#more-btn').remove();
+        $('#thread-box').scrollTop(afterScroll - currentScroll + 61);
+      } else {
+        $('#more-btn').remove();
+        var tempHtml = `<button class="more-btn" id="more-btn" onclick="getThreads(currentPage)"> 더보기 </button>`;
+        $('#thread-box').prepend(tempHtml);
+        $('#thread-box').scrollTop(afterScroll - currentScroll);
+      }
+
+      currentScroll = document.querySelector('#thread-box').scrollHeight;
+      currentPage++;
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("쓰레드 로딩 실패! 서버의 응답이 없습니다😭");
       }
@@ -83,6 +182,7 @@ function publishThread() {
   var url = "http://localhost:8080/api/channels/" + channelId + "/threads";
   var text = $('#message-to-send').val();
   text = text.replaceAll(/(\n|\r\n)/g, "<br>");
+  text = text.replace(/<br>$/, '');
 
   let body = { 'content': text };
 
@@ -96,16 +196,16 @@ function publishThread() {
     },
     data: JSON.stringify(body),
     success: function (response) {
-      $("#welcome").hide();
       let thread = response;
-      let time = toStringByFormatting(new Date(thread.createdAt));
-      let tempHtml = makeThread(thread.threadId, thread.userNickname, time, thread.content, thread.emojis);
+      let time = toStringTime(new Date(thread.createdAt));
+      let tempHtml = makeThread(thread.threadId, thread.userNickname, response.userId, time, thread.content, thread.emojis);
       $('#thread-history').append(tempHtml);
       $('.chat-history').scrollTop($('.chat-history')[0].scrollHeight)
+      $('#message-to-send').val("");
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("쓰레드 작성 실패! 서버의 응답이 없습니다😭");
       }
@@ -113,7 +213,8 @@ function publishThread() {
   })
 }
 
-function makeThread(id, nickname, time, content, emojis) {
+// id = threadId
+function makeThread(id, nickname, userId, time, content, emojis) {
   var countSmile = 0;
   var countCry = 0;
   var countHeart = 0;
@@ -140,40 +241,180 @@ function makeThread(id, nickname, time, content, emojis) {
       }
     }
   }
-  
-  return `<li>
-            <div class="message-data">
-              <div class="thread-profile-box" style="background: #BDBDBD;">
-                <img class="btn btn-secondary thread-profile-img"
-                  src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
-              </div>
 
-              <span class="message-data-name">${nickname}</span>
-              <span class="message-data-time">${time}</span>
-            </div>
-            <div class="message my-message"> <a class="message-content" href="http://localhost:5500/thread.html?channelId=${channelId}&threadId=${id}"> ${content} </a> </div>
-            <div class="message my-message">
-              <span class="emoji" onclick="reactEmoji('SMILE', ${id})">😄 <i id="SMILE-${id}">${countSmile}</i></span>
-              <span class="emoji" onclick="reactEmoji('CRY', ${id})">😭 <i id="CRY-${id}">${countCry}</i></span>
-              <span class="emoji" onclick="reactEmoji('HEART', ${id})">❤️ <i id="HEART-${id}">${countHeart}</i></span>
-              <span class="emoji" onclick="reactEmoji('LIKE', ${id})">👍 <i id="LIKE-${id}">${countLike}</i></span>
-            </div>
-          </li>`
+  if (userId === userInfo.userId) {
+    return `<li id="th-li-${id}">
+              <div class="message-data">
+                <div class="thread-profile-box" style="background: #BDBDBD;">
+                  <img class="btn-secondary thread-profile-img"
+                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
+                </div>
+
+                <span class="message-data-name">${nickname}</span>
+                <span class="message-data-time">${time}</span>
+                <span class="message-data-btn" onclick="onClickUpdateThread(${id})">수정</span>
+                <span class="message-data-btn" onclick="deleteThread(${id})">삭제</span>
+              </div>
+              <div class="message my-message"> 
+                <a class="message-content" id="th-a-${id}" href="http://localhost:5500/thread.html?channelId=${channelId}&threadId=${id}"> ${content} </a>
+                <textarea class="update-textarea" rows="1" id="th-txtarea-${id}" style="display:none">${content}</textarea> 
+              </div>
+              <div class="message my-message">
+                <span class="emoji" onclick="reactEmoji('SMILE', ${id})">😄 <i id="SMILE-${id}">${countSmile}</i></span>
+                <span class="emoji" onclick="reactEmoji('CRY', ${id})">😭 <i id="CRY-${id}">${countCry}</i></span>
+                <span class="emoji" onclick="reactEmoji('HEART', ${id})">❤️ <i id="HEART-${id}">${countHeart}</i></span>
+                <span class="emoji" onclick="reactEmoji('LIKE', ${id})">👍 <i id="LIKE-${id}">${countLike}</i></span>
+              </div>
+            </li>`
+  } else {
+    return `<li id="th-li-${id}">
+              <div class="message-data">
+                <div class="thread-profile-box" style="background: #BDBDBD;">
+                  <img class="btn-secondary thread-profile-img"
+                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
+                </div>
+
+                <span class="message-data-name">${nickname}</span>
+                <span class="message-data-time">${time}</span>
+              </div>
+              <div class="message my-message"> <a class="message-content" href="http://localhost:5500/thread.html?channelId=${channelId}&threadId=${id}"> ${content} </a> </div>
+              <div class="message my-message">
+                <span class="emoji" onclick="reactEmoji('SMILE', ${id})">😄 <i id="SMILE-${id}">${countSmile}</i></span>
+                <span class="emoji" onclick="reactEmoji('CRY', ${id})">😭 <i id="CRY-${id}">${countCry}</i></span>
+                <span class="emoji" onclick="reactEmoji('HEART', ${id})">❤️ <i id="HEART-${id}">${countHeart}</i></span>
+                <span class="emoji" onclick="reactEmoji('LIKE', ${id})">👍 <i id="LIKE-${id}">${countLike}</i></span>
+              </div>
+            </li>`
+  }
 }
 
-function toStringByFormatting(source, delimiter = '-') {
-  const year = source.getFullYear() - 2000;
-  const month = source.getMonth();
-  const day = source.getDate();
+// 쓰레드 수정
+function onClickUpdateThread(id) {
+  if (updatingId < 0) {
+    $("#th-a-" + id).css("display", "none");
+    $("#th-txtarea-" + id).css("display", "block");
+    updatingId = id;
+  } else if (updatingId !== id) {
+    $("#th-a-" + updatingId).css("display", "block");
+    $("#th-txtarea-" + updatingId).css("display", "none");
+    $("#th-txtarea-" + updatingId).text($("#th-a-" + updatingId).text());
+
+    $("#th-a-" + id).css("display", "none");
+    $("#th-txtarea-" + id).css("display", "block");
+    updatingId = id;
+  } else {
+    updateThread(id);
+    $("#th-a-" + id).css("display", "block");
+    $("#th-txtarea-" + id).css("display", "none");
+    updatingId = -1;
+  }
+}
+
+function updateThread(id) {
+  var url = "http://localhost:8080/api/channels/" + channelId + "/threads/" + id
+  var inputText = $("#th-txtarea-" + id).val();
+  var text = inputText.replaceAll(/(\n|\r\n)/g, "<br>");
+  text = text.replace(/<br>$/, '');
+
+  let body = { 'content': text };
+
+  $.ajax({
+    type: "PATCH",
+    url: url,
+    contentType: "application/json",
+    headers: {
+      "Authorization": getCookie('accessToken'),
+      "RTK": getCookie('refreshToken')
+    },
+    data: JSON.stringify(body),
+    success: function (response) {
+      $("#th-a-" + id).text(inputText);
+      $("#th-txtarea-" + id).text(inputText);
+    },
+    error: function (response) {
+      if (response.responseJSON) {
+        validateErrorResponse(response.responseJSON);
+      } else {
+        alert("쓰레드 수정 실패! 서버의 응답이 없습니다😭");
+      }
+    }
+  })
+}
+
+// 쓰레드 삭제
+function deleteThread(id) {
+  var url = "http://localhost:8080/api/channels/" + channelId + "/threads/" + id
+
+  $.ajax({
+    type: "DELETE",
+    url: url,
+    contentType: "application/json",
+    headers: {
+      "Authorization": getCookie('accessToken'),
+      "RTK": getCookie('refreshToken')
+    },
+    success: function (response) {
+      $("#th-li-" + id).remove();
+    },
+    error: function (response) {
+      if (response.responseJSON) {
+        validateErrorResponse(response.responseJSON);
+      } else {
+        alert("쓰레드 삭제 실패! 서버의 응답이 없습니다😭");
+      }
+    }
+  })
+}
+
+// 날짜 관련 함수들
+function toStringTime(source) {
   const hour = source.getHours();
   const minute = source.getMinutes();
 
-  return year + "년 " + month + "월 " + day + "일 " + hour + "시 " + minute + "분";
+  return hour + "시 " + minute + "분";
 }
+
+function isDifferentDate(date1, date2) {
+
+  if (date1.getDate() !== date2.getDate()) {
+    return true;
+  }
+
+  if (date1.getMonth() !== date2.getMonth()) {
+    return true;
+  }
+
+  if (date1.getFullYear() !== date2.getFullYear()) {
+    return true;
+  }
+
+  return false;
+}
+
+function toStringDate(source) {
+  const year = source.getFullYear();
+  const month = source.getMonth() + 1;
+  const day = source.getDate();
+
+  if (!isDifferentDate(today, source)) {
+    return "오늘";
+  }
+
+  return year + "년 " + month + "월 " + day + "일";
+}
+
+function makeDateHtml(source) {
+  var id = "" + source.getFullYear() + source.getMonth() + source.getDate();
+  var date = toStringDate(source);
+  return `<hr id="hr-${id}">
+          <h2 id="h2-${id}" style="color: gray"> ${date} </h2>`
+}
+
+//
 
 // 이모지 반응 남기기
 function reactEmoji(emojiType, id) {
-  var url = "http://localhost:8080/api/channels/threads/" + id + "/emojis"
+  var url = "http://localhost:8080/api/channels/" + channelId + "/threads/" + id + "/emojis"
   var tagId = "#" + emojiType + "-" + id
   var count = $(tagId).text() * 1;
 
@@ -195,7 +436,7 @@ function reactEmoji(emojiType, id) {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("이모지 반응 실패! 서버의 응답이 없습니다😭");
       }
@@ -222,15 +463,52 @@ function getUserInformation() {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("로그인 실패! 서버의 응답이 없습니다😭");
       }
+      clearCookie('accessToken');
+      clearCookie('refreshToken');
       location.href = "./frontdoor.html"
     }
   })
 
   return userInfo;
+}
+
+function validateErrorResponse(response) {
+
+  if (response.status === 403) {
+    alert("토큰이 만료되었습니다🤔. 다시 로그인해주세요.");
+    location.href = "./frontdoor.html"
+    // 리이슈
+  } else if (response.status === 401) {
+    var url = "http://localhost:8080/account/reissue";
+    $.ajax({
+      type: "GET",
+      url: url,
+      async: false,
+      headers: {
+        "Authorization": getCookie('accessToken'),
+        "RTK": getCookie('refreshToken')
+      },
+      success: function (response) {
+        setCookie('accessToken', response.atk);
+        setCookie('refreshToken', response.rtk);
+        location.href = "./frontdoor.html";
+      },
+      error: function (response) {
+        if (response.responseJSON) {
+          console.log("리이슈 실패! : " + response.responseJSON.message);
+          alert("로그인 실패! 인증 정보에 문제가 있습니다😨")
+        } else {
+          alert("로그인 실패! 서버의 응답이 없습니다😭");
+        }
+      }
+    })
+  } else {
+    alert("인증 문제가 아닌 오류 : " + response.message);
+  }
 }
 
 // 쿠키 설정
@@ -269,37 +547,4 @@ function getCookie(key) {
   // }
 
   return value;
-}
-
-function validateStatus(response) {
-
-  if (response.status === 403) {
-    alert("토큰이 만료되었습니다. 다시 로그인해주세요.");
-    location.href = "./frontdoor.html"
-  } else if (response.status === 401) {
-    var url = "http://localhost:8080/account/reissue";
-    $.ajax({
-      type: "GET",
-      url: url,
-      async: false,
-      headers: {
-        "Authorization": getCookie('accessToken'),
-        "RTK": getCookie('refreshToken')
-      },
-      success: function (response) {
-        setCookie('accessToken', response.atk);
-        setCookie('refreshToken', response.rtk);
-        location.href = "./index.html";
-      },
-      error: function (response) {
-        if (response.responseJSON) {
-          alert(response.responseJSON.message);
-        } else {
-          alert("로그인 실패! 서버의 응답이 없습니다😭");
-        }
-      }
-    })
-  } else {
-    alert(response.message);
-  }
 }

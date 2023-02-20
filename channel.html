@@ -4,21 +4,35 @@
 <head>
   <meta charset="UTF-8">
   <title>SBug</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
   <link rel="stylesheet" href="./css/channel.css">
 </head>
 
 <body>
+
+
   <!-- partial:index.partial.html -->
-  <div class="container clearfix">
+  <div class="container-box clearfix">
     <div class="people-list" id="people-list">
       <div class="search">
         <input type="text" placeholder="search" />
         <i class="fa fa-search"></i>
       </div>
       <ul class="list" id="list">
-        <h1> 채널 목록 </h1>
+        <div class="dropdown">
+          <span> 채널 목록 </span>
+          <span class="channel-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"> ≡ </span>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createModal">채널 추가</a></li>
+            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#inviteModal">현재 채널에 사용자 초대</a></li>
+          </ul>
+        </div>
         <hr>
         <br>
       </ul>
@@ -37,11 +51,8 @@
         </div>
       </div> <!-- end chat-header -->
 
-      <div class="chat-history">
+      <div class="chat-history" id="thread-box">
         <ul id="thread-history">
-          <li>
-            <div class="welcome-message" id="welcome"> 첫 쓰레드를 작성해보세요! </div>
-          </li>
       </div> <!-- end chat-history -->
 
       <div class="chat-message clearfix">
@@ -53,36 +64,62 @@
 
   </div> <!-- end container -->
 
-  <script id="message-template" type="text/x-handlebars-template">
-  <li class="clearfix">
-    <div class="message-data align-right">
-      <span class="message-data-time" >{{time}}, Today</span> &nbsp; &nbsp;
-      <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
+  <!-- Channel Create Modal -->
+  <div class="modal fade" id="createModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: black">채널 추가</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label" style="color: black" id="create-label">채널 이름:</label>
+              <input type="text" class="form-control" id="channel-create-name">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="createChannel()">Create</button>
+        </div>
+      </div>
     </div>
-    <div class="message other-message float-right">
-      {{messageOutput}}
-    </div>
-  </li>
-</script>
+  </div>
 
-  <script id="message-response-template" type="text/x-handlebars-template">
-  <li>
-    <div class="message-data">
-      <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
-      <span class="message-data-time">{{time}}, Today</span>
+  <!-- Channel Invite Modal -->
+  <div class="modal fade" id="inviteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: black">채널에 초대</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label" style="color: black" type="email" id="invite-label">사용자 이메일:</label>
+              <input type="text" class="form-control" id="invite-email">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="inviteUserInChannel()">Invite</button>
+        </div>
+      </div>
     </div>
-    <div class="message my-message">
-      {{response}}
-    </div>
-  </li>
-</script>
+  </div>
+
   <!-- partial -->
   <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
   <script src='//cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js'></script>
   <script src='//cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js'></script>
   <script src="./js/channel.js"></script>
   <script src="./js/cookie.js"></script>
-  <script src="./js/user.js"></script>
 </body>
 
 </html>
