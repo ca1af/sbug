@@ -8,9 +8,9 @@ import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.service.UserServiceImpl;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +18,7 @@ import java.util.List;
 
 // lombok
 @RequiredArgsConstructor
+@Slf4j
 
 // springframework web bind
 @RestController
@@ -93,7 +94,8 @@ public class UserController {
      */
     @GetMapping("/api/users/my-page")
     public UserResponseDto myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.myPage(userDetails.getUser());
+        log.info("[GET] /api/users/my-page");
+        return UserResponseDto.of(userDetails.getUser());
     }
 
     /**
@@ -113,14 +115,11 @@ public class UserController {
      * [GET] /account/reissue
      *
      * @param accountDetails 재발급 대상 정보
-     * @param response       HTTP 서블릿 응답
      * @return TokenResponseDto
      */
     @GetMapping("/account/reissue")
-    public TokenResponseDto reissue(@AuthenticationPrincipal UserDetailsImpl accountDetails, HttpServletResponse response) {
+    public TokenResponseDto reissue(@AuthenticationPrincipal UserDetailsImpl accountDetails) {
         UserResponseDto accountResponse = UserResponseDto.of(accountDetails.getUser());
-        TokenResponseDto tokenResponseDto = jwtProvider.reissueAtk(accountResponse);
-        response.setHeader("Authorization", tokenResponseDto.getAtk());
-        return tokenResponseDto;
+        return jwtProvider.reissueAtk(accountResponse);
     }
 }

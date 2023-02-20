@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +37,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String accessToken = request.getHeader("Authorization");
 
         if (accessToken != null) {
+            log.info("AccessToken in JwtAuthFilter = " + accessToken);
             var atk = accessToken.substring(7);
             if (!this.validateToken(atk)) {
                 String refreshToken = request.getHeader("RTK");
@@ -54,15 +54,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
 
-
             // try 들어가기 전에 토큰 밸리데이션 로직 필요함.
             try {
                 String email = jwtProvider.getSubject(atk);
-                // 아래 if문은 필요 없습니다.
-//                String requestURI = request.getRequestURI();
-//                if (email.equals("RTK") && !requestURI.equals("/account/reissue")) {
-//                    throw new JwtException("토큰을 확인하세요.");
-//                }
                 UserDetails userDetails = userDetailsImpl.loadUserByUsername(email);
                 Authentication authentication = jwtProvider.createAuthentication(userDetails);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -97,13 +91,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         return false;
     }
-
-    /**
-     * JWT 관련 작업 중에 발생한 예외를 처리하기 위한 메서드
-     *
-     * @param response   HTTP 서블릿 응답
-     * @param msg        메세지
-     * @param statusCode 상태 코드
-     */
 
 }

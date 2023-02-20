@@ -13,7 +13,6 @@ public class ChannelResponseDto {
 
     private Long id;
     private String channelName;
-    private Long channelId;
 
     /**
      * 생성자
@@ -21,7 +20,6 @@ public class ChannelResponseDto {
     private ChannelResponseDto(Channel channel) {
         this.id = channel.getId();
         this.channelName = channel.getChannelName();
-        this.channelId = channel.getId();
     }
 
     public static ChannelResponseDto of(Channel channel) {

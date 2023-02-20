@@ -19,6 +19,7 @@ public class PageDto {
     private int currentPage;
     private int size;
     private String sortBy;
+    private String order;
 
     /**
      * 생성자
@@ -27,7 +28,7 @@ public class PageDto {
      * @param size        한 페이지의 사이즈 (default = 5)
      * @param sortBy      정렬 기준 (default = "createdAt")
      */
-    public PageDto(int currentPage, int size, String sortBy) {
+    public PageDto(int currentPage, int size, String sortBy, String order) {
         if (currentPage <= 0) {
             currentPage = 1;
         }
@@ -40,15 +41,21 @@ public class PageDto {
             sortBy = "createdAt";
         }
 
+        if (order == null) {
+            order = "asc";
+        }
+
         this.currentPage = currentPage;
         this.size = size;
         this.sortBy = sortBy;
+        this.order = order;
     }
 
     public PageDto() {
         this.currentPage = 1;
         this.size = 5;
         this.sortBy = "createdAt";
+        this.order = "asc";
     }
 
     /**
@@ -59,6 +66,10 @@ public class PageDto {
      */
     public Pageable toPageable() {
         // 페이지는 index:0부터 시작하기 때문에 값에서 -1을 해주면서 넣습니다.
-        return PageRequest.of(currentPage - 1, size, Sort.by(sortBy).descending());
+        if (order.equals("desc")) {
+            return PageRequest.of(currentPage - 1, size, Sort.by(sortBy).descending());
+        } else {
+            return PageRequest.of(currentPage - 1, size, Sort.by(sortBy).ascending());
+        }
     }
 }

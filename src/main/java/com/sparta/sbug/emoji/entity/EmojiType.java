@@ -2,10 +2,10 @@ package com.sparta.sbug.emoji.entity;
 
 public enum EmojiType {
 
-    Emoji1("Emoji1"),
-    Emoji2("Emoji2"),
-    Emoji3("Emoji3"),
-    Emoji4("Emoji4");
+    SMILE("SMILE"),
+    CRY("CRY"),
+    HEART("HEART"),
+    LIKE("LIKE");
 
     private final String emojiType;
 
