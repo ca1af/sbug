@@ -6,7 +6,6 @@ import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.repository.ChannelRepository;
 import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.repository.CommentRepository;
-import com.sparta.sbug.emoji.entity.CommentEmoji;
 import com.sparta.sbug.emoji.entity.ThreadEmoji;
 import com.sparta.sbug.emoji.repository.CommentEmojiRepository;
 import com.sparta.sbug.emoji.repository.ThreadEmojiRepository;
@@ -55,7 +54,7 @@ public class TestDataDB {
             User user2 = User.builder().email("user2").password(getEncode("password2")).nickname("루피")
                     .build();
             userRepository.save(user2);
-            
+
             User user3 = User.builder().email("user3").password(getEncode("password3")).nickname("펭구")
                     .build();
             User savedUser3 = userRepository.save(user3);
@@ -98,16 +97,28 @@ public class TestDataDB {
             comment1.setThread(thread);
             commentRepository.save(comment1);
 
+            Comment comment2 = new Comment("코멘트2", user1);
+            comment2.setThread(thread);
+            commentRepository.save(comment2);
+
+            Comment comment3 = new Comment("코멘트3", user1);
+            comment3.setThread(thread);
+            commentRepository.save(comment3);
+
+            Comment comment4 = new Comment("코멘트4", user1);
+            comment4.setThread(thread);
+            commentRepository.save(comment4);
+
+            Comment comment5 = new Comment("코멘트5", user1);
+            comment5.setThread(thread);
+            commentRepository.save(comment5);
+
+            Comment comment6 = new Comment("코멘트6", user1);
+            comment6.setThread(thread);
+            commentRepository.save(comment6);
+
             ThreadEmoji threadEmoji = new ThreadEmoji("SMILE", user1, thread);
             threadEmojiRepository.save(threadEmoji);
-            ThreadEmoji threadEmoji1 = new ThreadEmoji("CRY", user1, thread);
-            threadEmojiRepository.save(threadEmoji1);
-            ThreadEmoji threadEmoji2 = new ThreadEmoji("HEART", user1, thread);
-            threadEmojiRepository.save(threadEmoji2);
-            ThreadEmoji threadEmoji3 = new ThreadEmoji("LIKE", user1, thread);
-            threadEmojiRepository.save(threadEmoji3);
-            CommentEmoji commentEmoji = new CommentEmoji("SMILE", user1, comment1);
-            commentEmojiRepository.save(commentEmoji);
             Admin admin = Admin.builder().email("admin@naver.com").password("adminpass").build();
             adminRepository.save(admin);
 

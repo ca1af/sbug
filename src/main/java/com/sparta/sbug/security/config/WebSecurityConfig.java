@@ -2,7 +2,6 @@ package com.sparta.sbug.security.config;
 
 import com.sparta.sbug.security.exception.CustomAccessDeniedHandler;
 import com.sparta.sbug.security.exception.CustomAuthenticationEntryPoint;
-import com.sparta.sbug.security.jwt.AdminJwtAuthFilter;
 import com.sparta.sbug.security.jwt.JwtAuthFilter;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.security.userDetails.AdminDetailsServiceImpl;
@@ -19,7 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -106,7 +104,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD")
                 .exposedHeaders("Authorization")
                 .exposedHeaders("RTK");
         WebMvcConfigurer.super.addCorsMappings(registry);

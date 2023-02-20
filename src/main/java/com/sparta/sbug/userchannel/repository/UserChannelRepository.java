@@ -45,10 +45,10 @@ public interface UserChannelRepository extends JpaRepository<UserChannel, Long> 
      * 유저 ID와 채널 ID가 모두 포함된 UserChannel 엔티티가 있는지 확인(exist)
      *
      * @param user    대상 유저
-     * @param channel 대상 채널
+     * @param channelId 대상 채널
      * @return boolean
      */
-    boolean existsByUserAndChannelAndInUseIsTrue(User user, Channel channel);
+    boolean existsByUserAndChannelIdAndInUseIsTrue(User user, Long channelId);
 
     /**
      * 유저 ID를 포함하고 있는 모든 UserChannel 엔티티를 조회

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 쓰레드 반환 DTO
@@ -17,6 +18,7 @@ import java.util.List;
 public class ThreadResponseDto {
     private Long threadId;
     private String userNickname;
+    private Long userId;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -26,9 +28,11 @@ public class ThreadResponseDto {
     private ThreadResponseDto(Thread thread) {
         this.threadId = thread.getId();
         this.userNickname = thread.getUser().getNickname(); // 이름으로 넣을지 확인
+        this.userId = thread.getUser().getId();
         this.content = thread.getContent();
         this.createdAt = thread.getCreatedAt();
         this.modifiedAt = thread.getModifiedAt();
+        this.emojis = thread.getEmojis().stream().map(EmojiResponseDto::of).collect(Collectors.toList());
     }
 
     /**

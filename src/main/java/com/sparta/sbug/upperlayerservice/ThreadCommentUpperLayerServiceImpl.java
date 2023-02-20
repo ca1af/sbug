@@ -1,14 +1,17 @@
 package com.sparta.sbug.upperlayerservice;
 
+import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.service.CommentService;
+import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.userchannel.service.UserChannelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.sparta.sbug.common.exceptions.ErrorCode.BAD_REQUEST_COMMENT_CONTENT;
 
 // lombok
 @RequiredArgsConstructor
@@ -19,22 +22,24 @@ public class ThreadCommentUpperLayerServiceImpl implements ThreadCommentUpperLay
 
     private final ThreadService threadService;
     private final CommentService commentService;
-    private final UserChannelService userChannelService;
 
     @Override
     @Transactional
-    public void createComment(Long threadId, String content, User user) {
-        Thread thread = threadService.findThreadById(threadId);
-        if (!userChannelService.isUserJoinedByChannel(user, thread.getChannel().getId())) {
-            throw new IllegalArgumentException("유저가 채널에 속해있지 않습니다. 권한이 없습니다");
+    public CommentResponseDto createComment(Long threadId, String content, User user) {
+        if (content.trim().equals("")) {
+            throw new CustomException(BAD_REQUEST_COMMENT_CONTENT);
         }
 
-        commentService.createComment(thread, content, user);
+        Thread thread = threadService.findThreadById(threadId);
+        return commentService.createComment(thread, content, user);
     }
 
     @Override
     @Transactional
     public void updateComment(Long commentId, String content, User user) {
+        if (content.trim().equals("")) {
+            throw new CustomException(BAD_REQUEST_COMMENT_CONTENT);
+        }
         Comment comment = validateUserAuth(commentId, user);
         commentService.updateComment(comment, content);
     }

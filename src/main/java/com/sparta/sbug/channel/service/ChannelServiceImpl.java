@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.sparta.sbug.common.exceptions.ErrorCode.BAD_REQUEST_THREAD_CONTENT;
 import static com.sparta.sbug.common.exceptions.ErrorCode.USER_CHANNEL_FORBIDDEN;
 
 // lombok
@@ -62,6 +63,10 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     @Transactional
     public ThreadResponseDto createThread(Long channelId, String requestContent, User user) {
+        if (requestContent.trim().equals("")) {
+            throw new CustomException(BAD_REQUEST_THREAD_CONTENT);
+        }
+
         Channel channel = validateUserInChannel(channelId, user);
         return threadService.createThread(channel, requestContent, user);
     }

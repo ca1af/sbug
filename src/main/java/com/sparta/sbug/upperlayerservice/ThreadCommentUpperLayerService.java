@@ -1,5 +1,6 @@
 package com.sparta.sbug.upperlayerservice;
 
+import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.user.entity.User;
 
 public interface ThreadCommentUpperLayerService {
@@ -11,7 +12,7 @@ public interface ThreadCommentUpperLayerService {
      * @param content  댓글 내용
      * @param user     요청자(=작성자)
      */
-    void createComment(Long threadId, String content, User user);
+    CommentResponseDto createComment(Long threadId, String content, User user);
 
     /**
      * 대상 댓글의 내용을 수정하는 메서드

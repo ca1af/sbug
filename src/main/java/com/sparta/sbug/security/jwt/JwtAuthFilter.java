@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +37,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String accessToken = request.getHeader("Authorization");
 
         if (accessToken != null) {
+            log.info("AccessToken in JwtAuthFilter = " + accessToken);
             var atk = accessToken.substring(7);
             if (!this.validateToken(atk)) {
                 String refreshToken = request.getHeader("RTK");
@@ -53,7 +53,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     response.sendError(401, "만료되었습니다. reissue");
                 }
             }
-
 
             // try 들어가기 전에 토큰 밸리데이션 로직 필요함.
             try {

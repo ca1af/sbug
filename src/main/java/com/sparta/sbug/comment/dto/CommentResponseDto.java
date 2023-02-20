@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 댓글 응답 DTO
@@ -27,14 +28,11 @@ public class CommentResponseDto {
         this.createdAt = comment.getCreatedAt();
         this.userId = comment.getUser().getId();
         this.userNickname = comment.getUser().getNickname();
+        this.emojis = comment.getEmojis().stream().map(EmojiResponseDto::of).collect(Collectors.toList());
     }
 
     public static CommentResponseDto of(Comment comment) {
         return new CommentResponseDto(comment);
-    }
-
-    public void setEmojis(List<EmojiResponseDto> emojis) {
-        this.emojis = emojis;
     }
 
 }

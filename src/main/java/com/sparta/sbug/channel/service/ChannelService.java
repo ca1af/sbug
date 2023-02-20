@@ -18,11 +18,10 @@ public interface ChannelService {
     /**
      * 채널을 만드는 메서드
      *
-     * @param user        요청자
      * @param channelName 채널 이름
      * @return Channel
      */
-    Channel createChannel( String channelName);
+    Channel createChannel(String channelName);
 
     /**
      * 채널 이름을 수정하는 메서드

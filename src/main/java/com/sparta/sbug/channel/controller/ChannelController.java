@@ -60,9 +60,10 @@ public class ChannelController {
      *
      * @param userDetails 요청자 정보
      * @param requestDto  요청 정보(채널 이름)
+     * @return ChannelResponseDto
      */
     @PostMapping("/channels")
-    public void channel(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public ChannelResponseDto channel(@AuthenticationPrincipal UserDetailsImpl userDetails,
                         @RequestBody ChannelDto.ChannelRequest requestDto) {
 
         // channel name check
@@ -71,7 +72,7 @@ public class ChannelController {
         }
 
         // create channel and user-channel mapping data
-        userChannelUpperLayerService.createChannelAndUserChannelForRequester(userDetails.getUser(), requestDto.getChannelName());
+        return userChannelUpperLayerService.createChannelAndUserChannelForRequester(userDetails.getUser(), requestDto.getChannelName());
     }
 
 
