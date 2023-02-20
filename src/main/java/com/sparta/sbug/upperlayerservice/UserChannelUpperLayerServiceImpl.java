@@ -3,7 +3,6 @@ package com.sparta.sbug.upperlayerservice;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.service.ChannelService;
-import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserService;
 import com.sparta.sbug.userchannel.enttiy.UserChannel;
@@ -39,9 +38,10 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
 
     @Override
     @Transactional
-    public void createChannelAndUserChannelForRequester(User user, String channelName) {
+    public ChannelResponseDto createChannelAndUserChannelForRequester(User user, String channelName) {
         Channel channel = channelService.createChannel(channelName);
         userChannelService.createUserChannel(user, channel);
+        return ChannelResponseDto.of(channel);
     }
 
     @Override
@@ -54,8 +54,8 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
     @Override
     @Transactional
     public void inviteUser(User user, Long channelId, String email) {
-        Channel channel = channelService.getChannelById(channelId);
-        if (userChannelService.isUserJoinedByChannel(user, channel)) {
+        if (userChannelService.isUserJoinedByChannel(user, channelId)) {
+            Channel channel = channelService.getChannelById(channelId);
             User invitedUser = userService.getUser(email);
             userChannelService.createUserChannel(invitedUser, channel);
         } else {

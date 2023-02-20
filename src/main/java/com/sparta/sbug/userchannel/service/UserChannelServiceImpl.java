@@ -66,7 +66,7 @@ public class UserChannelServiceImpl implements UserChannelService {
     }
 
     @Override
-    public boolean isUserJoinedByChannel(User user, Channel channel) {
-        return userChannelRepository.existsByUserAndChannelAndInUseIsTrue(user, channel);
+    public boolean isUserJoinedByChannel(User user, Long channelId) {
+        return userChannelRepository.existsByUserAndChannelIdAndInUseIsTrue(user, channelId);
     }
 }

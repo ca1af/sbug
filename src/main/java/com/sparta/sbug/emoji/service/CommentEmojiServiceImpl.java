@@ -24,14 +24,17 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
 
     // CommentEmoji 생성
     @Override
-    public void createCommentEmoji(String emojiType, User user, Long commentId){
+    public boolean reactCommentEmoji(String emojiType, User user, Long commentId){
         Comment comment = commentService.getComment(commentId);
         Optional<CommentEmoji> optionalEmoji = commentEmojiRepository.findByEmojiTypeAndCommentAndUser(EmojiType.valueOf(emojiType), comment, user);
         if (optionalEmoji.isPresent()) {
-            throw new IllegalArgumentException("이미 동일한 이모지 반응이 존재합니다.");
+            commentEmojiRepository.delete(optionalEmoji.get());
+            return false;
+        } else {
+            CommentEmoji commentEmoji = new CommentEmoji(emojiType, user, comment);
+            commentEmojiRepository.save(commentEmoji);
+            return true;
         }
-        CommentEmoji commentEmoji = new CommentEmoji(emojiType, user, comment);
-        commentEmojiRepository.save(commentEmoji);
     }
 
     // CommentEmoji 삭제

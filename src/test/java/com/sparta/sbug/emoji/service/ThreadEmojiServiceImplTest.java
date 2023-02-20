@@ -4,7 +4,6 @@ import com.sparta.sbug.emoji.entity.ThreadEmoji;
 import com.sparta.sbug.emoji.repository.ThreadEmojiRepository;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.service.ThreadServiceImpl;
-import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ class ThreadEmojiServiceImplTest {
 
     @Test
     void createThreadEmoji() {
-        Thread thread = threadService.getThread(1L);
+        Thread thread = threadService.findThreadById(1L);
         User user1 = userService.getUser("user1");
         ThreadEmoji threadEmoji = new ThreadEmoji("Emoji1",user1,thread);
         threadEmojiRepository.save(threadEmoji);

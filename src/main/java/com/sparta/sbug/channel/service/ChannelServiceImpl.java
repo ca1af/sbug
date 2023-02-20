@@ -2,12 +2,17 @@ package com.sparta.sbug.channel.service;
 
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.repository.ChannelRepository;
+import com.sparta.sbug.common.exceptions.CustomException;
+import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.userchannel.service.UserChannelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.sparta.sbug.common.exceptions.ErrorCode.BAD_REQUEST_THREAD_CONTENT;
+import static com.sparta.sbug.common.exceptions.ErrorCode.USER_CHANNEL_FORBIDDEN;
 
 // lombok
 @RequiredArgsConstructor
@@ -57,11 +62,22 @@ public class ChannelServiceImpl implements ChannelService {
     // Thread 생성
     @Override
     @Transactional
-    public void createThread(Long channelId, String requestContent, User user) {
-        Channel channel = getChannelById(channelId);
-        if (!userChannelService.isUserJoinedByChannel(user, channel)) {
-            throw new IllegalArgumentException("유저가 채널에 속해있지 않습니다. 쓰레드 생성권한이 없습니다.");
+    public ThreadResponseDto createThread(Long channelId, String requestContent, User user) {
+        if (requestContent.trim().equals("")) {
+            throw new CustomException(BAD_REQUEST_THREAD_CONTENT);
         }
-        threadService.createThread(channel, requestContent, user);
+
+        Channel channel = validateUserInChannel(channelId, user);
+        return threadService.createThread(channel, requestContent, user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Channel validateUserInChannel(Long channelId, User user) {
+        if (!userChannelService.isUserJoinedByChannel(user, channelId)) {
+            throw new CustomException(USER_CHANNEL_FORBIDDEN);
+        }
+        
+        return getChannelById(channelId);
     }
 }

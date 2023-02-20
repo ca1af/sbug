@@ -1,6 +1,7 @@
 package com.sparta.sbug.channel.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -26,7 +27,7 @@ public class ChannelDto {
     @Data
     @NoArgsConstructor
     public static class ChannelRequest {
-        @NotNull(message = "채널 이름을 입력해주세요")
+        @Pattern(regexp = "^[가-힣a-zA-Z0-9]{2,20}$", message = "채널명은 완성형 한글이나 영문, 숫자로 이루어져야 하고, 2~20글자여야 합니다.")
         private String channelName;
     }
 }

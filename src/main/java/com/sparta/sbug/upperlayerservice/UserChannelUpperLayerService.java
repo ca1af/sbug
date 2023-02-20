@@ -20,8 +20,9 @@ public interface UserChannelUpperLayerService {
      *
      * @param user        요청자
      * @param channelName 생성할 채널 이름
+     * @return ChannelResponseDto
      */
-    void createChannelAndUserChannelForRequester(User user, String channelName);
+    ChannelResponseDto createChannelAndUserChannelForRequester(User user, String channelName);
 
     /**
      * 채널을 삭제하고 그에 종속된 사용자-채널 데이터도 삭제
@@ -57,5 +58,5 @@ public interface UserChannelUpperLayerService {
      * @param id    채널
      * @param email 강퇴할 사용자
      */
-//    void kickUser(User user, Long id, String email);
+    // void kickUser(User user, Long id, String email);
 }
