@@ -17,6 +17,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,5 +97,12 @@ public class ChannelServiceImpl implements ChannelService {
         }
         
         return getChannelById(channelId);
+    }
+
+    @Transactional
+    @Override
+    public void autoDelete(){
+        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
+        channelRepository.deleteChannels(localDateTime);
     }
 }

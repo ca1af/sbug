@@ -11,6 +11,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -52,7 +53,6 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Comment comment) {
         commentRepository.delete(comment);
     }
-
     @Override
     @Transactional(readOnly = true)
     public Comment getComment(Long commentId) {
@@ -61,5 +61,11 @@ public class CommentServiceImpl implements CommentService {
             throw new NoSuchElementException("댓글을 찾을 수 없었습니다.");
         }
         return optionalComment.get();
+    }
+    @Transactional
+    @Override
+    public void autoDelete(){
+        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
+        commentRepository.deleteComments(localDateTime);
     }
 }

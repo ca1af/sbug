@@ -139,7 +139,7 @@ public class ThreadController {
      * @param threadId
      * @return ThreadResponseDto
      */
-    @GetMapping("{admin/{channelId}/threads/{threadId}")
+    @GetMapping("admin/{channelId}/threads/{threadId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ThreadResponseDto getThreads(@PathVariable Long channelId,
                                         @PathVariable Long threadId) {
