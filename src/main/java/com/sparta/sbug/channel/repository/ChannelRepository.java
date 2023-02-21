@@ -13,13 +13,16 @@ import java.util.List;
 
 public interface ChannelRepository extends JpaRepository<Channel, Long> {
     @Modifying(clearAutomatically = true)
-    @Query("update Channel c set c.inUse = false  where c.id = :channelId")
+//    @Query("update Channel c set c.inUse = false  where c.id = :channelId")
+    @Query(value = "update channel SET in_use where id =:channelId", nativeQuery = true)
     void disableChannelById(@Param("id") Long channelId);
 
-    @Query("select Channel from Channel c where c.inUse = true")
+//    @Query("select Channel from Channel c where c.inUse = true")
+    @Query(value = "select channel c from c where in_use=:true", nativeQuery = true)
     Page<Channel> findAllByInUseIsTrue(Pageable pageable);
 
     @Modifying(clearAutomatically = true)
-    @Query("delete from Channel t where t.inUse = false and t.modifiedAt < :localDateTime ")
+//    @Query("delete from Channel t where t.inUse = false and t.modifiedAt < :localDateTime ")
+    @Query(value = "delete from channel c where in_use=false and modified_at<:localDateTime",nativeQuery = true)
     void deleteChannels(@Param("localDateTime") LocalDateTime localDateTime);
 }
