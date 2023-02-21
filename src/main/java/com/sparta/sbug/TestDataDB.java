@@ -9,6 +9,8 @@ import com.sparta.sbug.comment.repository.CommentRepository;
 import com.sparta.sbug.emoji.entity.ThreadEmoji;
 import com.sparta.sbug.emoji.repository.CommentEmojiRepository;
 import com.sparta.sbug.emoji.repository.ThreadEmojiRepository;
+import com.sparta.sbug.schedule.entity.Schedule;
+import com.sparta.sbug.schedule.repository.ScheduleRepository;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.user.entity.User;
@@ -20,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -45,6 +49,7 @@ public class TestDataDB {
         private final ThreadEmojiRepository threadEmojiRepository;
         private final CommentEmojiRepository commentEmojiRepository;
         private final AdminRepository adminRepository;
+        private final ScheduleRepository scheduleRepository;
         public void init() {
             // 유저 생성
             User user1 = User.builder().email("user1").password(getEncode("password1")).nickname("뽀로로")
@@ -121,6 +126,26 @@ public class TestDataDB {
             threadEmojiRepository.save(threadEmoji);
             Admin admin = Admin.builder().email("admin@naver.com").password("adminpass").build();
             adminRepository.save(admin);
+
+            Schedule schedule1 = Schedule.builder()
+                    .user(user1)
+                    .content("1번 스케쥴")
+                    .date(LocalDateTime.of(2023, 1, 5, 14, 40))
+                    .build();
+            Schedule schedule2 = Schedule.builder()
+                    .user(user1)
+                    .content("2번 스케쥴")
+                    .date(LocalDateTime.of(2023, 2, 7, 14, 40))
+                    .build();
+            Schedule schedule3 = Schedule.builder()
+                    .user(user1)
+                    .content("3번 스케쥴")
+                    .date(LocalDateTime.of(2023, 3, 9, 14, 40))
+                    .build();
+            scheduleRepository.save(schedule1);
+            scheduleRepository.save(schedule2);
+            scheduleRepository.save(schedule3);
+
 
         }
 
