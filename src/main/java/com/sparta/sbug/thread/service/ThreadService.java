@@ -60,4 +60,8 @@ public interface ThreadService {
      */
     ThreadResponseDto getThread(Long threadId);
 
+    /**
+     * 오토 딜리트를 실행하는 부분.
+     */
+    void autoDelete();
 }

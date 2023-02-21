@@ -52,19 +52,19 @@ public class TestDataDB {
         private final ScheduleRepository scheduleRepository;
         public void init() {
             // 유저 생성
-            User user1 = User.builder().email("user1").password(getEncode("password1")).nickname("뽀로로")
+            User user1 = User.builder().email("user1@naver.com").password(getEncode("password1")).nickname("뽀로로")
                     .build();
             User savedUser1 = userRepository.save(user1);
 
-            User user2 = User.builder().email("user2").password(getEncode("password2")).nickname("루피")
+            User user2 = User.builder().email("user2@naver.com").password(getEncode("password2")).nickname("루피")
                     .build();
             userRepository.save(user2);
 
-            User user3 = User.builder().email("user3").password(getEncode("password3")).nickname("펭구")
+            User user3 = User.builder().email("user3@naver.com").password(getEncode("password3")).nickname("펭구")
                     .build();
             User savedUser3 = userRepository.save(user3);
 
-            User user4 = User.builder().email("user4").password(getEncode("password4")).nickname("뿡뿡이")
+            User user4 = User.builder().email("user4@naver.com").password(getEncode("password4")).nickname("뿡뿡이")
                     .build();
             userRepository.save(user4);
 
@@ -124,7 +124,7 @@ public class TestDataDB {
 
             ThreadEmoji threadEmoji = new ThreadEmoji("SMILE", user1, thread);
             threadEmojiRepository.save(threadEmoji);
-            Admin admin = Admin.builder().email("admin@naver.com").password("adminpass").build();
+            Admin admin = Admin.builder().email("admin").password("adminpass").build();
             adminRepository.save(admin);
 
             Schedule schedule1 = Schedule.builder()

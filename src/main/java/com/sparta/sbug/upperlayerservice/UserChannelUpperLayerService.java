@@ -2,6 +2,7 @@ package com.sparta.sbug.upperlayerservice;
 
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.user.entity.User;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 

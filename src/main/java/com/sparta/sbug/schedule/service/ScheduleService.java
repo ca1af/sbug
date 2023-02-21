@@ -49,6 +49,23 @@ public interface ScheduleService {
     void updateScheduleStatusToDone(Long id, Long userId);
 
     /**
+    * 대상 일정의 상태를 완료로 표시
+    * 
+    * @param scheduleId 수정할 일정의 ID
+    * @param userId 요청자 ID
+    */
+    void completeSchedule(Long scheduleId, Long userId);
+
+
+    /**
+    * 대상 일정의 상태를 미완으로 표시
+    *
+    * @param scheduleId 수정할 일정의 ID
+    * @param userId 요청자 ID
+    */
+    void incompleteSchedule(Long scheduleId, Long userId);
+
+    /**
      * 대상 일정을 삭제
      *
      * @param scheduleId 대상 일정 ID

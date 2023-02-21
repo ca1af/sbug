@@ -1,9 +1,14 @@
 package com.sparta.sbug.channel.service;
 
+import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.user.entity.User;
+import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 public interface ChannelService {
 
@@ -14,6 +19,7 @@ public interface ChannelService {
      * @return Channel
      */
     Channel getChannelById(Long channelId);
+    Slice<ChannelResponseDto> getChannels(PageDto pageDto);
 
     /**
      * 채널을 만드는 메서드
@@ -58,4 +64,9 @@ public interface ChannelService {
      */
     @Transactional(readOnly = true)
     Channel validateUserInChannel(Long channelId, User user);
+
+    /**
+     * 채널 자동 삭제를 위한 매서드.
+     */
+    void autoDelete();
 }

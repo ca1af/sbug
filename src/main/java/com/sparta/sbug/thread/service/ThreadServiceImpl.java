@@ -14,6 +14,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,7 +34,7 @@ public class ThreadServiceImpl implements ThreadService {
     @Override
     @Transactional(readOnly = true)
     public Thread findThreadById(Long threadId) {
-        Optional<Thread> optionalThread = threadRepository.findById(threadId);
+        Optional<Thread> optionalThread = threadRepository.findThreadByIdAndInUseIsTrue(threadId);
         if (optionalThread.isEmpty()) {
             throw new NoSuchElementException("쓰레드를 찾을 수 없습니다.");
         }
@@ -102,4 +103,10 @@ public class ThreadServiceImpl implements ThreadService {
         return responseDto;
     }
 
+    @Transactional
+    @Override
+    public void autoDelete(){
+        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
+        threadRepository.deleteThreads(localDateTime);
+    }
 }

@@ -86,10 +86,10 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/api/users/sign-up").permitAll()
                 .requestMatchers("/api/users/login").permitAll()
                 .requestMatchers("/api/users/kakao**").permitAll()
-                .requestMatchers("/api/admins/login").permitAll()
+                .requestMatchers("/admins/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                        .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                        .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService, adminDetailsService), UsernamePasswordAuthenticationFilter.class);
 //                .addFilterBefore(new AdminJwtAuthFilter(jwtProvider, adminDetailsService), UsernamePasswordAuthenticationFilter.class)
 //                .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), AdminJwtAuthFilter.class);
 

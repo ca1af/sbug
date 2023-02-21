@@ -2,6 +2,7 @@ package com.sparta.sbug.schedule.service;
 
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.schedule.entity.Schedule;
+import com.sparta.sbug.schedule.entity.ScheduleStatus;
 import com.sparta.sbug.schedule.repository.ScheduleRepository;
 import com.sparta.sbug.schedule.dto.ScheduleRequestDto;
 import com.sparta.sbug.schedule.dto.ScheduleResponseDto;
@@ -37,11 +38,12 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .user(user)
                 .content(requestDto.getContent())
                 .date(requestDto.getDate())
+                .status(ScheduleStatus.UNDONE)
                 .build();
         scheduleRepository.save(newSchedule);
     }
 
-    //일정 수정
+    //일정 수정(내용, 날짜)
     @Override
     public void updateSchedule(
             ScheduleRequestDto requestDto,
@@ -55,6 +57,38 @@ public class ScheduleServiceImpl implements ScheduleService {
                     requestDto.getDate()
             );
             scheduleRepository.save(foundSchedule);
+        } else {
+            throw new IllegalStateException("User id가 일치하지 않습니다.");
+        }
+    }
+
+    //일정 완료 표시(status 변경)
+    @Override
+    public void completeSchedule(Long scheduleId, Long userId) {
+        Schedule foundSchedule =
+            scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new IllegalStateException("일정을 찾을 수 없습니다.")
+            );
+        if (userId.equals(foundSchedule.getUser().getId())) {
+            foundSchedule.checkDoneSchedule();
+            scheduleRepository.save(foundSchedule);
+        } else {
+            throw new IllegalStateException("User id가 일치하지 않습니다.");
+        }
+    }
+
+    //일정 미완 표시(status 변경)
+    @Override
+    public void incompleteSchedule(Long scheduleId, Long userId) {
+        Schedule foundSchedule =
+            scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new IllegalStateException("일정을 찾을 수 없습니다.")
+            );
+        if (userId.equals(foundSchedule.getUser().getId())) {
+            foundSchedule.uncheckDoneSchedule();
+            scheduleRepository.save(foundSchedule);
+        } else {
+            throw new IllegalStateException("User id가 일치하지 않습니다.");
         }
     }
 
@@ -88,6 +122,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule foundSchedule = validateSchedule(scheduleId);
         if (userId.equals(foundSchedule.getUser().getId())) {
             scheduleRepository.delete(foundSchedule);
+        } else {
+            throw new IllegalStateException("User id가 일치하지 않습니다.");
         }
 
     }
