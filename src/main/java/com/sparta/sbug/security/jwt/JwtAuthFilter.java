@@ -42,6 +42,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String rtk = "";
             if (!this.validateToken(atk)) {
                 String refreshToken = request.getHeader("RTK");
+                log.info("RefreshToken in JwtAuthFilter = " + refreshToken);
                 if (refreshToken != null) {
                     rtk = refreshToken.substring(7);
                     jwtProvider.getSubject(rtk);
