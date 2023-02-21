@@ -80,35 +80,24 @@ public class ScheduleController {
         scheduleService.updateScheduleDate(requestDto.getDate(), id, userId);
     }
 
-    @PutMapping("/{id}/done")
-    public void updateScheduleStatusToDone(
-            @PathVariable Long id,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        Long userId = userDetails.getUser().getId();
-        scheduleService.updateScheduleStatusToDone(id, userId);
-    }
-
     //일정 완료 표시
     @PutMapping("/{id}/done")
-    public String completeSchedule(
+    public void completeSchedule(
         @PathVariable Long id,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         Long userId = userDetails.getUser().getId();
         scheduleService.completeSchedule(id, userId);
-        return "/user/schedule";
     }
 
     //일정 미완 표시
     @PutMapping("/{id}/undone")
-    public String incompleteSchedule(
+    public void incompleteSchedule(
         @PathVariable Long id,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         Long userId = userDetails.getUser().getId();
         scheduleService.incompleteSchedule(id, userId);
-        return "/user/schedule";
     }
 
     /**

@@ -46,8 +46,6 @@ public interface ScheduleService {
             Long userId
     );
 
-    void updateScheduleStatusToDone(Long id, Long userId);
-
     /**
     * 대상 일정의 상태를 완료로 표시
     * 
