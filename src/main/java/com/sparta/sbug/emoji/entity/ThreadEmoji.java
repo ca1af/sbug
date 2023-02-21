@@ -21,7 +21,8 @@ public class ThreadEmoji extends Emoji{
      */
     public ThreadEmoji(String emojiType, User user, Thread thread){
         super(emojiType, user);
-        this.thread = thread;
+        setThread(thread);
+        // TODO: 2023-02-21 새 쓰레드이모지 객체가 생성 될 때 Thread 에 selecet 쿼리가 나가는 문제. 해결 가능할까?
     }
 
     /**

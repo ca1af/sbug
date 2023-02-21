@@ -11,7 +11,6 @@ import com.sparta.sbug.userchannel.enttiy.QUserChannel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -31,7 +30,7 @@ class UserServiceImplTest {
     @Test
     void signup() {
         Optional<User> saveUser = Optional.of(userRepository.save(userSample));
-        Optional<User> foundUser = userRepository.findByEmail("email");
+        Optional<User> foundUser = userRepository.findByEmailAndInUseIsTrue("email");
         assertEquals(saveUser,foundUser);
     }
 

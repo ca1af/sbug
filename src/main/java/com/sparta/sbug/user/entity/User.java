@@ -19,6 +19,10 @@ public class User extends Timestamp {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false)
+    @Setter
+    private boolean inUse = true;
+
     private Long kakaoId;
 
     @Column(nullable = false, unique = true)

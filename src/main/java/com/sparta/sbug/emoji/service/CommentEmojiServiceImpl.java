@@ -1,9 +1,9 @@
 package com.sparta.sbug.emoji.service;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.service.CommentServiceImpl;
-import com.sparta.sbug.emoji.entity.CommentEmoji;
-import com.sparta.sbug.emoji.entity.EmojiType;
+import com.sparta.sbug.emoji.entity.*;
 import com.sparta.sbug.emoji.repository.CommentEmojiRepository;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -20,28 +20,46 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
 
     private final CommentEmojiRepository commentEmojiRepository;
     private final CommentServiceImpl commentService;
+    private final JPAQueryFactory queryFactory;
 
 
     // CommentEmoji 생성
     @Override
-    public void createCommentEmoji(String emojiType, User user, Long commentId){
-        Comment comment = commentService.getComment(commentId);
-        Optional<CommentEmoji> optionalEmoji = commentEmojiRepository.findByEmojiTypeAndCommentAndUser(EmojiType.valueOf(emojiType), comment, user);
-        if (optionalEmoji.isPresent()) {
-            throw new IllegalArgumentException("이미 동일한 이모지 반응이 존재합니다.");
+    public boolean reactCommentEmoji(String emojiType, User user, Long commentId){
+        QCommentEmoji qCommentEmoji = QCommentEmoji.commentEmoji;
+
+        CommentEmoji commentEmoji = queryFactory
+                .selectFrom(qCommentEmoji)
+                .where(qCommentEmoji.comment.id.eq(commentId)
+                        .and(qCommentEmoji.user.id.eq(user.getId()))
+                        .and(qCommentEmoji.emojiType.eq(EmojiType.valueOf(emojiType))))
+                .fetchOne();
+        if (commentEmoji!= null) {
+            commentEmojiRepository.delete(commentEmoji);
+            return false;
+        } else {
+            Comment comment = commentService.getComment(commentId);
+            CommentEmoji commentEmoji2 = new CommentEmoji(emojiType, user, comment);
+            commentEmojiRepository.save(commentEmoji2);
+            return true;
         }
-        CommentEmoji commentEmoji = new CommentEmoji(emojiType, user, comment);
-        commentEmojiRepository.save(commentEmoji);
     }
 
     // CommentEmoji 삭제
     @Override
     public void deleteCommentEmoji(String emojiType, User user, Long commentId) {
-        Comment comment = commentService.getComment(commentId);
-        Optional<CommentEmoji> optionalEmoji = commentEmojiRepository.findByEmojiTypeAndCommentAndUser(EmojiType.valueOf(emojiType), comment, user);
-        if (optionalEmoji.isEmpty()) {
+        QCommentEmoji qCommentEmoji = QCommentEmoji.commentEmoji;
+
+        CommentEmoji commentEmoji = queryFactory
+                .selectFrom(qCommentEmoji)
+                .where(qCommentEmoji.comment.id.eq(commentId)
+                        .and(qCommentEmoji.user.id.eq(user.getId()))
+                        .and(qCommentEmoji.emojiType.eq(EmojiType.valueOf(emojiType))))
+                .fetchOne();
+
+        if (commentEmoji==null) {
             throw new NoSuchElementException("해당 이모지 반응을 찾을 수 없습니다.");
         }
-        commentEmojiRepository.delete(optionalEmoji.get());
+        commentEmojiRepository.delete(commentEmoji);
     }
 }

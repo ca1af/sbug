@@ -34,7 +34,7 @@ class UserChannelServiceImplTest {
     @Transactional
     void getUserChannelsByUserId() {
         // give
-        User user = userRepository.findByEmail("user1").orElseThrow();
+        User user = userRepository.findByEmailAndInUseIsTrue("user1").orElseThrow();
         Channel channel1 = channelRepository.findById(1L).orElseThrow();
         Channel channel2 = channelRepository.findById(2L).orElseThrow();
         UserChannel userChannel1 = UserChannel.builder().user(user).channel(channel1).build();
@@ -56,9 +56,9 @@ class UserChannelServiceImplTest {
     @Transactional
     void createUserChannel() {
         // give
-        User user = userRepository.findByEmail("user1").orElseThrow();
+        User user = userRepository.findByEmailAndInUseIsTrue("user1").orElseThrow();
         Channel channel = Channel.builder()
-                .adminEmail(user.getEmail())
+
                 .channelName("test channel").build();
 
         Channel savedChannel = channelRepository.saveAndFlush(channel);
@@ -79,7 +79,7 @@ class UserChannelServiceImplTest {
     @Transactional
     void deleteUserChannelsAboutChannel() {
         // give
-        User user = userRepository.findByEmail("user1").orElseThrow();
+        User user = userRepository.findByEmailAndInUseIsTrue("user1").orElseThrow();
         Channel channel1 = channelRepository.findById(1L).orElseThrow();
         Channel channel2 = channelRepository.findById(2L).orElseThrow();
         UserChannel userChannel1 = UserChannel.builder().user(user).channel(channel1).build();
@@ -104,8 +104,8 @@ class UserChannelServiceImplTest {
     @Transactional
     void deleteUserChannelsAboutUser() {
         // give
-        User user1 = userRepository.findByEmail("user1").orElseThrow();
-        User user2 = userRepository.findByEmail("user2").orElseThrow();
+        User user1 = userRepository.findByEmailAndInUseIsTrue("user1").orElseThrow();
+        User user2 = userRepository.findByEmailAndInUseIsTrue("user2").orElseThrow();
         Channel channel = channelRepository.findById(1L).orElseThrow();
         UserChannel userChannel1 = UserChannel.builder().user(user1).channel(channel).build();
         UserChannel userChannel2 = UserChannel.builder().user(user2).channel(channel).build();
@@ -129,8 +129,8 @@ class UserChannelServiceImplTest {
     @Transactional
     void deleteUserChannelByUserAndChannel() {
         // give
-        User user1 = userRepository.findByEmail("user1").orElseThrow();
-        User user2 = userRepository.findByEmail("user2").orElseThrow();
+        User user1 = userRepository.findByEmailAndInUseIsTrue("user1").orElseThrow();
+        User user2 = userRepository.findByEmailAndInUseIsTrue("user2").orElseThrow();
         Channel channel1 = channelRepository.findById(1L).orElseThrow();
         Channel channel2 = channelRepository.findById(2L).orElseThrow();
         UserChannel userChannel1 = UserChannel.builder().user(user1).channel(channel1).build();

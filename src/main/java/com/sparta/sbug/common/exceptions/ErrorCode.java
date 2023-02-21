@@ -18,10 +18,16 @@ public enum ErrorCode {
     // 유저 오류 (1000)
 
     // 채널 오류 (2000)
+    USER_CHANNEL_FORBIDDEN(HttpStatus.FORBIDDEN, 2403, "유저의 채널 접근 권한이 없습니다."),
 
     // 쓰레드, 쓰레드 이모지 오류 (3000)
+    BAD_REQUEST_THREAD_CONTENT(HttpStatus.BAD_REQUEST, 4001, "쓰레드 내용에 공백을 입력할 수 없습니다😨"),
+    USER_THREAD_FORBIDDEN(HttpStatus.FORBIDDEN, 3403, "유저의 게시글 접근 권한이 없습니다."),
+
 
     // 코멘트, 코멘트 이모지 오류 (4000)
+    BAD_REQUEST_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, 4001, "댓글 내용에 공백을 입력할 수 없습니다😨"),
+    USER_COMMENT_FORBIDDEN(HttpStatus.FORBIDDEN, 4403, "유저의 게시글 접근 권한이 없습니다."),
 
     // 스케쥴 오류 (5000)
 

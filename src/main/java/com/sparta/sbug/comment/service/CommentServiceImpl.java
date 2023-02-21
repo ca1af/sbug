@@ -7,14 +7,13 @@ import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 // lombok
 @RequiredArgsConstructor
@@ -27,21 +26,20 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto) {
-        Page<Comment> pageComments = commentRepository.findCommentsByThreadId(threadId, pageDto.toPageable());
-        List<Comment> comments = pageComments.getContent();
-        return comments.stream().map(CommentResponseDto::of).collect(Collectors.toList());
+    public Slice<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto) {
+        Slice<Comment> comments = commentRepository.findCommentsByThreadIdAndInUseIsTrue(threadId, pageDto.toPageable());
+        return comments.map(CommentResponseDto::of);
     }
 
     @Override
     @Transactional
-    public void createComment(Thread thread, String content, User user) {
+    public CommentResponseDto createComment(Thread thread, String content, User user) {
         Comment comment = Comment.builder()
                 .content(content)
                 .user(user)
                 .build();
         comment.setThread(thread);
-        commentRepository.save(comment);
+        return CommentResponseDto.of(commentRepository.save(comment));
     }
 
     @Override
@@ -55,7 +53,6 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Comment comment) {
         commentRepository.delete(comment);
     }
-
     @Override
     @Transactional(readOnly = true)
     public Comment getComment(Long commentId) {
@@ -64,5 +61,11 @@ public class CommentServiceImpl implements CommentService {
             throw new NoSuchElementException("댓글을 찾을 수 없었습니다.");
         }
         return optionalComment.get();
+    }
+    @Transactional
+    @Override
+    public void autoDelete(){
+        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
+        commentRepository.deleteComments(localDateTime);
     }
 }

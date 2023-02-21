@@ -5,8 +5,9 @@ import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
+import org.springframework.data.domain.Slice;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 public interface CommentService {
 
@@ -17,7 +18,7 @@ public interface CommentService {
      * @param pageDto  페이징 DTO
      * @return List&lt;CommentResponseDto&gt;
      */
-    List<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto);
+    Slice<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto);
 
     /**
      * 대상 쓰레드 밑에 댓글을 생성하는 메서드
@@ -26,7 +27,7 @@ public interface CommentService {
      * @param content 댓글 내용
      * @param user    요청자
      */
-    void createComment(Thread thread, String content, User user);
+    CommentResponseDto createComment(Thread thread, String content, User user);
 
     /**
      * 대상 댓글을 수정하는 메서드
@@ -50,4 +51,6 @@ public interface CommentService {
      * @return Comment
      */
     Comment getComment(Long commentId);
+
+    void autoDelete();
 }

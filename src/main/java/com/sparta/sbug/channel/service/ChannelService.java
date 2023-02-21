@@ -1,7 +1,14 @@
 package com.sparta.sbug.channel.service;
 
+import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.user.entity.User;
+import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 public interface ChannelService {
 
@@ -12,15 +19,15 @@ public interface ChannelService {
      * @return Channel
      */
     Channel getChannelById(Long channelId);
+    Slice<ChannelResponseDto> getChannels(PageDto pageDto);
 
     /**
      * 채널을 만드는 메서드
      *
-     * @param user        요청자
      * @param channelName 채널 이름
      * @return Channel
      */
-    Channel createChannel(User user, String channelName);
+    Channel createChannel(String channelName);
 
     /**
      * 채널 이름을 수정하는 메서드
@@ -42,9 +49,24 @@ public interface ChannelService {
     /**
      * Thread 생성
      *
-     * @param channelId : 생성할 채널 ID
+     * @param channelId      : 생성할 채널 ID
      * @param requestContent : thread 내용
-     * @param user      : 요청자
+     * @param user           : 요청자
      */
-    void createThread(Long channelId, String requestContent, User user);
+    ThreadResponseDto createThread(Long channelId, String requestContent, User user);
+
+    /**
+     * 요청자가 대상 채널에 가입되어 있는지 확인하고 채널 엔터티를 반환합니다.
+     *
+     * @param channelId 대상 채널
+     * @param user      요청자
+     * @return Channel
+     */
+    @Transactional(readOnly = true)
+    Channel validateUserInChannel(Long channelId, User user);
+
+    /**
+     * 채널 자동 삭제를 위한 매서드.
+     */
+    void autoDelete();
 }

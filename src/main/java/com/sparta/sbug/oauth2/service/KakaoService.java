@@ -31,7 +31,7 @@ public class KakaoService {
     private final JwtProvider jwtProvider;
 
     private final static String REST_API_KEY = "a6be9b62b761e5b5ee34bfa49d268617";
-    private final static String REDIRECT_URI = "http://localhost:5500/login.html";
+    private final static String REDIRECT_URI = "http://localhost:5500/frontdoor.html";
     /**
      *
      * 작동 방식은 다음과 같습니다.
@@ -123,12 +123,12 @@ public class KakaoService {
     public void registerKakaoUserIfNeeded(KakaoUserInfo kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getId();
-        Optional<User> optionalUser = userRepository.findByKakaoId(kakaoId);
+        Optional<User> optionalUser = userRepository.findByKakaoIdAndInUseIsTrue(kakaoId);
         User kakaoUser;
         if (optionalUser.isEmpty()) {
             // 카카오 사용자 email 동일한 email 가진 회원이 있는지 확인
             String kakaoEmail = kakaoUserInfo.getEmail();
-            Optional<User> optionalEmailUser = userRepository.findByEmail(kakaoEmail);
+            Optional<User> optionalEmailUser = userRepository.findByEmailAndInUseIsTrue(kakaoEmail);
             if (optionalEmailUser.isPresent()) {
                 // 기존 회원정보에 카카오 Id 추가
                 kakaoUser = optionalEmailUser.get().kakaoIdUpdate(kakaoId);

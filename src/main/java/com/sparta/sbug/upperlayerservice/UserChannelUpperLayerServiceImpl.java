@@ -2,12 +2,14 @@ package com.sparta.sbug.upperlayerservice;
 
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
-import com.sparta.sbug.channel.service.ChannelServiceImpl;
+import com.sparta.sbug.channel.service.ChannelService;
+import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserService;
 import com.sparta.sbug.userchannel.enttiy.UserChannel;
 import com.sparta.sbug.userchannel.service.UserChannelService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 // springframework
 @Service
 public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerService {
-    private final ChannelServiceImpl channelService;
+    private final ChannelService channelService;
     private final UserChannelService userChannelService;
     private final UserService userService;
 
@@ -36,11 +38,13 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
         return channels.stream().map(ChannelResponseDto::of).collect(Collectors.toList());
     }
 
+
     @Override
     @Transactional
-    public void createChannelAndUserChannelForRequester(User user, String channelName) {
-        Channel channel = channelService.createChannel(user, channelName);
+    public ChannelResponseDto createChannelAndUserChannelForRequester(User user, String channelName) {
+        Channel channel = channelService.createChannel(channelName);
         userChannelService.createUserChannel(user, channel);
+        return ChannelResponseDto.of(channel);
     }
 
     @Override
@@ -53,8 +57,8 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
     @Override
     @Transactional
     public void inviteUser(User user, Long channelId, String email) {
-        Channel channel = channelService.getChannelById(channelId);
-        if (userChannelService.isUserJoinedByChannel(user, channel)) {
+        if (userChannelService.isUserJoinedByChannel(user, channelId)) {
+            Channel channel = channelService.getChannelById(channelId);
             User invitedUser = userService.getUser(email);
             userChannelService.createUserChannel(invitedUser, channel);
         } else {
@@ -70,16 +74,16 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
         userChannelService.deleteUserChannelByUserAndChannel(user, channel);
     }
 
-    @Override
-    @Transactional
-    public void kickUser(User admin, Long id, String email) {
-        Channel channel = channelService.getChannelById(id);
-        if (channel.getAdminEmail().equals(admin.getEmail())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
-        }
-
-        User user = userService.getUser(email);
-        userChannelService.deleteUserChannelByUserAndChannel(user, channel);
-    }
+//    @Override
+//    @Transactional
+//    public void kickUser(User admin, Long id, String email) {
+//        Channel channel = channelService.getChannelById(id);
+//        if (channel.getAdminEmail().equals(admin.getEmail())) {
+//            throw new IllegalArgumentException("권한이 없습니다.");
+//        }
+//
+//        User user = userService.getUser(email);
+//        userChannelService.deleteUserChannelByUserAndChannel(user, channel);
+//    }
 
 }

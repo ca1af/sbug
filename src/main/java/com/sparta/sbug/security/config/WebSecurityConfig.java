@@ -4,6 +4,7 @@ import com.sparta.sbug.security.exception.CustomAccessDeniedHandler;
 import com.sparta.sbug.security.exception.CustomAuthenticationEntryPoint;
 import com.sparta.sbug.security.jwt.JwtAuthFilter;
 import com.sparta.sbug.security.jwt.JwtProvider;
+import com.sparta.sbug.security.userDetails.AdminDetailsServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -40,6 +41,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final UserDetailsServiceImpl userDetailsService;
+    private final AdminDetailsServiceImpl adminDetailsService;
 
     /**
      * PasswordEncoder를 빈으로 주입
@@ -80,14 +82,18 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         http.authorizeHttpRequests()
                 .requestMatchers("/stomp/**").permitAll()
                 .requestMatchers("/chat/**").permitAll()
+                .requestMatchers("/chats/**").permitAll()
                 .requestMatchers("/api/users/sign-up").permitAll()
                 .requestMatchers("/api/users/login").permitAll()
                 .requestMatchers("/api/users/kakao**").permitAll()
+                .requestMatchers("/admins/login").permitAll()
                 .anyRequest().authenticated()
-                .and().addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .and()
+                        .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService, adminDetailsService), UsernamePasswordAuthenticationFilter.class);
+//                .addFilterBefore(new AdminJwtAuthFilter(jwtProvider, adminDetailsService), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(new JwtAuthFilter(jwtProvider, userDetailsService), AdminJwtAuthFilter.class);
 
         http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint).accessDeniedHandler(customAccessDeniedHandler);
-    //ArithmeticException<>
         return http.build();
     }
 
@@ -99,7 +105,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD")
                 .exposedHeaders("Authorization")
                 .exposedHeaders("RTK");
         WebMvcConfigurer.super.addCorsMappings(registry);

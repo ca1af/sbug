@@ -4,10 +4,7 @@ import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.common.entity.Timestamp;
 import com.sparta.sbug.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 // lombok
 @Getter
@@ -23,6 +20,10 @@ public class UserChannel extends Timestamp {
     @Id
     @GeneratedValue
     Long id;
+
+    @Column(nullable = false)
+    @Setter
+    private boolean inUse = true;
 
     /**
      * 생성자

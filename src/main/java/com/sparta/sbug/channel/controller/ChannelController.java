@@ -7,6 +7,8 @@ import com.sparta.sbug.upperlayerservice.UserChannelUpperLayerService;
 import com.sparta.sbug.channel.service.ChannelServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ import java.util.List;
 
 // lombok
 @RequiredArgsConstructor
+@Slf4j
 
 // springframework web bind
 @RestController
@@ -38,6 +41,11 @@ public class ChannelController {
     }
 
     /**
+     * 모든 채널 조회하기 (어드민용)
+     * @return List&lt;ChannelResponseDto&gt;
+     */
+
+    /**
      * 내가 속한 채널의 리스트를 불러오기
      * [GET] /api/users/channels
      *
@@ -46,6 +54,7 @@ public class ChannelController {
      */
     @GetMapping("/users/channels")
     public List<ChannelResponseDto> allMyChannel(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("[GET] /users/channels");
         return userChannelUpperLayerService.getChannelsByUserId(userDetails.getUser().getId());
     }
 
@@ -57,9 +66,10 @@ public class ChannelController {
      *
      * @param userDetails 요청자 정보
      * @param requestDto  요청 정보(채널 이름)
+     * @return ChannelResponseDto
      */
     @PostMapping("/channels")
-    public void channel(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public ChannelResponseDto channel(@AuthenticationPrincipal UserDetailsImpl userDetails,
                         @RequestBody ChannelDto.ChannelRequest requestDto) {
 
         // channel name check
@@ -68,7 +78,7 @@ public class ChannelController {
         }
 
         // create channel and user-channel mapping data
-        userChannelUpperLayerService.createChannelAndUserChannelForRequester(userDetails.getUser(), requestDto.getChannelName());
+        return userChannelUpperLayerService.createChannelAndUserChannelForRequester(userDetails.getUser(), requestDto.getChannelName());
     }
 
 

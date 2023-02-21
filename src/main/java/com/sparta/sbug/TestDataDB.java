@@ -1,10 +1,11 @@
 package com.sparta.sbug;
 
+import com.sparta.sbug.admin.entity.Admin;
+import com.sparta.sbug.admin.respository.AdminRepository;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.repository.ChannelRepository;
 import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.repository.CommentRepository;
-import com.sparta.sbug.emoji.entity.CommentEmoji;
 import com.sparta.sbug.emoji.entity.ThreadEmoji;
 import com.sparta.sbug.emoji.repository.CommentEmojiRepository;
 import com.sparta.sbug.emoji.repository.ThreadEmojiRepository;
@@ -43,32 +44,30 @@ public class TestDataDB {
         private final CommentRepository commentRepository;
         private final ThreadEmojiRepository threadEmojiRepository;
         private final CommentEmojiRepository commentEmojiRepository;
-
+        private final AdminRepository adminRepository;
         public void init() {
             // 유저 생성
-            User user1 = User.builder().email("user1").password(getEncode("password1")).nickname("뽀로로")
+            User user1 = User.builder().email("user1@naver.com").password(getEncode("password1")).nickname("뽀로로")
                     .build();
             User savedUser1 = userRepository.save(user1);
 
-            User user2 = User.builder().email("user2").password(getEncode("password2")).nickname("루피")
+            User user2 = User.builder().email("user2@naver.com").password(getEncode("password2")).nickname("루피")
                     .build();
             userRepository.save(user2);
-            
-            User user3 = User.builder().email("user3").password(getEncode("password3")).nickname("펭구")
+
+            User user3 = User.builder().email("user3@naver.com").password(getEncode("password3")).nickname("펭구")
                     .build();
             User savedUser3 = userRepository.save(user3);
 
-            User user4 = User.builder().email("user4").password(getEncode("password4")).nickname("뿡뿡이")
+            User user4 = User.builder().email("user4@naver.com").password(getEncode("password4")).nickname("뿡뿡이")
                     .build();
             userRepository.save(user4);
 
             // 채널 생성
             Channel channel = Channel.builder()
-                    .adminEmail(savedUser1.getEmail())
                     .channelName("channel").build();
 
             Channel channel2 = Channel.builder()
-                    .adminEmail(savedUser3.getEmail())
                     .channelName("channel2").build();
 
             Channel savedChannel1 = channelRepository.save(channel);
@@ -98,10 +97,31 @@ public class TestDataDB {
             comment1.setThread(thread);
             commentRepository.save(comment1);
 
-            ThreadEmoji threadEmoji = new ThreadEmoji("Emoji1", user1, thread);
+            Comment comment2 = new Comment("코멘트2", user1);
+            comment2.setThread(thread);
+            commentRepository.save(comment2);
+
+            Comment comment3 = new Comment("코멘트3", user1);
+            comment3.setThread(thread);
+            commentRepository.save(comment3);
+
+            Comment comment4 = new Comment("코멘트4", user1);
+            comment4.setThread(thread);
+            commentRepository.save(comment4);
+
+            Comment comment5 = new Comment("코멘트5", user1);
+            comment5.setThread(thread);
+            commentRepository.save(comment5);
+
+            Comment comment6 = new Comment("코멘트6", user1);
+            comment6.setThread(thread);
+            commentRepository.save(comment6);
+
+            ThreadEmoji threadEmoji = new ThreadEmoji("SMILE", user1, thread);
             threadEmojiRepository.save(threadEmoji);
-            CommentEmoji commentEmoji = new CommentEmoji("Emoji1", user1, comment1);
-            commentEmojiRepository.save(commentEmoji);
+            Admin admin = Admin.builder().email("admin").password("adminpass").build();
+            adminRepository.save(admin);
+
         }
 
         private String getEncode(String password) {

@@ -1,5 +1,6 @@
 package com.sparta.sbug.security.jwt;
 
+import com.sparta.sbug.security.userDetails.AdminDetailsServiceImpl;
 import com.sparta.sbug.security.userDetails.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
@@ -8,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +24,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final UserDetailsServiceImpl userDetailsImpl;
+    private final AdminDetailsServiceImpl adminDetailsService;
 
     /**
      * JWT 권한 필터
@@ -38,13 +39,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String accessToken = request.getHeader("Authorization");
 
         if (accessToken != null) {
-            var atk = accessToken.substring(7);
+            log.info("AccessToken in JwtAuthFilter = " + accessToken);
+            String atk = accessToken.substring(7);
+            String rtk = "";
             if (!this.validateToken(atk)) {
                 String refreshToken = request.getHeader("RTK");
-                String rtk = "";
                 if (refreshToken != null) {
                     rtk = refreshToken.substring(7);
-                    jwtProvider.getSubject(rtk);
                 }
 
                 if (!validateToken(rtk)) {
@@ -54,25 +55,38 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
 
-
-            // try 들어가기 전에 토큰 밸리데이션 로직 필요함.
-            try {
-                String email = jwtProvider.getSubject(atk);
-                String requestURI = request.getRequestURI();
-                if (email.equals("RTK") && !requestURI.equals("/account/reissue")) {
-                    throw new JwtException("토큰을 확인하세요.");
-                }
-                UserDetails userDetails = userDetailsImpl.loadUserByUsername(email);
-                Authentication token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(token);
-            } catch (JwtException e) {
-                request.setAttribute("exception", e.getMessage());
+            if (!request.getRequestURI().equals("/account/reissue")) {
+                setAuthentication(request, atk);
+            } else {
+                setAuthentication(request, rtk);
             }
         }
 
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * 토큰에서 정보를 꺼내 UserDetails를 만들고 Security Context Holder에 Authentication을 담기
+     *
+     * @param request Http 서블릿 요청
+     * @param token   토큰 (atk 또는 rtk)
+     */
+    private void setAuthentication(HttpServletRequest request, String token) {
+        try {
+            String email = jwtProvider.getSubject(token);
+            if (email.contains("@")){
+                UserDetails userDetails = userDetailsImpl.loadUserByUsername(email);
+                Authentication authentication = jwtProvider.createAuthentication(userDetails);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                UserDetails userDetails = adminDetailsService.loadUserByUsername(email);
+                Authentication authentication = jwtProvider.createAuthentication(userDetails);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (JwtException e) {
+            request.setAttribute("exception", e.getMessage());
+        }
+    }
 
     /**
      * 토큰을 검증하는 메서드
@@ -96,13 +110,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         return false;
     }
-
-    /**
-     * JWT 관련 작업 중에 발생한 예외를 처리하기 위한 메서드
-     *
-     * @param response   HTTP 서블릿 응답
-     * @param msg        메세지
-     * @param statusCode 상태 코드
-     */
 
 }

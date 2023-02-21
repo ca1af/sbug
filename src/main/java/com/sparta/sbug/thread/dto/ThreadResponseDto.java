@@ -1,11 +1,13 @@
 package com.sparta.sbug.thread.dto;
 
+import com.sparta.sbug.emoji.dto.EmojiResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 쓰레드 반환 DTO
@@ -16,16 +18,21 @@ import java.time.LocalDateTime;
 public class ThreadResponseDto {
     private Long threadId;
     private String userNickname;
+    private Long userId;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
+    private List<EmojiResponseDto> emojis;
+
     private ThreadResponseDto(Thread thread) {
         this.threadId = thread.getId();
         this.userNickname = thread.getUser().getNickname(); // 이름으로 넣을지 확인
+        this.userId = thread.getUser().getId();
         this.content = thread.getContent();
         this.createdAt = thread.getCreatedAt();
         this.modifiedAt = thread.getModifiedAt();
+        this.emojis = thread.getEmojis().stream().map(EmojiResponseDto::of).collect(Collectors.toList());
     }
 
     /**
@@ -35,6 +42,10 @@ public class ThreadResponseDto {
      */
     public static ThreadResponseDto of(Thread thread) {
         return new ThreadResponseDto(thread);
+    }
+
+    public void setEmojis(List<EmojiResponseDto> emojis) {
+        this.emojis = emojis;
     }
 
 }
