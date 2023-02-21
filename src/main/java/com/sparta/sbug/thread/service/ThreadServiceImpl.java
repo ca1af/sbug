@@ -34,7 +34,7 @@ public class ThreadServiceImpl implements ThreadService {
     @Override
     @Transactional(readOnly = true)
     public Thread findThreadById(Long threadId) {
-        Optional<Thread> optionalThread = threadRepository.findById(threadId);
+        Optional<Thread> optionalThread = threadRepository.findThreadByIdAndInUseIsTrue(threadId);
         if (optionalThread.isEmpty()) {
             throw new NoSuchElementException("쓰레드를 찾을 수 없습니다.");
         }
