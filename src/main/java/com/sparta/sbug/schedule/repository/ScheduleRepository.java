@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
@@ -42,6 +43,12 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             LocalDateTime startDate,
             LocalDateTime endDate,
             Pageable pageable
+    );
+
+    List<Schedule> findAllByUserIdAndDateBetween(
+            Long userId,
+            LocalDateTime startDate,
+            LocalDateTime endDate
     );
 
 }
