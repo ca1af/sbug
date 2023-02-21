@@ -34,7 +34,7 @@ public enum ErrorCode {
     // 채팅, 채팅방 오류 (6000)
 
     // 인증, 인가, 보안 오류 (7000)
-    CREDENTIAL_EXPIRATION(HttpStatus.BAD_REQUEST, 7001, "인증 정보가 만료되었습니다."),
+    CREDENTIAL_EXPIRATION(HttpStatus.BAD_REQUEST, 7001, "리프레쉬 토큰이 만료되었습니다."),
 
     // AWS (8000)
     AWS_ERROR(HttpStatus.BAD_REQUEST, 8001, "aws client error");
