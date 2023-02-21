@@ -1,95 +1,76 @@
 package com.sparta.sbug.schedule.controller;
 
-import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.security.userDetails.UserDetailsImpl;
-import com.sparta.sbug.schedule.entity.Schedule;
 import com.sparta.sbug.schedule.service.ScheduleService;
 import com.sparta.sbug.schedule.dto.ScheduleRequestDto;
-import com.sparta.sbug.schedule.dto.ScheduleResponseDto;
-import com.sparta.sbug.schedule.dto.PeriodRequestDto;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
+import com.sparta.sbug.user.entity.User;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doNothing;
-import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Optional;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MockMvc;
+
+import org.springframework.http.MediaType;
+
+
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.any;
+
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+
+import java.util.Map;
+import java.util.HashMap;
 
 @ExtendWith(MockitoExtension.class)
+@WebMvcTest(ScheduleController.class)
 public class ScheduleControllerTest {
+/*
+    @Autowired
+    private MockMvc mvc = MockMvcBuilders
+            .standaloneSetup(new ScheduleController())
+            .setCustomArgumentResolvers(new PrincipalDetailsArgumentResolver())
+            .build();
 
-    @Mock
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
     private ScheduleService scheduleService;
 
-    @InjectMocks
-    private ScheduleController scheduleController;
-
-    private ScheduleRequestDto request;
-    private long scheduleId;
-    private long userId;
-    private Pageable pageable;
-    private User user;
-    private UserDetailsImpl userDetails;
-    private Schedule schedule;
-    private PeriodRequestDto periodDto;
-
-    @BeforeEach
-    public void init() {
-
-        request = new ScheduleRequestDto(
-            "팀 최종 프로젝트 미팅",
-            LocalDateTime.now()
-        );
-
-        scheduleId = 1L;
-        userId = 39201L;
-
-        pageable = PageRequest.of(3, 3);
-
-        user = User.builder()
-            .email("123")
-            .password("123")
-            .nickname("123")
-            .build();
-
-        userDetails =
-            new UserDetailsImpl(user, "123");
-
-        schedule = Schedule.builder()
-            .user(user)
-            .content("123")
-            .date(LocalDateTime.now())
-            .build();
-
-
-        periodDto = new PeriodRequestDto(
-            LocalDateTime.now(),
-            LocalDateTime.now().plus(3, ChronoUnit.DAYS)
-        );
-    }
 
     //일정 등록
     @Test
     @DisplayName("@PostMapping('') schedule() Test: registerSchedule")
     public void registerSchedule() {
+        //given
+        willDoNothing().given(scheduleService).registerSchedule(any(),any());
+
+        Map<String, String> input = new HashMap<>();
+        input.put("content", "Project meeting");
+        input.put("date", "2023-02-20 14:00:00");
+
+
+        //when & then
+        mvc.perform(post("")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(input))
+        )
+        .andExpect(status().isOk());
 
     }
     
@@ -97,6 +78,10 @@ public class ScheduleControllerTest {
     @Test
     @DisplayName("@PutMapping('/{id}') schedule() Test: updateSchedule")
     public void updateSchedule() {
+        //given
+
+        //when
+
 
     }
 
@@ -104,6 +89,10 @@ public class ScheduleControllerTest {
     @Test
     @DisplayName("@DeleteMapping('/{id}') schedule() Test: deleteSchedule")
     public void deleteSchedule() {
+        //given
+
+        //when
+
 
     }
 
@@ -111,6 +100,10 @@ public class ScheduleControllerTest {
     @Test
     @DisplayName("@GetMapping('') mySchedules() Test: getMySchedules")
     public void getMySchedules() {
+        //given
+
+        //when
+
 
     }
 
@@ -118,6 +111,10 @@ public class ScheduleControllerTest {
     @Test
     @DisplayName("@GetMapping('/{id}') schedule() Test: getSchedule")
     public void getSchedule() {
+        //given
+
+        //when
+
 
     }
 
@@ -125,7 +122,12 @@ public class ScheduleControllerTest {
     @Test
     @DisplayName("@GetMapping('/period') schedule() Test: getPeriodSchedule")
     public void getPeriodSchedules() {
+        //given
+
+        //when
+
 
     }
+*/
 }
 

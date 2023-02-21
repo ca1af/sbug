@@ -44,10 +44,13 @@ public class Schedule extends Timestamp {
      * @param date    완료 예정일
      */
     @Builder
-    public Schedule(User user, String content, LocalDateTime date) {
+    public Schedule(
+        User user, String content, LocalDateTime date, ScheduleStatus status
+    ) {
         this.user = user;
         this.content = content;
         this.date = date;
+        this.status = status;
     }
 
     /**
@@ -67,10 +70,18 @@ public class Schedule extends Timestamp {
         this.date = date;
     }
 
+    /**
+     * 서비스 메소드
+     */
     public void checkDoneSchedule() {
         this.status = ScheduleStatus.DONE;
         this.doneAt = LocalDateTime.now();
     }
 
-
+    /**
+     * 서비스 메소드
+     */
+    public void uncheckDoneSchedule() {
+        this.status = ScheduleStatus.UNDONE;
+    }
 }

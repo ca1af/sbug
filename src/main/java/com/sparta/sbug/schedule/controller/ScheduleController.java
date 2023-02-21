@@ -57,6 +57,28 @@ public class ScheduleController {
         scheduleService.updateSchedule(requestDto, id, userId);
     }
 
+    //일정 완료 표시
+    @PutMapping("/{id}/done")
+    public String completeSchedule(
+        @PathVariable Long id,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long userId = userDetails.getUser().getId();
+        scheduleService.completeSchedule(id, userId);
+        return "/user/schedule";
+    }
+
+    //일정 미완 표시
+    @PutMapping("/{id}/undone")
+    public String incompleteSchedule(
+        @PathVariable Long id,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long userId = userDetails.getUser().getId();
+        scheduleService.incompleteSchedule(id, userId);
+        return "/user/schedule";
+    }
+
     /**
      * 대상 일정을 삭제하는 메서드
      * [DELETE] /api/users/schedules/{id}
