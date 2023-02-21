@@ -18,7 +18,8 @@ public interface UserChannelRepository extends JpaRepository<UserChannel, Long> 
      *
      * @param channelId 대상 채널 ID
      */
-    @Query("delete from UserChannel uc where uc.channel.id = :channelId")
+//    @Query("delete from UserChannel uc where uc.channel.id = :channelId")
+    @Query(nativeQuery = true, value = "delete from user_channel where channel_id =:channelId")
     @Modifying(clearAutomatically = true)
     void deleteAllByChannelId(@Param("channelId") Long channelId);
 
@@ -27,7 +28,8 @@ public interface UserChannelRepository extends JpaRepository<UserChannel, Long> 
      *
      * @param userId 대상 유저 ID
      */
-    @Query("delete from UserChannel uc where uc.user.id = :userId")
+//    @Query("delete from UserChannel uc where uc.user.id = :userId")
+    @Query(nativeQuery = true, value = "delete from user_channel where user_id =:userId")
     @Modifying(clearAutomatically = true)
     void deleteAllByUserId(@Param("userId") Long userId);
 
@@ -65,7 +67,8 @@ public interface UserChannelRepository extends JpaRepository<UserChannel, Long> 
      *
      * @param userId 대상 유저
      */
-    @Query("update UserChannel uc set uc.inUse = false where uc.user.id = :userId")
+//    @Query("update UserChannel uc set uc.inUse = false where uc.user.id = :userId")
+    @Query(nativeQuery = true, value = "update user_channel set in_use = false where user_id =:userId")
     @Modifying(clearAutomatically = true)
     void disableAllUserChannelByUserIdAndInUse(@Param("userId") Long userId);
 
@@ -76,7 +79,8 @@ public interface UserChannelRepository extends JpaRepository<UserChannel, Long> 
      * @param channelId 채널 ID
      */
 
-    @Query("update UserChannel uc set uc.inUse = false where uc.channel.id = :channelId")
+//    @Query("update UserChannel uc set uc.inUse = false where uc.channel.id = :channelId")
+    @Query(nativeQuery = true,value = "update user_channel set in_use = false where channel_id =:channelId")
     @Modifying(clearAutomatically = true)
     void disableAllUserChannelByChannelIdAndInUse(@Param("channelId") Long channelId);
 
