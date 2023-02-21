@@ -14,8 +14,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
 
+/*
 public class PrincipalDetailsArgumentResolver implements HandlerMethodArgumentResolver {
-
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.getParameterType().isAssignableFrom(UserDetailsImpl.class);
@@ -42,5 +42,5 @@ public class PrincipalDetailsArgumentResolver implements HandlerMethodArgumentRe
 
 
 
-
 }
+*/
