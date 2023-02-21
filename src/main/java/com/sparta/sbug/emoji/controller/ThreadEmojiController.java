@@ -1,6 +1,8 @@
 package com.sparta.sbug.emoji.controller;
 
 import com.sparta.sbug.common.exceptions.CustomException;
+import com.sparta.sbug.emoji.dto.EmojiRequestDto;
+import com.sparta.sbug.emoji.entity.EmojiType;
 import com.sparta.sbug.emoji.service.ThreadEmojiService;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.userchannel.service.UserChannelService;
@@ -58,5 +60,10 @@ public class ThreadEmojiController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         threadEmojiService.deleteThreadEmoji(emojiType, userDetails.getUser(), threadId);
+    }
+
+    @GetMapping("/emojitest/{threadId}/{userId}")
+    public void findAll(@RequestBody String emojiType, @PathVariable("threadId") Long threadId, @PathVariable("userId") Long userId){
+        threadEmojiService.findAll(emojiType, threadId, userId);
     }
 }

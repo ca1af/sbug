@@ -22,13 +22,14 @@ public class ThreadEmoji extends Emoji{
     public ThreadEmoji(String emojiType, User user, Thread thread){
         super(emojiType, user);
         setThread(thread);
+        // TODO: 2023-02-21 새 쓰레드이모지 객체가 생성 될 때 Thread 에 selecet 쿼리가 나가는 문제. 해결 가능할까?
     }
 
     /**
      * 연관관계
      * thread_emoji : thread = N:1 양방향 연관 관계
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread_id")
     private Thread thread;
 

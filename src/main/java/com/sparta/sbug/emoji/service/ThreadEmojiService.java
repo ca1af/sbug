@@ -1,5 +1,6 @@
 package com.sparta.sbug.emoji.service;
 
+import com.sparta.sbug.emoji.entity.EmojiType;
 import com.sparta.sbug.user.entity.User;
 
 public interface ThreadEmojiService {
@@ -22,5 +23,6 @@ public interface ThreadEmojiService {
      * @param threadId  대상 쓰레드 ID
      */
     void deleteThreadEmoji(String emojiType, User user, Long threadId);
+    void findAll(String emojiType, Long threadId, Long userId);
 
 }

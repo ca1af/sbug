@@ -9,14 +9,22 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface ThreadRepository extends JpaRepository<Thread, Long> {
+    /**
+     * 활성화된 쓰레드만 조회
+     * @param threadId
+     * @return
+     */
+    Optional<Thread> findThreadByIdAndInUseIsTrue(Long threadId);
     /**
      * 대상 채널에 작성된 모든 쓰레드를 조회
      *
      * @param channelId : 대상 채널 ID
      * @param pageable  : 페이저블
      */
+
     Slice<Thread> findThreadsByChannelIdAndInUseIsTrue(Long channelId, Pageable pageable);
     @Query("update Thread t set t.inUse = false where t.id = :threadId")
     @Modifying(clearAutomatically = true)
