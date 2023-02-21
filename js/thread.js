@@ -50,7 +50,7 @@ function getChannelList() {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON)
+        validateErrorResponse(response.responseJSON)
       } else {
         alert("채널 리스트 조회 실패! 서버의 응답이 없습니다😭");
       }
@@ -59,7 +59,7 @@ function getChannelList() {
 }
 
 function makeChannelHtml(id, channelName) {
-  return `<div> <a class="channel" href="http://localhost:5500/channel.html?id=${id}"> ⭐ ${channelName} </a> </div>`
+  return `<div  class="channel-div"> <a class="channel" href="http://localhost:5500/channel.html?id=${id}"> ⭐ ${channelName} </a> </div>`
 }
 
 // 쓰레드 조회
@@ -80,7 +80,7 @@ function getThread() {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("쓰레드 로딩 실패! 서버의 응답이 없습니다😭");
       }
@@ -121,7 +121,7 @@ function makeThread(id, nickname, userId, time, content, emojis) {
     return `<li id="th-li-${id}">
               <div class="message-data">
                 <div class="thread-profile-box" style="background: #BDBDBD;">
-                  <img class="btn btn-secondary thread-profile-img"
+                  <img class="btn-secondary thread-profile-img"
                     src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
                 </div>
 
@@ -145,7 +145,7 @@ function makeThread(id, nickname, userId, time, content, emojis) {
     return `<li id="th-li-${id}">
               <div class="message-data">
                 <div class="thread-profile-box" style="background: #BDBDBD;">
-                  <img class="btn btn-secondary thread-profile-img"
+                  <img class="btn-secondary thread-profile-img"
                     src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
                 </div>
 
@@ -214,7 +214,7 @@ function updateThread(id) {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("쓰레드 수정 실패! 서버의 응답이 없습니다😭");
       }
@@ -239,7 +239,7 @@ function deleteThread(id) {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("쓰레드 삭제 실패! 서버의 응답이 없습니다😭");
       }
@@ -271,7 +271,7 @@ function reactEmoji(emojiType, id) {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("이모지 반응 실패! 서버의 응답이 없습니다😭");
       }
@@ -327,7 +327,7 @@ function getComments(page) {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("쓰레드 로딩 실패! 서버의 응답이 없습니다😭");
       }
@@ -362,7 +362,7 @@ function publishComment() {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("댓글 작성 실패! 서버의 응답이 없습니다😭");
       }
@@ -403,7 +403,7 @@ function makeComment(id, nickname, userId, time, content, emojis) {
     return `<li id="c-li-${id}">
               <div class="message-data">
                 <div class="thread-profile-box" style="background: #BDBDBD;">
-                  <img class="btn btn-secondary thread-profile-img"
+                  <img class="btn-secondary thread-profile-img"
                     src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
                 </div>
 
@@ -427,7 +427,7 @@ function makeComment(id, nickname, userId, time, content, emojis) {
     return `<li id="c-li-${id}">
               <div class="message-data">
                 <div class="thread-profile-box" style="background: #BDBDBD;">
-                  <img class="btn btn-secondary thread-profile-img"
+                  <img class="btn-secondary thread-profile-img"
                     src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
                 </div>
 
@@ -505,7 +505,7 @@ function updateComment(id) {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("댓글 수정 실패! 서버의 응답이 없습니다😭");
       }
@@ -521,7 +521,6 @@ function deleteComment(id) {
   $.ajax({
     type: "DELETE",
     url: url,
-    contentType: "application/json",
     headers: {
       "Authorization": getCookie('accessToken'),
       "RTK": getCookie('refreshToken')
@@ -531,7 +530,7 @@ function deleteComment(id) {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("댓글 삭제 실패! 서버의 응답이 없습니다😭");
       }
@@ -619,7 +618,7 @@ function reactEmojiToComment(emojiType, id) {
     },
     error: function (response) {
       if (response.responseJSON) {
-        validateStatus(response.responseJSON);
+        validateErrorResponse(response.responseJSON);
       } else {
         alert("이모지 반응 실패! 서버의 응답이 없습니다😭");
       }
@@ -627,6 +626,7 @@ function reactEmojiToComment(emojiType, id) {
   })
 }
 
+// 로그인 회원 정보조회
 // 로그인 회원 정보조회
 var loginuserid = '';
 
@@ -648,11 +648,8 @@ function getUserInformation() {
       if (response.responseJSON) {
         validateErrorResponse(response.responseJSON);
       } else {
-        alert("로그인 실패! 서버의 응답이 없습니다😭");
+        alert("회원 정보 조회 실패! 서버의 응답이 없습니다😭");
       }
-      clearCookie('accessToken');
-      clearCookie('refreshToken');
-      location.href = "./frontdoor.html"
     }
   })
 
@@ -663,6 +660,8 @@ function validateErrorResponse(response) {
 
   if (response.status === 403) {
     alert("토큰이 만료되었습니다🤔. 다시 로그인해주세요.");
+    clearCookie('accessToken');
+		clearCookie('refreshToken');
     location.href = "./frontdoor.html"
     // 리이슈
   } else if (response.status === 401) {
@@ -683,9 +682,9 @@ function validateErrorResponse(response) {
       error: function (response) {
         if (response.responseJSON) {
           console.log("리이슈 실패! : " + response.responseJSON.message);
-          alert("로그인 실패! 인증 정보에 문제가 있습니다😨")
+          alert("로그인 갱신 실패! 인증 정보에 문제가 있습니다😨")
         } else {
-          alert("로그인 실패! 서버의 응답이 없습니다😭");
+          alert("로그인 갱신 실패! 서버의 응답이 없습니다😭");
         }
       }
     })

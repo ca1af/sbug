@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito:400,900|Montserrat|Roboto");
+body {
+  background: #E1E8EE;
+}
+
+.container-box {
+  background: #FFFFFF;
+  width: 720px;
+  height: 720px;
+  margin: 0 auto;
+  position: relative;
+  margin-top: 10%;
+  box-shadow: 2px 5px 20px rgba(119, 119, 119, 0.5);
+}
+
+.home-logo {
+  float: right;
+  margin-right: 12px;
+  margin-top: 12px;
+  font-family: "Nunito Sans", sans-serif;
+  color: #444753;
+  font-weight: 900;
+  font-size: 1.5em;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.home-logo:hover {
+  color: #3FB6A8;
+}
+
+.leftbox {
+  float: left;
+  top: -5%;
+  left: 5%;
+  position: absolute;
+  width: 15%;
+  height: 110%;
+  background: #444753;
+  box-shadow: 3px 3px 10px rgba(119, 119, 119, 0.5);
+}
+
+.active {
+  color: #3FB6A8;
+}
+
+.rightbox {
+  float: right;
+  width: 60%;
+  height: 100%;
+}
+
+.profile {
+  transition: opacity 0.5s ease-in;
+  position: relative;
+  width: 70%;
+  height: 85%;
+}
+
+h1 {
+  font-family: "Montserrat", sans-serif;
+  color: #444753;
+  font-size: 50px;
+  font-weight: 900;
+  margin-top: 40px;
+  margin-bottom: 35px;
+}
+
+h2 {
+  color: #777777;
+  font-family: "Roboto", sans-serif;
+  width: 80%;
+  text-transform: uppercase;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-left: 2px;
+}
+
+p {
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(to right, #3FB6A8, rgba(126, 211, 134, 0.5)) 1 0%;
+  border-top: 0;
+  width: 80%;
+  font-family: "Montserrat", sans-serif;
+  font-size: 15px;
+  padding: 7px 0;
+  color: #070707;
+}
+
+span {
+  font-size: 0.5em;
+  color: #777777;
+}
+
+footer {
+  position: absolute;
+  width: 20%;
+  bottom: 0;
+  right: -20px;
+  text-align: right;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: "Roboto", sans-serif;
+}
+
+footer p {
+  border: none;
+  padding: 0;
+}
+
+footer a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: #7d7d7d;
+}
+
+.btn {
+  margin-right: 10px;
+}
+
+.update-btn {
+  float: right;
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  font-size: 12px;
+  border: none;
+  color: #3FB6A8;
+}
+
+.update-btn:hover {
+  font-weight: 900;
+}
+
+span {
+  font-family: "Montserrat", sans-serif;
+  font-size: 15px;
+}

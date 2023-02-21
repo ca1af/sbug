@@ -36,6 +36,7 @@ signupBtn.addEventListener('click', (e) => {
 	btn = true;
 });
 
+// 로그인
 function login() {
 
 	var url = "http://localhost:8080/api/users/login";

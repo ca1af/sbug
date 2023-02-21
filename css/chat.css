@@ -76,7 +76,7 @@ body {
 
 .chat .chat-header {
   padding: 20px;
-  border-bottom: 1px solid gray;
+  border-bottom: 2px solid white;
 }
 
 .chat .chat-header img {
@@ -111,6 +111,7 @@ body {
   margin-top: 15px;
   height: 40px;
 }
+
 .chat .chat-history .message-data-time {
   color: #a8aab1;
   padding-left: 10px;
@@ -123,6 +124,18 @@ body {
   padding-left: 10px;
 }
 
+.chat .chat-history .message-data-time-right {
+  color: #a8aab1;
+  padding-right: 10px;
+}
+
+.chat .chat-history .message-data-name-right {
+  color: #666666;
+  font-style: bold;
+  font-size: 17px;
+  padding-right: 10px;
+}
+
 .chat .chat-history .message {
   color: #000;
   font-size: 18px;
@@ -131,13 +144,62 @@ body {
   position: relative;
 }
 
+
+
 .chat .chat-history .my-message {
   padding: 8px 0px 8px 5px;
-  left: 50px;
-  top: -17px;
+  top: -10px;
+  right: 50px;
+  padding: 20px;
   text-decoration-line: none;
-  width: 90%;
+  width: 30%;
   display: block;
+}
+
+.my-message:after {
+  bottom: 100%;
+  right: 7%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-bottom-color: rgba(255, 212, 00, 0.7);
+  border-width: 10px;
+  margin-left: -10px;
+}
+
+.chat .chat-history .other-message {
+  padding: 8px 0px 8px 5px;
+  top: -10px;
+  left: 50px;
+  padding: 20px;
+  text-decoration-line: none;
+  width: 30%;
+  display: block;
+}
+
+.other-message:after {
+  bottom: 100%;
+  left: 7%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-bottom-color: rgba(50, 188, 223, 0.7);
+  border-width: 10px;
+  margin-left: -10px;
+}
+
+.my-message {
+  background: rgba(255, 212, 00, 0.7);
+}
+
+.other-message {
+  background: rgba(50, 188, 223, 0.7);
 }
 
 .emoji {
@@ -228,11 +290,8 @@ body {
   height: 0;
 }
 
-.profile-div {
-  float: right;
-}
-
 .profile-box {
+  float: right;
   width: 60px;
   height: 60px; 
   border-radius: 70%;
@@ -253,7 +312,6 @@ body {
 }
 
 .thread-profile-box {
-  float: left;
   width: 40px;
   height: 40px; 
   border-radius: 70%;
@@ -266,27 +324,6 @@ body {
   object-fit: cover;
 }
 
-.welcome-message {
-  position: relative;
-  top: 500px;
-  float: bottom;
-  color:#000;
-  font-size: 40px;
-  font-style: italic;
-}
-
-.channel-list-scroll {
-  overflow-y: scroll;
-}
-
-.channel-list-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-.channel-div {
-  margin-bottom: 9px;
-}
-
 .channel {
   font-size: 20px;
   color:#E1E8EE;
@@ -294,7 +331,7 @@ body {
 }
 
 .channel:hover {
-  color: rgba(255, 255, 255, 0.7);
+  color:rgba(255, 255, 255, 0.5);
   transition: all 0.3s ease;
 }
 
@@ -302,11 +339,6 @@ body {
   text-decoration: none;
   color:rgba(0, 0, 0, 0.7);
   display: block;
-}
-
-.message-content:hover {
-  color:rgba(0, 0, 0, 1);
-  transition: all 0.3s ease;
 }
 
 .more-btn {
@@ -361,6 +393,10 @@ body {
 .channel-btn:hover {
   color:rgba(255, 255, 255, 0.7);
   transition: all 0.3s ease;
+}
+
+.user-html {
+  margin-bottom: 8px;
 }
 
 .left-footer {

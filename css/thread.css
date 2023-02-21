@@ -10,7 +10,7 @@ body {
   color: white;
 }
 
-.container {
+.container-box {
   margin: 0 auto;
   width: 1500px;
   background: #444753;
@@ -39,9 +39,9 @@ body {
   left: -25px;
 }
 
-.people-list ul {
+.people-list .list {
   padding: 20px;
-  height: 770px;
+  height: 1035px;
 }
 
 .people-list ul li {
@@ -230,8 +230,11 @@ body {
   height: 0;
 }
 
-.profile-box {
+.profile-div {
   float: right;
+}
+
+.profile-box {
   width: 60px;
   height: 60px; 
   border-radius: 70%;
@@ -274,6 +277,18 @@ body {
   font-style: italic;
 }
 
+.channel-list-scroll {
+  overflow-y: scroll;
+}
+
+.channel-list-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.channel-div {
+  margin-bottom: 9px;
+}
+
 .channel {
   font-size: 20px;
   color:#E1E8EE;
@@ -281,7 +296,7 @@ body {
 }
 
 .channel:hover {
-  font-size: 25px;
+  color: rgba(255, 255, 255, 0.7);
   transition: all 0.3s ease;
 }
 
@@ -331,4 +346,21 @@ body {
   margin-bottom: 10px;
   border-radius: 5px;
   resize: none;
+}
+
+.channel-btn {
+  font-size: 19px;
+  position: relative;
+  left: 60%;
+  cursor: pointer;
+}
+
+.channel-btn:hover {
+  color:rgba(255, 255, 255, 0.7);
+  transition: all 0.3s ease;
+}
+
+.left-footer {
+  position: relative;
+  left: 10%;
 }

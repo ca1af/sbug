@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Event Calendar Widget</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="./css/schedule.css">
+
+</head>
+
+<body>
+  <!-- partial:index.partial.html -->
+  <div class="form-structor">
+    <div class="headline">
+      <h2 class="form-title" id="signup">SBug🐛</h2>
+    </div>
+
+    <div id="calendar"></div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
+  </div>
+
+  <div class="test-structor">
+    <div class="headline">
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adder">일정 추가</button>
+      <button type="button" id="delete-btn" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleter"
+        disabled="disabled">일정 삭제</button>
+      <div class="profile-box" style="background: #BDBDBD;">
+        <a href="./mypage.html">
+          <img class="btn-secondary profile-img"
+            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
+        </a>
+      </div>
+    </div>
+
+    <div class="schedule">
+      <h2> 내용 </h2>
+      <div>
+        <p> <span id="p-content"> - </span> <button id="update-content-btn" class="update-btn" data-bs-toggle="modal"
+            data-bs-target="#contentChanger" disabled="disabled">update</button> </p>
+      </div>
+      <h2> 예정일 </h2>
+      <p> <span id="p-date"> - </span> <button id="update-date-btn" class="update-btn" data-bs-toggle="modal"
+          data-bs-target="#dateChanger" disabled="disabled">change</button> </p>
+      <h2> 상태 </h2>
+      <p>
+        <span id="status-dot"> </span>
+        <span id="p-status"> - </span>
+        <button id="check-btn" class="update-btn" data-bs-toggle="modal" data-bs-target="#checkDone"
+          disabled="disabled">done</button>
+      </p>
+      <h2> 완료일 </h2>
+      <p id="p-doneAt"> - </p>
+    </div>
+  </div>
+  <!-- partial -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="contentChanger" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: black">일정 내용 변경</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label" style="color: black" type="email">내용:</label>
+              <input type="text" class="form-control" id="i-content">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-primary" onclick="updateContent()">변경</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="dateChanger" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: black">예정일 변경</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label" style="color: black" type="email">예정일:</label>
+              <input type="date" class="form-control" id="i-date">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label" style="color: black" type="email">예정 시간:</label>
+              <input type="time" class="form-control" id="i-time">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-primary" onclick="updateDate()">변경</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="checkDone" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: black">일정 완료</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="color: black">
+          정말 일정 완료를 진행하시겠습니까?👨‍🏫
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button>
+          <button type="button" class="btn btn-danger" onclick="checkDone()">네, 완료합니다.</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="adder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: black">일정 추가</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label" style="color: black" type="email">내용:</label>
+              <input type="text" class="form-control" id="i-content-add">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label" style="color: black" type="email">예정일:</label>
+              <input type="date" class="form-control" id="i-date-add">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label" style="color: black" type="email">예정 시간:</label>
+              <input type="time" class="form-control" id="i-time-add">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-success" onclick="createSchedule()">추가</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="deleter" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: black">일정 삭제</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="color: black">
+          정말 일정 삭제를 진행하시겠습니까?😨
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button>
+          <button type="button" class="btn btn-danger" onclick="deleteSchedule()">네, 삭제합니다.</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal End -->
+  <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script src="./js/schedule.js"></script>
+
+</body>
+
+</html>

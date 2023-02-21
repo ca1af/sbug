@@ -14,7 +14,7 @@ body {
 }
 
 .form-structor {
-  background-color: #EFD;
+  background-color: #FFF;
   border-radius: 15px;
   height: 800px;
   width: 700px;
@@ -36,11 +36,14 @@ body {
   text-align: center;
 }
 
-.profile-box {
+.profile-div {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   right: 30px;
+}
+
+.profile-box {
   width: 60px;
   height: 60px;
   border-radius: 70%;
@@ -87,17 +90,37 @@ body {
 }
 
 .bodyline {
+  height: 615px;
   width: 100%;
   text-align: center;
   position: absolute;
   display: block;
   justify-content: center;
   align-items: center;
+  overflow-y: scroll;
+}
+
+.bodyline::-webkit-scrollbar {
+  display: none;
 }
 
 .channel-header {
-  padding: 5px;
+  font-size: 25px;
+  font-weight: 900;
+  padding: 10px;
   margin: 10px 10px;
+}
+
+.channel-btn {
+  position: relative;
+  left: 20px;
+  font-size: 30px;
+  font-weight: 50;
+}
+
+.channel-btn:hover {
+  color:rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
 }
 
 .channel-list {
@@ -105,14 +128,19 @@ body {
 }
 
 .channel {
-  padding: 5px;
   cursor: pointer;
   text-decoration-line: none;
   color: #000;
+  font-weight: 500;
+  font-size: 19px;
+}
+
+.channel-div {
+  margin-bottom: 5px;
 }
 
 .channel:hover {
-  font-size: 20px;
+  font-size: 22px;
   transition: all 0.3s ease;
 }
 

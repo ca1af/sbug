@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>SBUG</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="./css/mypage.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+
+</head>
+
+<body>
+  <!-- partial:index.partial.html -->
+  <div class="container-box">
+    <div id="home-logo">
+      <a class="home-logo" href="./home.html"> SBug🐛</a>
+    </div>
+    <div class="leftbox">
+      <nav>
+        <a id="profile" class="active"><i class="fa fa-user"></i></a>
+        <a id="payment"><i class="fa fa-credit-card"></i></a>
+        <a id="subscription"><i class="fa fa-tv"></i></a>
+        <a id="privacy"><i class="fa fa-tasks"></i></a>
+        <a id="settings"><i class="fa fa-cog"></i></a>
+      </nav>
+    </div>
+    
+    <div class="rightbox">
+      <div class="profile">
+        <h1>내 정보</h1>
+        <h2>닉네임 </h2>
+        <div>
+          <p> <span id="p-nickname"> - </span> <button class="update-btn" data-bs-toggle="modal"
+              data-bs-target="#nicknameChange">update</button> </p>
+        </div>
+        <h2>Email</h2>
+        <p id="p-email"> - </p>
+        <h2>Password </h2>
+        <p>••••••• <button class="update-btn" data-bs-toggle="modal" data-bs-target="#passwordChange">change</button>
+        </p>
+      </div>
+
+      <div class="btn-box">
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#unregist">회원 탈퇴</button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="nicknameChange" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">닉네임 변경</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div class="mb-3">
+                    <label for="recipient-name" class="col-form-label" style="color: black" type="email">닉네임:</label>
+                    <input type="text" class="form-control" id="i-nickname">
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" onclick="updateNickname()">변경</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="passwordChange" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">비밀번호 변경</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div class="mb-3">
+                    <label for="recipient-name" class="col-form-label" style="color: black"
+                      type="password">비밀번호:</label>
+                    <input type="text" class="form-control" id="i-password">
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" onclick="changePassword()">변경</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="unregist" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">회원 탈퇴</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                정말 회원 탈퇴를 진행하시겠습니까?😨
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button>
+                <button type="button" class="btn btn-danger">네, 탈퇴합니다.</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal End -->
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p> @Sparta Coding Club </a>
+  </footer>
+  <!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+  <script src="./js/mypage.js"></script>
+
+</body>
+
+</html>

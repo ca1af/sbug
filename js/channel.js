@@ -117,7 +117,7 @@ function inviteUserInChannel() {
 }
 
 function makeChannelHtml(id, channelName) {
-  return `<div> <a class="channel" href="http://localhost:5500/channel.html?id=${id}"> ⭐ ${channelName} </a> </div>`
+  return `<div class="channel-div"> <a class="channel" href="http://localhost:5500/channel.html?id=${id}"> ⭐ ${channelName} </a> </div>`
 }
 
 // 쓰레드 조회
@@ -445,8 +445,6 @@ function reactEmoji(emojiType, id) {
 }
 
 // 로그인 회원 정보조회
-var loginuserid = '';
-
 function getUserInformation() {
   var url = "http://localhost:8080/api/users/my-page";
   var userInfo;
@@ -465,11 +463,8 @@ function getUserInformation() {
       if (response.responseJSON) {
         validateErrorResponse(response.responseJSON);
       } else {
-        alert("로그인 실패! 서버의 응답이 없습니다😭");
+        alert("회원 정보 조회 실패! 서버의 응답이 없습니다😭");
       }
-      clearCookie('accessToken');
-      clearCookie('refreshToken');
-      location.href = "./frontdoor.html"
     }
   })
 
@@ -480,6 +475,8 @@ function validateErrorResponse(response) {
 
   if (response.status === 403) {
     alert("토큰이 만료되었습니다🤔. 다시 로그인해주세요.");
+    clearCookie('accessToken');
+		clearCookie('refreshToken');
     location.href = "./frontdoor.html"
     // 리이슈
   } else if (response.status === 401) {
@@ -500,9 +497,9 @@ function validateErrorResponse(response) {
       error: function (response) {
         if (response.responseJSON) {
           console.log("리이슈 실패! : " + response.responseJSON.message);
-          alert("로그인 실패! 인증 정보에 문제가 있습니다😨")
+          alert("로그인 갱신 실패! 인증 정보에 문제가 있습니다😨")
         } else {
-          alert("로그인 실패! 서버의 응답이 없습니다😭");
+          alert("로그인 갱신 실패! 서버의 응답이 없습니다😭");
         }
       }
     })
