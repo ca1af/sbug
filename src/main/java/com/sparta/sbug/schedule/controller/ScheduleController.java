@@ -7,6 +7,7 @@ import com.sparta.sbug.schedule.dto.ScheduleResponseDto;
 import com.sparta.sbug.schedule.dto.PeriodRequestDto;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
+import java.util.List;
 
 // lombok
 @RequiredArgsConstructor
@@ -55,6 +58,35 @@ public class ScheduleController {
     ) {
         Long userId = userDetails.getUser().getId();
         scheduleService.updateSchedule(requestDto, id, userId);
+    }
+
+    @PutMapping("/{id}/content")
+    public void updateScheduleContent(
+            @RequestBody ScheduleRequestDto.ContentUpdate requestDto,
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long userId = userDetails.getUser().getId();
+        scheduleService.updateScheduleContent(requestDto.getContent(), id, userId);
+    }
+
+    @PutMapping("/{id}/date")
+    public void updateScheduleDate(
+            @RequestBody ScheduleRequestDto.DateUpdate requestDto,
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long userId = userDetails.getUser().getId();
+        scheduleService.updateScheduleDate(requestDto.getDate(), id, userId);
+    }
+
+    @PutMapping("/{id}/done")
+    public void updateScheduleStatusToDone(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long userId = userDetails.getUser().getId();
+        scheduleService.updateScheduleStatusToDone(id, userId);
     }
 
     /**
@@ -119,5 +151,18 @@ public class ScheduleController {
     ) {
         User user = userDetails.getUser();
         return scheduleService.getPeriodSchedules(pageable, user, periodDto);
+    }
+
+    /**
+     * 해당 달(Month)의 모든 내 일정들을 조회
+     *
+     * @param year        년
+     * @param month       월
+     * @param userDetails 요청자
+     * @return List&lt;ScheduleResponseDto&gt;
+     */
+    @GetMapping("/date")
+    public List<ScheduleResponseDto> getMySchedulesByMonth(@PathParam("year") int year, @PathParam("month") int month, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return scheduleService.getSchedulesThisMonth(year, month, userDetails.getUser());
     }
 }
