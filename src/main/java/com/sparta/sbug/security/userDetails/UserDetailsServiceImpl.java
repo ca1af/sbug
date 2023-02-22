@@ -25,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @return UserDetails
      */
     @Override
-    @Cacheable(cacheNames = CacheNames.USER, key = "#email")
+    @Cacheable(cacheNames = CacheNames.USERDETAILS, key = "#email")
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmailAndInUseIsTrue(email)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
