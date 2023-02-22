@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -56,7 +57,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.COMMENT, key = "#comment.commentId")
+    @Caching(evict = {
+        @CacheEvict(cacheNames = CacheNames.COMMENT, key = "#comment.commentId"),
+        @CacheEvict(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#comment.thread.threadId")})
     public void deleteComment(Comment comment) {
         commentRepository.delete(comment);
     }
