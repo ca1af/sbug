@@ -17,6 +17,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -48,6 +49,7 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.THREADSINCHANNEL, key = "#channel.channelId")
     public ThreadResponseDto createThread(Channel channel, String requestContent, User user) {
         Thread thread = Thread.builder()
                 .requestContent(requestContent)
@@ -59,6 +61,7 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.THREAD, key = "#threadId")
     public ThreadResponseDto editThread(Long threadId, String requestContent, User user) {
         if (requestContent.trim().equals("")) {
             throw new CustomException(BAD_REQUEST_THREAD_CONTENT);
