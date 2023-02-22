@@ -12,8 +12,8 @@ import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +32,7 @@ public class UserController {
     private final S3Service s3Service;
 
     @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
+    private final String bucketName;
 
 
     /**
@@ -105,7 +105,8 @@ public class UserController {
         log.info("[GET] /api/users/my-page");
         User user = userDetails.getUser();
         UserResponseDto responseDto = UserResponseDto.of(user);
-        responseDto.setProfileImageUrl(s3Service.getObjectPresignedUrl(user.getProfileImage()));
+        responseDto.setProfileImageUrl(s3Service.getObjectPresignedUrl(bucketName, user.getProfileImage()));
+        return responseDto;
     }
 
     /**
