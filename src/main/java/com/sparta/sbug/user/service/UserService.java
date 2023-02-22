@@ -41,12 +41,20 @@ public interface UserService {
     User getUser(String email);
 
     /**
-     * 사용자 정보 수정
+     * 사용자 닉네임 수정
      *
      * @param user 사용자
-     * @param dto  수정될 내용
+     * @param dto  수정될 닉네임
      */
-    void update(User user, UserUpdateDto dto);
+    void updateNickname(User user, UserUpdateDto.Nickname dto);
+
+    /**
+     * 사용자 비밀번호 변경
+     *
+     * @param user 사용자
+     * @param dto  변경될 비밀번호
+     */
+    void changePassword(User user, UserUpdateDto.Password dto);
 
     /**
      * 전체 사용자 조회

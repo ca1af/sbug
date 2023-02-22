@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -24,13 +25,15 @@ public class Schedule extends Timestamp {
     private Long id;
 
     @Column(nullable = false)
+    @Setter
     private String content;
 
     @Column(nullable = false)
+    @Setter
     private LocalDateTime date;
 
     @Column(nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private ScheduleStatus status = ScheduleStatus.UNDONE;
 
     @Column

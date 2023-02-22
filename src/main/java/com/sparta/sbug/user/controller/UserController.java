@@ -64,14 +64,26 @@ public class UserController {
 
     /**
      * 회원 정보 수정
-     * [PUT] /api/users
+     * [PUT] /api/users/nickname
      *
      * @param userDetails 요청자
-     * @param dto         수정 요청 DTO (닉네임, 비밀번호)
+     * @param dto         수정 요청 DTO (닉네임)
      */
-    @PutMapping("/api/users")
-    public void update(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserUpdateDto dto) {
-        userService.update(userDetails.getUser(), dto);
+    @PutMapping("/api/users/nickname")
+    public void updateNickname(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid UserUpdateDto.Nickname dto) {
+        userService.updateNickname(userDetails.getUser(), dto);
+    }
+
+    /**
+     * 회원 정보 수정
+     * [PUT] /api/users/nickname
+     *
+     * @param userDetails 요청자
+     * @param dto         수정 요청 DTO (비밀번호)
+     */
+    @PutMapping("/api/users/password")
+    public void changePassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid UserUpdateDto.Password dto) {
+        userService.changePassword(userDetails.getUser(), dto);
     }
 
     /**

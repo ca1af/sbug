@@ -8,6 +8,9 @@ import com.sparta.sbug.schedule.dto.PeriodRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 public interface ScheduleService {
 
     /**
@@ -27,6 +30,18 @@ public interface ScheduleService {
      */
     void updateSchedule(
             ScheduleRequestDto requestDto,
+            Long scheduleId,
+            Long userId
+    );
+
+    void updateScheduleContent(
+            String content,
+            Long scheduleId,
+            Long userId
+    );
+
+    void updateScheduleDate(
+            LocalDateTime date,
             Long scheduleId,
             Long userId
     );
@@ -87,4 +102,5 @@ public interface ScheduleService {
             PeriodRequestDto periodDto
     );
 
+    List<ScheduleResponseDto> getSchedulesThisMonth(int year, int month, User user);
 }

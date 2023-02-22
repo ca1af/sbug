@@ -3,6 +3,7 @@ package com.sparta.sbug.comment.repository;
 
 import com.sparta.sbug.comment.entity.Comment;
 import io.lettuce.core.dynamic.annotation.Param;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,4 +42,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 //    @Query("delete from Comment c where c.inUse = false and c.modifiedAt < :localDateTime ")
     @Query(value = "delete from comment where in_use = false and modified_at <:localDateTime", nativeQuery = true)
     void deleteComments(@Param("localDateTime")LocalDateTime localDateTime);
+    boolean existsById(Long commentId);
 }

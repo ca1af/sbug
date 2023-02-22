@@ -53,4 +53,6 @@ public interface CommentService {
     Comment getComment(Long commentId);
 
     void autoDelete();
+
+    boolean existCommentById(Long commentId);
 }
