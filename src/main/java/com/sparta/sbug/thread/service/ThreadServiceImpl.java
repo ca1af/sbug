@@ -102,6 +102,7 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.THREAD, key = "#threadId")
     public ThreadResponseDto getThread(Long threadId) {
         Thread thread = findThreadById(threadId);
         ThreadResponseDto responseDto = ThreadResponseDto.of(thread);
