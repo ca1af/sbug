@@ -37,6 +37,10 @@ public class CacheConfiguration {
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(
+            CacheNames.USERDETAILS,
+            defaultConfig.entryTtl(Duration.ofHours(4))
+        );
+        redisCacheConfigMap.put(
             CacheNames.ALLUSERS,
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
