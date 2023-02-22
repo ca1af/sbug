@@ -77,6 +77,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(cacheNames = CacheNames.USER, key = "#email")
     public User getUser(String email) {
         return userRepository.findByEmailAndInUseIsTrue(email).orElseThrow(
                 () -> new IllegalArgumentException("유저를 찾을 수 없습니다.")
@@ -114,6 +115,7 @@ public class UserServiceImpl implements UserService {
         return UserResponseDto.of(user1);
     }
     @Override
+    @Cacheable(cacheNames = CacheNames.USER, key = "#id")
     public UserResponseDto getUser(Long id){
         User findUser = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("선택한 유저가 없습니다.")
@@ -138,6 +140,7 @@ public class UserServiceImpl implements UserService {
     // 요청한 유자가 가진 채널의 목록을 조회
 
     @Override
+    @Cacheable(cacheNames = CacheNames.USER, key = "#userId")
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("선택한 유저가 없습니다.")
