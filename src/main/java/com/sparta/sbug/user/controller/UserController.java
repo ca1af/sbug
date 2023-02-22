@@ -16,6 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.util.List;
 
@@ -32,7 +37,11 @@ public class UserController {
     private final S3Service s3Service;
 
     @Value("${cloud.aws.s3.bucket}")
-    private final String bucketName;
+    private String bucketName;
+    @Value("${cloud.aws.credentials.access-key}")
+    private String ACCESS_KEY;
+    @Value("${cloud.aws.credentials.secret-key}")
+    private String SECRET_KEY;
 
 
     /**
@@ -105,7 +114,9 @@ public class UserController {
         log.info("[GET] /api/users/my-page");
         User user = userDetails.getUser();
         UserResponseDto responseDto = UserResponseDto.of(user);
-        responseDto.setProfileImageUrl(s3Service.getObjectPresignedUrl(bucketName, user.getProfileImage()));
+        S3Presigner preSigner = getPreSigner();
+        responseDto.setProfileImageUrl(s3Service.getObjectPreSignedUrl(bucketName, user.getProfileImage(), preSigner));
+        preSigner.close();
         return responseDto;
     }
 
@@ -132,5 +143,29 @@ public class UserController {
     public TokenResponseDto reissue(@AuthenticationPrincipal UserDetailsImpl accountDetails) {
         UserResponseDto accountResponse = UserResponseDto.of(accountDetails.getUser());
         return jwtProvider.reissueAtk(accountResponse);
+    }
+
+    public S3Presigner getPreSigner() {
+        AwsCredentialsProvider awsCredentialsProvider;
+        String accessKey = ACCESS_KEY;
+        String secretKey = SECRET_KEY;
+
+        AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(accessKey, secretKey);
+        awsCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
+
+        Region region = Region.AP_NORTHEAST_2;
+        return S3Presigner.builder()
+                .region(region)
+                .credentialsProvider(awsCredentialsProvider)
+                .build();
+    }
+
+    @PostMapping("/api/users/test")
+    public String updateProfileImage(@RequestBody String key, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("[GET] /api/users/test");
+        S3Presigner preSigner = getPreSigner();
+        String url = s3Service.putObjectPreSignedUrl(bucketName, key, preSigner);
+        preSigner.close();
+        return url;
     }
 }

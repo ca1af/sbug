@@ -53,8 +53,8 @@ cloud:
       static: ap-northeast-2
       auto: false
     credentials:
-      access-key:
-      secret-key:
+      access-key: AKIAQUEQ5SPPLLTI2JPU
+      secret-key: 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
       instanceProfile: true
     stack:
       auto: false

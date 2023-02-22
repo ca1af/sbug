@@ -2,13 +2,14 @@ package com.sparta.sbug.aws.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 import java.time.Duration;
 
@@ -17,13 +18,7 @@ import java.time.Duration;
 public class S3Service {
 
     // 조회
-    public String getObjectPresignedUrl(String bucketName, String keyName){
-        ProfileCredentialsProvider credentialsProvider = ProfileCredentialsProvider.create();
-        Region region = Region.AP_NORTHEAST_2;
-        S3Presigner presigner = S3Presigner.builder()
-                .region(region)
-                .credentialsProvider(credentialsProvider)
-                .build();
+    public String getObjectPreSignedUrl(String bucketName, String keyName, S3Presigner preSigner) {
         try {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                     .bucket(bucketName)
@@ -35,8 +30,29 @@ public class S3Service {
                     .getObjectRequest(getObjectRequest)
                     .build();
 
-            PresignedGetObjectRequest presignedGetObjectRequest = presigner.presignGetObject(getObjectPresignRequest);
+            PresignedGetObjectRequest presignedGetObjectRequest = preSigner.presignGetObject(getObjectPresignRequest);
             return presignedGetObjectRequest.url().toString();
+        } catch (S3Exception e) {
+            e.getStackTrace();
+        }
+        return null;
+    }
+
+    // 생성
+    public String putObjectPreSignedUrl(String bucketName, String keyName, S3Presigner preSigner) {
+        try {
+            PutObjectRequest objectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(keyName)
+                    .build();
+
+            PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofMinutes(10))
+                    .putObjectRequest(objectRequest)
+                    .build();
+
+            PresignedPutObjectRequest preSignedRequest = preSigner.presignPutObject(preSignRequest);
+            return preSignedRequest.url().toString();
         } catch (S3Exception e) {
             e.getStackTrace();
         }

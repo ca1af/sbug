@@ -41,6 +41,7 @@ public class User extends Timestamp {
     private UserRole userRole = UserRole.USER;
 
     @Column
+    @Setter
     private String profileImage;
 
     /**

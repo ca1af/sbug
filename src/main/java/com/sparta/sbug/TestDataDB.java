@@ -43,13 +43,14 @@ public class TestDataDB {
         private final PasswordEncoder passwordEncoder;
         private final CommentRepository commentRepository;
         private final ThreadEmojiRepository threadEmojiRepository;
-        private final CommentEmojiRepository commentEmojiRepository;
         private final AdminRepository adminRepository;
         public void init() {
             // 유저 생성
             User user1 = User.builder().email("user1@naver.com").password(getEncode("password1")).nickname("뽀로로")
                     .build();
+            user1.setProfileImage("2022christmastree.jpeg");
             User savedUser1 = userRepository.save(user1);
+
 
             User user2 = User.builder().email("user2@naver.com").password(getEncode("password2")).nickname("루피")
                     .build();
