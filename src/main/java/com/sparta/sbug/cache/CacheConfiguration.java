@@ -33,19 +33,27 @@ public class CacheConfiguration {
         Map<String, RedisCacheConfiguration> redisCacheConfigMap
             = new HashMap<>();
         redisCacheConfigMap.put(
-            CacheNames.USER.getName(),
+            CacheNames.USER,
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(
-            CacheNames.THREAD.getName(),
+            CacheNames.ALLUSERS,
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(
-            CacheNames.COMMENT.getName(),
+            CacheNames.THREAD,
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(
-            CacheNames.IMOJI.getName(),
+            CacheNames.COMMENT,
+            defaultConfig.entryTtl(Duration.ofHours(4))
+        );
+        redisCacheConfigMap.put(
+            CacheNames.COMMENTSINTHREAD,
+            defaultConfig.entryTtl(Duration.ofHours(4))
+        );
+        redisCacheConfigMap.put(
+            CacheNames.EMOJI,
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
 

@@ -9,10 +9,14 @@ import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.user.entity.User;
+import com.sparta.sbug.cache.CacheNames;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -33,6 +37,7 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.THREAD, key = "#threadId")
     public Thread findThreadById(Long threadId) {
         Optional<Thread> optionalThread = threadRepository.findThreadByIdAndInUseIsTrue(threadId);
         if (optionalThread.isEmpty()) {

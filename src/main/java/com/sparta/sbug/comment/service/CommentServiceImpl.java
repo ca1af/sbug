@@ -6,10 +6,12 @@ import com.sparta.sbug.comment.repository.CommentRepository;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
+import com.sparta.sbug.cache.CacheNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -26,6 +28,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#threadId")
     public Slice<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto) {
         Slice<Comment> comments = commentRepository.findCommentsByThreadIdAndInUseIsTrue(threadId, pageDto.toPageable());
         return comments.map(CommentResponseDto::of);
