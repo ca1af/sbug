@@ -38,8 +38,7 @@ signupBtn.addEventListener('click', (e) => {
 
 // 로그인
 function login() {
-
-	var url = "http://localhost:8080/api/users/login";
+	var url = "http://" + window.location.hostname + ":8080/api/users/login";
 
 	let body = { 'email': $('#login-email').val(), 'password': $('#login-password').val() };
 
@@ -58,7 +57,7 @@ function login() {
 		},
 		error: function (response) {
 			if (response.responseJSON) {
-				alert(response.responseJSON.message);
+				alert("로그인 실패! (" + response.responseJSON.message + ") 😭");
 			} else {
 				alert("로그인 실패! 서버의 응답이 없습니다😭")
 			}
@@ -67,7 +66,7 @@ function login() {
 }
 
 function kakaoLogin() {
-	var url = "http://localhost:8080/api/users/kakao";
+	var url = "http://" + window.location.hostname + ":8080/api/users/kakao";
 
 	$.ajax({
 		type: "GET",
@@ -84,18 +83,18 @@ function kakaoLogin() {
 		},
 		error: function (response) {
 			if (response.responseJSON) {
-				alert("로그인 실패! (" + response.responseJSON.message + ") 😭");
+				alert("로그인 실패! : " + response.responseJSON.message + "😭");
 			} else {
 				alert("로그인 실패! 서버의 응답이 없습니다😭")
 			}
 			clearCookie('code');
-			location.href = "./frontdoor.html"
+			location.href = "http://" + window.location.hostname + "/frontdoor.html"
 		}
 	})
 }
 
 function signUp() {
-	var url = "http://localhost:8080/api/users/sign-up";
+	var url = "http://" + window.location.hostname + ":8080/api/users/sign-up";
 
 	let body = {
 		"email": $('#sign-up-email').val(),
@@ -119,7 +118,7 @@ function signUp() {
 		},
 		error: function (response) {
 			if (response.responseJSON) {
-				alert(response.responseJSON.message);
+				alert("회원가입 실패! :" + response.responseJSON.message + "😭");
 			} else {
 				alert("회원가입 실패! 서버의 응답이 없습니다😭")
 			}

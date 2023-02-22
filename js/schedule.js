@@ -400,7 +400,7 @@ function makeDateCode(date) {
 
 // 월별 일정 조회
 function getSchedules(year, month) {
-  var url = "http://localhost:8080/api/users/schedules/date?year=" + year + "&month=" + (month + 1);
+  var url = "http://" + window.location.hostname + ":8080/api/users/schedules/date?year=" + year + "&month=" + (month + 1);
 
   $.ajax({
 		type: "GET",
@@ -442,7 +442,7 @@ function getSchedules(year, month) {
 
 // 일정 추가
 function createSchedule() {
-  var url = "http://localhost:8080/api/users/schedules"
+  var url = "http://" + window.location.hostname + ":8080/api/users/schedules"
   var text = $("#i-content-add").val();
   var date = $("#i-date-add").val() + " " + $("#i-time-add").val() +":00";
   let body = { 'content': text, 'date': date };
@@ -472,7 +472,7 @@ function createSchedule() {
 
 // 일정 삭제
 function deleteSchedule() {
-  var url = "http://localhost:8080/api/users/schedules/" + nowSchedule.scheduleId;
+  var url = "http://" + window.location.hostname + ":8080/api/users/schedules/" + nowSchedule.scheduleId;
 
   $.ajax({
     type: "DELETE",
@@ -497,7 +497,7 @@ function deleteSchedule() {
 
 // 내용 변경
 function updateContent() {
-  var url = "http://localhost:8080/api/users/schedules/" + nowSchedule.scheduleId + "/content";
+  var url = "http://" + window.location.hostname + ":8080/api/users/schedules/" + nowSchedule.scheduleId + "/content";
   var text = $("#i-content").val();
   let body = { 'content': text };
 
@@ -526,7 +526,7 @@ function updateContent() {
 
 // 예정일 변경
 function updateDate() {
-  var url = "http://localhost:8080/api/users/schedules/" + nowSchedule.scheduleId + "/date";
+  var url = "http://" + window.location.hostname + ":8080/api/users/schedules/" + nowSchedule.scheduleId + "/date";
   var date = $("#i-date").val() + " " + $("#i-time").val() +":00";
   let body = { 'date': date };
 
@@ -557,9 +557,9 @@ function updateDate() {
 function checkDone() {
   var url;
   if (nowSchedule.status === "UNDONE") {
-    url = "http://localhost:8080/api/users/schedules/" + nowSchedule.scheduleId + "/done";
+    url = "http://" + window.location.hostname + ":8080/api/users/schedules/" + nowSchedule.scheduleId + "/done";
   } else {
-    url = "http://localhost:8080/api/users/schedules/" + nowSchedule.scheduleId + "/undone";
+    url = "http://" + window.location.hostname + ":8080/api/users/schedules/" + nowSchedule.scheduleId + "/undone";
   }
 
   $.ajax({
@@ -585,7 +585,7 @@ function checkDone() {
 
 // 로그인 회원 정보조회
 function getUserInformation() {
-	var url = "http://localhost:8080/api/users/my-page";
+	var url = "http://" + window.location.hostname + ":8080/api/users/my-page";
 	var userInfo;
 	$.ajax({
 		type: "GET",
@@ -619,7 +619,7 @@ function validateErrorResponse(response) {
 		location.href = "./frontdoor.html"
 		// 리이슈
 	} else if (response.status === 401) {
-		var url = "http://localhost:8080/account/reissue";
+		var url = "http://" + window.location.hostname + ":8080/account/reissue";
 		$.ajax({
 			type: "GET",
 			url: url,
@@ -631,17 +631,23 @@ function validateErrorResponse(response) {
 			success: function (response) {
 				setCookie('accessToken', response.atk);
 				setCookie('refreshToken', response.rtk);
-				location.href = "./frontdoor.html";
 			},
 			error: function (response) {
 				if (response.responseJSON) {
 					console.log("리이슈 실패! : " + response.responseJSON.message);
-					alert("로그인 갱신 실패! 인증 정보에 문제가 있습니다😨")
+					alert("로그인 갱신 실패! 인증 정보에 문제가 있습니다😨 다시 로그인해주세요.")
 				} else {
-					alert("로그인 갱신 실패! 서버의 응답이 없습니다😭");
+					alert("로그인 갱신 실패! 서버의 응답이 없습니다😭 다시 로그인해주세요.");
 				}
+				clearCookie('accessToken');
+				clearCookie('refreshToken');
+				location.href = "./frontdoor.html"
 			}
 		})
+
+		clearCookie('accessToken');
+		clearCookie('refreshToken');
+		location.href = "./frontdoor.html"
 	} else {
 		alert("인증 문제가 아닌 오류 : " + response.message);
 	}

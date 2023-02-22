@@ -51,7 +51,7 @@
         <span id="status-dot"> </span>
         <span id="p-status"> - </span>
         <button id="check-btn" class="update-btn" data-bs-toggle="modal" data-bs-target="#checkDone"
-          disabled="disabled">done</button>
+          disabled="disabled">change</button>
       </p>
       <h2> 완료일 </h2>
       <p id="p-doneAt"> - </p>
@@ -121,11 +121,11 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" style="color: black">
-          정말 일정 완료를 진행하시겠습니까?👨‍🏫
+          일정 완료 상태 변경을 진행하시겠습니까?👨‍🏫
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오</button>
-          <button type="button" class="btn btn-danger" onclick="checkDone()">네, 완료합니다.</button>
+          <button type="button" class="btn btn-success" onclick="checkDone()">네, 변경합니다.</button>
         </div>
       </div>
     </div>

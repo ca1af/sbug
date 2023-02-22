@@ -2,7 +2,7 @@ console.clear();
 
 // 전체 채널 조회
 function getChannelList() {
-	var url = "http://localhost:8080/api/users/channels";
+	var url = "http://" + window.location.hostname + ":8080/api/users/channels";
 	$.ajax({
 		type: "GET",
 		url: url,
@@ -30,7 +30,7 @@ function getChannelList() {
 
 // 채널 만들기
 function createChannel() {
-	var url = "http://localhost:8080/api/channels"
+	var url = "http://" + window.location.hostname + ":8080/api/channels"
 	var text = $('#channel-create-name').val();
 	let body = { 'channelName': text };
 
@@ -51,8 +51,7 @@ function createChannel() {
 		},
 		error: function (response) {
 			if (response.responseJSON) {
-				console.log(response.responseJSON)
-				//validateErrorResponse(response.responseJSON);
+				validateErrorResponse(response.responseJSON);
 			} else {
 				alert("채널 생성 실패! 서버의 응답이 없습니다😭");
 			}
@@ -62,33 +61,39 @@ function createChannel() {
 
 
 function makeChannelHtml(id, channelName) {
-	return `<div class="channel-div"> <a class="channel" href="http://localhost:5500/channel.html?id=${id}"> ⭐${channelName} </a></div>`
+	return `<div class="channel-div"> <a class="channel" href="./channel.html?id=${id}"> ⭐${channelName} </a></div>`
 }
 
 // 로그아웃
 function logout() {
-	var settings = {
-		"url": "http://localhost:8080/api/users/logout",
-		"method": "POST",
-		"timeout": 0,
-		"headers": {
+	var url = "http://" + window.location.hostname + ":8080/api/users/logout"
+
+	$.ajax({
+		type: "POST",
+		url: url,
+		headers: {
 			"Authorization": getCookie('accessToken'),
 			"RTK": getCookie('refreshToken')
 		},
-	};
-	$.ajax(settings).done(function (response) {
-		console.log(response);
-		alert("로그아웃완료");
-		clearCookie('accessToken');
-		clearCookie('refreshToken');
-		location.href = "./frontdoor.html";
-	});
+		success: function (response) {
+			alert("로그아웃 완료하였습니다! 🙇‍♂️");
+			clearCookie('accessToken');
+			clearCookie('refreshToken');
+			location.href = "./frontdoor.html";
+		},
+		error: function (response) {
+			alert("로그아웃 완료하였습니다! 🙇‍♂️");
+			clearCookie('accessToken');
+			clearCookie('refreshToken');
+			location.href = "./frontdoor.html";
+		}
+	})
 }
 
 
 // 로그인 회원 정보조회
 function getUserInformation() {
-	var url = "http://localhost:8080/api/users/my-page";
+	var url = "http://" + window.location.hostname + ":8080/api/users/my-page";
 	var userInfo;
 	$.ajax({
 		type: "GET",
@@ -122,7 +127,7 @@ function validateErrorResponse(response) {
 		location.href = "./frontdoor.html"
 		// 리이슈
 	} else if (response.status === 401) {
-		var url = "http://localhost:8080/account/reissue";
+		var url = "http://" + window.location.hostname + ":8080/account/reissue";
 		$.ajax({
 			type: "GET",
 			url: url,
@@ -134,19 +139,25 @@ function validateErrorResponse(response) {
 			success: function (response) {
 				setCookie('accessToken', response.atk);
 				setCookie('refreshToken', response.rtk);
-				location.href = "./frontdoor.html";
 			},
 			error: function (response) {
 				if (response.responseJSON) {
 					console.log("리이슈 실패! : " + response.responseJSON.message);
-					alert("로그인 갱신 실패! 인증 정보에 문제가 있습니다😨")
+					alert("로그인 갱신 실패! 인증 정보에 문제가 있습니다😨 다시 로그인해주세요.")
 				} else {
-					alert("로그인 갱신 실패! 서버의 응답이 없습니다😭");
+					alert("로그인 갱신 실패! 서버의 응답이 없습니다😭 다시 로그인해주세요.");
 				}
+				clearCookie('accessToken');
+				clearCookie('refreshToken');
+				location.href = "./frontdoor.html"
 			}
 		})
+
+		clearCookie('accessToken');
+		clearCookie('refreshToken');
+		location.href = "./frontdoor.html"
 	} else {
-		alert("인증 문제가 아닌 오류 : " + response.message);
+		alert("⚠️오류 : " + response.message);
 	}
 }
 

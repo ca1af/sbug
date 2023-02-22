@@ -12,6 +12,7 @@
 		$(document).ready(function () {
 			const urlParams = new URL(location.href).searchParams;
 			const code = urlParams.get('code');
+			console.log(window.location.hostname);
 			if (code) {
 				setCookie('code', code);
 				kakaoLogin();
@@ -19,7 +20,7 @@
 
 			if (getCookie('accessToken') && getCookie('refreshToken')) {
 				alert("이미 로그인되어 있습니다.")
-				location.href = "./home.html";
+				location.href = "http://" + window.location.hostname + "/home.html";
 			}
 		});
 	</script>
