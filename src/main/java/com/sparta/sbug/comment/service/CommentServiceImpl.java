@@ -12,6 +12,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -36,6 +37,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#thread.threadId")
     public CommentResponseDto createComment(Thread thread, String content, User user) {
         Comment comment = Comment.builder()
                 .content(content)
@@ -47,12 +49,14 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.COMMENT, key = "#comment.commentId")
     public void updateComment(Comment comment, String content) {
         comment.updateContent(content);
     }
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.COMMENT, key = "#comment.commentId")
     public void deleteComment(Comment comment) {
         commentRepository.delete(comment);
     }
