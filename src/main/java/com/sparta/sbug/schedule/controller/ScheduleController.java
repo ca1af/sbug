@@ -7,6 +7,7 @@ import com.sparta.sbug.schedule.dto.ScheduleResponseDto;
 import com.sparta.sbug.schedule.dto.PeriodRequestDto;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 
+import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 
@@ -36,7 +37,7 @@ public class ScheduleController {
      */
     @PostMapping("")
     public void registerSchedule(
-            @RequestBody ScheduleRequestDto requestDto,
+            @RequestBody @Valid ScheduleRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         scheduleService.registerSchedule(requestDto, userDetails.getUser());
@@ -52,7 +53,7 @@ public class ScheduleController {
      */
     @PutMapping("/{id}")
     public void updateSchedule(
-            @RequestBody ScheduleRequestDto requestDto,
+            @RequestBody @Valid ScheduleRequestDto requestDto,
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -62,7 +63,7 @@ public class ScheduleController {
 
     @PutMapping("/{id}/content")
     public void updateScheduleContent(
-            @RequestBody ScheduleRequestDto.ContentUpdate requestDto,
+            @RequestBody @Valid ScheduleRequestDto.ContentUpdate requestDto,
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {

@@ -68,4 +68,9 @@ public class CommentServiceImpl implements CommentService {
         LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
         commentRepository.deleteComments(localDateTime);
     }
+
+    @Override
+    public boolean existCommentById(Long commentId) {
+        return false;
+    }
 }

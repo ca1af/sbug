@@ -33,7 +33,7 @@ public class Schedule extends Timestamp {
     private LocalDateTime date;
 
     @Column(nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private ScheduleStatus status = ScheduleStatus.UNDONE;
 
     @Column

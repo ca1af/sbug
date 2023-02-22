@@ -49,7 +49,7 @@ public class ScheduleResponseDto {
     public static Page<ScheduleResponseDto> toDtoList(
             Page<Schedule> mySchedules
     ) {
-        return mySchedules.map(ScheduleResponseDto::new);
+        return mySchedules.map(ScheduleResponseDto::of);
     }
 
     public static ScheduleResponseDto of(Schedule schedule){

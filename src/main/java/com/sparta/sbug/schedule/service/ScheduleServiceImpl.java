@@ -118,9 +118,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleResponseDto getSchedule(Long scheduleId) {
         Schedule foundSchedule = validateSchedule(scheduleId);
-        ScheduleResponseDto responseDto =
-                new ScheduleResponseDto(foundSchedule);
-        return responseDto;
+        return new ScheduleResponseDto(foundSchedule);
     }
 
     //기간내 일정 조회
@@ -136,9 +134,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 scheduleRepository.findAllByUserIdAndDateBetween(
                         user.getId(), startDate, endDate, pageable
                 );
-        Page<ScheduleResponseDto> responseDtoList =
-                ScheduleResponseDto.toDtoList(periodSchedules);
-        return responseDtoList;
+        return ScheduleResponseDto.toDtoList(periodSchedules);
     }
 
     //내 이번달 일정 조회

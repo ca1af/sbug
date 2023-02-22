@@ -109,4 +109,9 @@ public class ThreadServiceImpl implements ThreadService {
         LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
         threadRepository.deleteThreads(localDateTime);
     }
+
+    @Override
+    public boolean existsThreadById(Long threadId) {
+        return threadRepository.existsById(threadId);
+    }
 }

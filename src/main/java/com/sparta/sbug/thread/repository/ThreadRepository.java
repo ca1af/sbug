@@ -40,4 +40,6 @@ public interface ThreadRepository extends JpaRepository<Thread, Long> {
 //    @Query("delete from Thread t where t.inUse = false and t.modifiedAt < :localDateTime ")
     @Query(nativeQuery = true, value = "delete from thread where in_use = false and modified_at <:localDateTime")
     void deleteThreads(@Param("localDateTime") LocalDateTime localDateTime);
+
+    boolean existsById(Long threadId);
 }

@@ -1,6 +1,7 @@
 package com.sparta.sbug.schedule.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -12,12 +13,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 // lombok
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class PeriodRequestDto {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private final LocalDateTime startDate;
+    private LocalDateTime startDate;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private final LocalDateTime endDate;
+    private LocalDateTime endDate;
 }
