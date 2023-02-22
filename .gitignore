@@ -39,3 +39,6 @@ out/
 ### Vim ###
 *.vim
 *.swp
+
+### my ignore ###
+#resources/application-aws.yml

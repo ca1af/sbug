@@ -2,6 +2,7 @@ package com.sparta.sbug.user.dto;
 
 import com.sparta.sbug.user.entity.User;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 유저 정보 응답 DTO
@@ -11,6 +12,8 @@ public class UserResponseDto {
     Long userId;
     String email;
     String nickname;
+    @Setter
+    String profileImageUrl;
 
     /**
      * 생성자

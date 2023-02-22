@@ -1,5 +1,6 @@
 package com.sparta.sbug.user.controller;
 
+import com.sparta.sbug.aws.service.S3Service;
 import com.sparta.sbug.security.dto.TokenResponseDto;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
@@ -7,9 +8,11 @@ import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
+import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +29,11 @@ import java.util.List;
 public class UserController {
     private final UserServiceImpl userService;
     private final JwtProvider jwtProvider;
+    private final S3Service s3Service;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+
 
     /**
      * 회원가입
@@ -95,7 +103,9 @@ public class UserController {
     @GetMapping("/api/users/my-page")
     public UserResponseDto myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("[GET] /api/users/my-page");
-        return UserResponseDto.of(userDetails.getUser());
+        User user = userDetails.getUser();
+        UserResponseDto responseDto = UserResponseDto.of(user);
+        responseDto.setProfileImageUrl(s3Service.getObjectPresignedUrl(user.getProfileImage()));
     }
 
     /**

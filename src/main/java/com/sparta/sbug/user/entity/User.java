@@ -40,6 +40,9 @@ public class User extends Timestamp {
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole = UserRole.USER;
 
+    @Column
+    private String profileImage;
+
     /**
      * 생성자
      */
