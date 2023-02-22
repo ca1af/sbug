@@ -58,6 +58,7 @@ public class CommentServiceImpl implements CommentService {
     }
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.COMMENT, key = "#commentId")
     public Comment getComment(Long commentId) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
         if (optionalComment.isEmpty()) {
