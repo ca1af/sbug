@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final JPAQueryFactory queryFactory;
 
     @Override
+    @CacheEvict(cacheNames = CacheNames.ALLUSERS)
     public void signup(SignUpRequestDto requestDto) {
         String email = requestDto.getEmail();
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -72,6 +74,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @CacheEvict(cacheNames = CacheNames.ALLUSERS)
     public void unregister(User user) {
         userRepository.deleteByEmail(user.getEmail());
     }
@@ -86,6 +89,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(cacheNames = CacheNames.ALLUSERS),
+        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id")})
     public void updateNickname(User user, UserUpdateDto.Nickname dto) {
         User user1 = getUserById(user.getId());
 
@@ -108,6 +114,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(cacheNames = CacheNames.USER, key = "#user.id")
     public UserResponseDto myPage(User user) {
         User user1 = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 없습니다")
