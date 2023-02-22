@@ -51,4 +51,8 @@ public class ScheduleResponseDto {
     ) {
         return mySchedules.map(ScheduleResponseDto::new);
     }
+
+    public static ScheduleResponseDto of(Schedule schedule){
+        return new ScheduleResponseDto(schedule);
+    }
 }

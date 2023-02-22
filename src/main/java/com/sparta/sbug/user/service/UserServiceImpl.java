@@ -83,14 +83,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void update(User user, UserUpdateDto dto) {
-        User user1 = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("유저를 찾을 수 없습니다.")
-        );
+    public void updateNickname(User user, UserUpdateDto.Nickname dto) {
+        User user1 = getUserById(user.getId());
 
-        if (!dto.getNickname().trim().equals("")){
-            user1.setNickname(dto.getNickname());
-        }
+        user1.setNickname(dto.getNickname());
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(User user, UserUpdateDto.Password dto) {
+        User user1 = getUserById(user.getId());
 
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
         user1.setPassword(encodedPassword);
@@ -134,7 +136,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow();
+        return userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("선택한 유저가 없습니다.")
+        );
     }
     
 }

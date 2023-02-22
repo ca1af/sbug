@@ -118,7 +118,7 @@ public class CommentController {
      * @param commentId   댓글 ID
      * @param userDetails 요청자 정보
      */
-    @DeleteMapping("/{channelId}/comments/{commentId}")
+    @DeleteMapping("/{channelId}/threads/comments/{commentId}")
     public void deleteComment(@PathVariable Long channelId,
                               @PathVariable Long commentId,
                               @AuthenticationPrincipal UserDetailsImpl userDetails) {

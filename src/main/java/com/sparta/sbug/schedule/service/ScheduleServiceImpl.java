@@ -16,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 
 // lombok
 @RequiredArgsConstructor
@@ -48,64 +50,53 @@ public class ScheduleServiceImpl implements ScheduleService {
             Long scheduleId,
             Long userId
     ) {
-        Schedule foundSchedule =
-            scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("일정을 찾을 수 없습니다.")
-            );
-        if (userId.equals(foundSchedule.getUser().getId())) {
-            foundSchedule.updateSchedule(
-                    requestDto.getContent(),
-                    requestDto.getDate()
-            );
-            scheduleRepository.save(foundSchedule);
-        } else {
-            throw new IllegalStateException("User id가 일치하지 않습니다.");
-        }
+        Schedule foundSchedule = validateSchedule(scheduleId);
+        validateRequester(foundSchedule.getUser().getId(), userId);
+        foundSchedule.updateSchedule(
+                requestDto.getContent(),
+                requestDto.getDate()
+        );
+        scheduleRepository.save(foundSchedule);
     }
 
     //일정 완료 표시(status 변경)
     @Override
     public void completeSchedule(Long scheduleId, Long userId) {
-        Schedule foundSchedule =
-            scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("일정을 찾을 수 없습니다.")
-            );
-        if (userId.equals(foundSchedule.getUser().getId())) {
-            foundSchedule.checkDoneSchedule();
-            scheduleRepository.save(foundSchedule);
-        } else {
-            throw new IllegalStateException("User id가 일치하지 않습니다.");
-        }
+        Schedule foundSchedule = validateSchedule(scheduleId);
+        validateRequester(foundSchedule.getUser().getId(), userId);
+        foundSchedule.checkDoneSchedule();
+        scheduleRepository.save(foundSchedule);
     }
 
     //일정 미완 표시(status 변경)
     @Override
     public void incompleteSchedule(Long scheduleId, Long userId) {
-        Schedule foundSchedule =
-            scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("일정을 찾을 수 없습니다.")
-            );
-        if (userId.equals(foundSchedule.getUser().getId())) {
-            foundSchedule.uncheckDoneSchedule();
-            scheduleRepository.save(foundSchedule);
-        } else {
-            throw new IllegalStateException("User id가 일치하지 않습니다.");
-        }
+        Schedule foundSchedule = validateSchedule(scheduleId);
+        validateRequester(foundSchedule.getUser().getId(), userId);
+        foundSchedule.uncheckDoneSchedule();
+        scheduleRepository.save(foundSchedule);
+    }
+
+    @Override
+    public void updateScheduleContent(String content, Long scheduleId, Long userId) {
+        Schedule foundSchedule = validateSchedule(scheduleId);
+        validateRequester(foundSchedule.getUser().getId(), userId);
+        foundSchedule.setContent(content);
+    }
+
+    @Override
+    public void updateScheduleDate(LocalDateTime date, Long scheduleId, Long userId) {
+        Schedule foundSchedule = validateSchedule(scheduleId);
+        validateRequester(foundSchedule.getUser().getId(), userId);
+        foundSchedule.setDate(date);
     }
 
     //일정 삭제
     @Override
     public void deleteSchedule(Long scheduleId, Long userId) {
-        Schedule foundSchedule =
-            scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("일정을 찾을 수 없습니다.")
-            );
-        if (userId.equals(foundSchedule.getUser().getId())) {
-            scheduleRepository.delete(foundSchedule);
-        } else {
-            throw new IllegalStateException("User id가 일치하지 않습니다.");
-        }
-
+        Schedule foundSchedule = validateSchedule(scheduleId);
+        validateRequester(foundSchedule.getUser().getId(), userId);
+        scheduleRepository.delete(foundSchedule);
     }
 
     //내 일정 조회
@@ -126,10 +117,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     //일정 상세 조회
     @Override
     public ScheduleResponseDto getSchedule(Long scheduleId) {
-        Schedule foundSchedule =
-                scheduleRepository.findById(scheduleId).orElseThrow(
-                        () -> new IllegalStateException("일정을 찾을 수 없습니다.")
-                );
+        Schedule foundSchedule = validateSchedule(scheduleId);
         ScheduleResponseDto responseDto =
                 new ScheduleResponseDto(foundSchedule);
         return responseDto;
@@ -145,13 +133,39 @@ public class ScheduleServiceImpl implements ScheduleService {
         LocalDateTime startDate = periodDto.getStartDate();
         LocalDateTime endDate = periodDto.getEndDate();
         Page<Schedule> periodSchedules =
-            scheduleRepository.findAllByUserIdAndDateBetween(
-                user.getId(), startDate, endDate, pageable
-            );
+                scheduleRepository.findAllByUserIdAndDateBetween(
+                        user.getId(), startDate, endDate, pageable
+                );
         Page<ScheduleResponseDto> responseDtoList =
                 ScheduleResponseDto.toDtoList(periodSchedules);
         return responseDtoList;
     }
+
+    //내 이번달 일정 조회
+    @Override
+    public List<ScheduleResponseDto> getSchedulesThisMonth(int year, int month, User user) {
+        LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime endDate = startDate.with(TemporalAdjusters.lastDayOfMonth());
+        List<Schedule> periodSchedules =
+                scheduleRepository.findAllByUserIdAndDateBetween(
+                        user.getId(), startDate, endDate
+                );
+        return periodSchedules.stream().map(ScheduleResponseDto::of).toList();
+    }
+
+    // 일정 조회
+    public Schedule validateSchedule(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new IllegalStateException("일정을 찾을 수 없습니다.")
+        );
+    }
+
+    public void validateRequester(Long requesterId, Long scheduleId) {
+        if (!requesterId.equals(scheduleId)) {
+            throw new IllegalStateException("요청자에게 권한이 없습니다.");
+        }
+    }
+
 }
 
 

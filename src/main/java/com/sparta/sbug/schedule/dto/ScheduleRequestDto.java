@@ -1,8 +1,7 @@
 package com.sparta.sbug.schedule.dto;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,11 +11,24 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 // lombok
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class ScheduleRequestDto {
 
-    private final String content;
+    private String content;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private final LocalDateTime date;
+    private LocalDateTime date;
+
+    @Getter
+    @NoArgsConstructor
+    public static class ContentUpdate {
+        private String content;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class DateUpdate {
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime date;
+    }
 }
