@@ -17,10 +17,15 @@ body {
   border-radius: 5px;
 }
 
+.profile-div {
+  float: right;
+}
+
 .people-list {
   width: 260px;
   float: left;
 }
+
 .people-list .search {
   padding: 20px;
 }
@@ -291,7 +296,6 @@ body {
 }
 
 .profile-box {
-  float: right;
   width: 60px;
   height: 60px; 
   border-radius: 70%;

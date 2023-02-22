@@ -1,5 +1,16 @@
 var usetInfo = getUserInformation();
 
+// 이미지 수정
+function changeImage() {
+    var image = $('#i-image').get(0).files;
+    console.log(image[0]);
+    var formData = new FormData();
+    formData.append("image", image[0]);
+    for (var pair of formData.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+    }
+}
+
 // 닉네임 수정
 function updateNickname() {
     var url = "http://localhost:8080/api/users/nickname"

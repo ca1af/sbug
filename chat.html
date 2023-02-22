@@ -48,9 +48,17 @@
           <div class="chat-with"> Chat With : <span id="chat-with"> </span></div>
         </div>
         <!-- <i class="fa fa-star"></i> -->
-        <div class="profile-box" style="background: #BDBDBD;">
-          <img class="profile-img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg"
-            alt="avatar" />
+        <div class="profile-div">
+          <a data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="profile-box" style="background: #BDBDBD;">
+              <img class="btn-secondary profile-img"
+                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
+            </div>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="./mypage.html">내 정보</a></li>
+            <li><a class="dropdown-item" href="./schedule.html">내 일정</a></li>
+          </ul>
         </div>
       </div> <!-- end chat-header -->
 

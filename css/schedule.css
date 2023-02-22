@@ -413,6 +413,7 @@ body {
 }
 
 .headline {
+  text-align: center;
   padding: 20px;
   position: relative;
   border-bottom: 1px solid gray;
@@ -525,4 +526,18 @@ body {
 
 .update-btn:disabled {
   color: rgba(0, 0, 0, 0.5);
+}
+
+.home-logo {
+  font-family: "Nunito Sans", sans-serif;
+  color: #444753;
+  font-weight: 900;
+  font-size: 1.5em;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.home-logo:hover {
+  color: #3FB6A8;
 }
