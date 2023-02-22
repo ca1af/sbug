@@ -94,6 +94,7 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.THREADSINCHANNEL, key = "#channelId")
     public Slice<ThreadResponseDto> getAllThreadsInChannel(Long channelId, PageDto pageDto) {
         Slice<Thread> threads = threadRepository.findThreadsByChannelIdAndInUseIsTrue(channelId, pageDto.toPageable());
         return threads.map(ThreadResponseDto::of);

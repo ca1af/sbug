@@ -45,6 +45,10 @@ public class CacheConfiguration {
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(
+            CacheNames.THREADSINCHANNEL,
+            defaultConfig.entryTtl(Duration.ofHours(4))
+        );
+        redisCacheConfigMap.put(
             CacheNames.COMMENT,
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
