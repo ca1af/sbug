@@ -355,7 +355,7 @@ function publishComment() {
     success: function (response) {
       console.log(response);
       let time = toStringTime(new Date(response.createdAt));
-      let tempHtml = makeComment(response.threadId, response.userNickname, response.userId, time, response.content, response.emojis);
+      let tempHtml = makeComment(response.id, response.userNickname, response.userId, time, response.content, response.emojis);
       $('#comment-history').append(tempHtml);
       $('.chat-history').scrollTop($('.chat-history')[0].scrollHeight)
       $('#message-to-send').val("");
