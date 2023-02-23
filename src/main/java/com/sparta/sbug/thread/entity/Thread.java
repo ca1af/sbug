@@ -82,13 +82,5 @@ public class Thread extends Timestamp {
     // Thread 수정 메소드
     public void changeThread(String requestContent){this.content = requestContent;}
 
-
-
-
-
-
-
-
-
     public void updateThread(String requestContent){this.content = requestContent;}
 }

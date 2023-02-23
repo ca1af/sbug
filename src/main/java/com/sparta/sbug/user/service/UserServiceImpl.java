@@ -50,6 +50,8 @@ public class UserServiceImpl implements UserService {
                 .password(password)
                 .build();
 
+        user.setProfileImage("cat.png");
+
         userRepository.save(user);
     }
 
