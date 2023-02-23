@@ -28,6 +28,15 @@ public class CacheConfiguration {
                     .SerializationPair
                     .fromSerializer(new GenericJackson2JsonRedisSerializer())
                 );
+/*                
+        RedisCacheConfiguration elasticTtlconfig
+            = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeValuesWith(
+                    RedisSerializationContext
+                    .SerializationPair
+                    .fromSerializer(new GenericJackson2JsonRedisSerializer())
+                );
+*/
 
         // 리소스 유형에 따라 만료 시간을 다르게 지정
         Map<String, RedisCacheConfiguration> redisCacheConfigMap
