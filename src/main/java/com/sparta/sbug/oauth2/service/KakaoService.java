@@ -141,6 +141,7 @@ public class KakaoService {
                         .email(kakaoUserInfo.getEmail())
                         .password(password).build();
                 kakaoUser.kakaoIdUpdate(kakaoUserInfo.getId());
+                kakaoUser.setProfileImage("cat.png");
             }
 
             userRepository.save(kakaoUser);
