@@ -1,5 +1,6 @@
 package com.sparta.sbug.user.controller;
 
+import com.sparta.sbug.aws.service.S3Service;
 import com.sparta.sbug.security.dto.TokenResponseDto;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
@@ -7,12 +8,19 @@ import com.sparta.sbug.user.dto.LoginRequestDto;
 import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
+import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.util.List;
 
@@ -26,6 +34,15 @@ import java.util.List;
 public class UserController {
     private final UserServiceImpl userService;
     private final JwtProvider jwtProvider;
+    private final S3Service s3Service;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+    @Value("${cloud.aws.credentials.access-key}")
+    private String ACCESS_KEY;
+    @Value("${cloud.aws.credentials.secret-key}")
+    private String SECRET_KEY;
+
 
     /**
      * 회원가입
@@ -107,7 +124,14 @@ public class UserController {
     @GetMapping("/api/users/my-page")
     public UserResponseDto myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("[GET] /api/users/my-page");
-        return UserResponseDto.of(userDetails.getUser());
+        User user = userDetails.getUser();
+        UserResponseDto responseDto = UserResponseDto.of(user);
+
+        S3Presigner preSigner = getPreSigner();
+        responseDto.setProfileImageUrl(s3Service.getObjectPreSignedUrl(bucketName, user.getProfileImage(), preSigner));
+
+        preSigner.close();
+        return responseDto;
     }
 
     /**
@@ -133,5 +157,26 @@ public class UserController {
     public TokenResponseDto reissue(@AuthenticationPrincipal UserDetailsImpl accountDetails) {
         UserResponseDto accountResponse = UserResponseDto.of(accountDetails.getUser());
         return jwtProvider.reissueAtk(accountResponse);
+    }
+    @PatchMapping ("/api/users/image")
+    public String updateProfileImage(@RequestBody String key, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("[GET] /api/users/test");
+        S3Presigner preSigner = getPreSigner();
+        String url = s3Service.putObjectPreSignedUrl(bucketName, key, preSigner);
+        preSigner.close();
+        userService.changeProfileImage(userDetails.getUser(), key);
+        return url;
+    }
+
+    private S3Presigner getPreSigner() {
+        AwsCredentialsProvider awsCredentialsProvider;
+        AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY);
+        awsCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
+
+        Region region = Region.AP_NORTHEAST_2;
+        return S3Presigner.builder()
+                .region(region)
+                .credentialsProvider(awsCredentialsProvider)
+                .build();
     }
 }
