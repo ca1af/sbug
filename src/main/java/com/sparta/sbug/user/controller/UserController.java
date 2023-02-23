@@ -114,8 +114,10 @@ public class UserController {
         log.info("[GET] /api/users/my-page");
         User user = userDetails.getUser();
         UserResponseDto responseDto = UserResponseDto.of(user);
+
         S3Presigner preSigner = getPreSigner();
         responseDto.setProfileImageUrl(s3Service.getObjectPreSignedUrl(bucketName, user.getProfileImage(), preSigner));
+
         preSigner.close();
         return responseDto;
     }
@@ -144,13 +146,19 @@ public class UserController {
         UserResponseDto accountResponse = UserResponseDto.of(accountDetails.getUser());
         return jwtProvider.reissueAtk(accountResponse);
     }
+    @PatchMapping ("/api/users/image")
+    public String updateProfileImage(@RequestBody String key, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("[GET] /api/users/test");
+        S3Presigner preSigner = getPreSigner();
+        String url = s3Service.putObjectPreSignedUrl(bucketName, key, preSigner);
+        preSigner.close();
+        userService.changeProfileImage(userDetails.getUser(), key);
+        return url;
+    }
 
-    public S3Presigner getPreSigner() {
+    private S3Presigner getPreSigner() {
         AwsCredentialsProvider awsCredentialsProvider;
-        String accessKey = ACCESS_KEY;
-        String secretKey = SECRET_KEY;
-
-        AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(accessKey, secretKey);
+        AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY);
         awsCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
 
         Region region = Region.AP_NORTHEAST_2;
@@ -158,14 +166,5 @@ public class UserController {
                 .region(region)
                 .credentialsProvider(awsCredentialsProvider)
                 .build();
-    }
-
-    @PostMapping("/api/users/test")
-    public String updateProfileImage(@RequestBody String key, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("[GET] /api/users/test");
-        S3Presigner preSigner = getPreSigner();
-        String url = s3Service.putObjectPreSignedUrl(bucketName, key, preSigner);
-        preSigner.close();
-        return url;
     }
 }

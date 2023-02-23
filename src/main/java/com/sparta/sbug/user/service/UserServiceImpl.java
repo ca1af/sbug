@@ -96,6 +96,12 @@ public class UserServiceImpl implements UserService {
         user1.setPassword(encodedPassword);
     }
 
+    @Transactional
+    public void changeProfileImage(User user, String keyName) {
+        user.setProfileImage(keyName);
+        userRepository.save(user);
+    }
+
     @Override
     public List<UserResponseDto> getUsers() {
         return userRepository.findAll().stream().map(UserResponseDto::of).collect(Collectors.toList());
