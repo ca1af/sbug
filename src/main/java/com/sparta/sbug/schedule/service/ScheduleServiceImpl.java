@@ -108,11 +108,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     ) {
         Page<Schedule> mySchedules =
                 scheduleRepository.findAllByUserId(user.getId(), pageable);
-        Page<ScheduleResponseDto> responseDtoList =
-                ScheduleResponseDto.toDtoList(mySchedules);
-        return responseDtoList;
+        return ScheduleResponseDto.toDtoList(mySchedules);
     }
-
 
     //일정 상세 조회
     @Override
@@ -137,7 +134,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         return ScheduleResponseDto.toDtoList(periodSchedules);
     }
 
-    //내 이번달 일정 조회
+    //내 특정 월 일정 조회
     @Override
     public List<ScheduleResponseDto> getSchedulesThisMonth(int year, int month, User user) {
         LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0);
