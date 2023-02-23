@@ -346,6 +346,7 @@ var currentSchedules;
 var nowSchedule;
 
 var today =  moment()._d;
+getUserInformation();
 getSchedules(today.getFullYear(), today.getMonth());
 //
 
@@ -597,6 +598,7 @@ function getUserInformation() {
 		},
 		success: function (response) {
 			userInfo = response;
+      $("#profile-img").attr("src", response.profileImageUrl)
 		},
 		error: function (response) {
 			if (response.responseJSON) {

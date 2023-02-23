@@ -114,7 +114,7 @@ function connection(receiverId, receiver) {
       if (body.receiverId === Number(receiverId)) {
         tempHtml = makeMyMessage(body.message, body.sender, time)
       } else {
-        tempHtml = makeReceiverMessage(body.message, body.sender, time)
+        tempHtml = makeReceiverMessage(body.message, body.sender, time, body.profileImageUrl)
       }
       $('#message-history').append(tempHtml);
     }, { Authorization: atk, RTK: rtk });
@@ -143,7 +143,7 @@ function makeMyMessage(msg, nickname, time) {
             <div class="message-data align-right">
               <div class="thread-profile-box" style="background: #BDBDBD; float: right">
                 <img class="btn-secondary thread-profile-img"
-                  src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
+                  src="${userInfo.profileImageUrl}" alt="avatar" />
               </div>
               <span class="message-data-time-right">${time}</span>
               <span class="message-data-name-right">${nickname}</span>
@@ -155,12 +155,12 @@ function makeMyMessage(msg, nickname, time) {
           </li>`
 }
 
-function makeReceiverMessage(msg, nickname, time) {
+function makeReceiverMessage(msg, nickname, time, profileImageUrl) {
   return `<li class="clearfix">
             <div class="message-data">
               <div class="thread-profile-box" style="background: #BDBDBD; float: left">
                 <img class="btn-secondary thread-profile-img"
-                  src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" />
+                  src="${profileImageUrl}" alt="avatar" />
               </div>
               <span class="message-data-name">${nickname}</span>
               <span class="message-data-time">${time}</span>
@@ -216,6 +216,11 @@ function makeDateHtml(source) {
           <h2 id="h2-${id}" style="color: gray"> ${date} </h2>`
 }
 
+function saveImage(url) {
+  const response = fetch(url);
+  return response.blob();
+}
+
 //
 
 // 로그인 회원 정보조회
@@ -231,7 +236,9 @@ function getUserInformation() {
       "RTK": getCookie('refreshToken')
     },
     success: function (response) {
+      console.log(response);
       userInfo = response;
+      $("#profile-img").attr("src", response.profileImageUrl)
     },
     error: function (response) {
       if (response.responseJSON) {

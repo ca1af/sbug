@@ -458,6 +458,7 @@ function getUserInformation() {
     },
     success: function (response) {
       userInfo = response;
+      $("#profile-img").attr("src", response.profileImageUrl)
     },
     error: function (response) {
       if (response.responseJSON) {

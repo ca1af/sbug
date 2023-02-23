@@ -2,13 +2,62 @@ var usetInfo = getUserInformation();
 
 // 이미지 수정
 function changeImage() {
+    var url = "http://" + window.location.hostname + ":8080/api/users/image"
     var image = $('#i-image').get(0).files;
-    console.log(image[0]);
-    var formData = new FormData();
-    formData.append("image", image[0]);
-    for (var pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-    }
+
+    console.log(image[0])
+
+    $.ajax({
+        type: "PATCH",
+        url: url,
+        headers: {
+            "Authorization": getCookie('accessToken'),
+            "RTK": getCookie('refreshToken')
+        },
+        contentType: "text/plain",
+        data: image[0].name,
+        success: function (response) {
+            console.log(response);
+            presignedUrl = response;
+            
+            $.ajax({
+                type: "PUT",
+                url: presignedUrl,
+                contentType: "image/png",
+                processData: false,
+                data: image[0],
+                success: function (response) {
+                    alert("이미지 변경 성공!");
+                    location.reload();
+                },
+                error: function (response) {
+                    if (response.responseJSON) {
+                        validateErrorResponse(response.responseJSON);
+                    } else {
+                        alert("이미지 변경 실패! 서버의 응답이 없습니다😭");
+                    }
+                }
+            })
+        },
+        error: function (response) {
+            if (response.responseJSON) {
+                validateErrorResponse(response.responseJSON);
+            } else {
+                alert("이미지 변경 실패! 서버의 응답이 없습니다😭");
+            }
+        }
+    })
+
+    // var r = new FileReader();
+    // r.onload = function() {
+    //     console.log(r.result);
+    //     console.log(image[0].name);
+
+    //     var presignedUrl;
+        
+    // }
+
+    // r.readAsBinaryString(image[0]);
 }
 
 // 닉네임 수정
@@ -88,9 +137,11 @@ function getUserInformation() {
             "RTK": getCookie('refreshToken')
         },
         success: function (response) {
+            console.log(response);
             userInfo = response;
             $("#p-nickname").text(userInfo.nickname);
             $("#p-email").text(userInfo.email);
+            $("#profile-img").attr("src", response.profileImageUrl)
         },
         error: function (response) {
             if (response.responseJSON) {
