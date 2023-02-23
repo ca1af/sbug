@@ -32,8 +32,8 @@ public class KakaoService {
 
     private final static String REST_API_KEY = "a6be9b62b761e5b5ee34bfa49d268617";
     private final static String REDIRECT_URI = "http://localhost:5500/frontdoor.html";
+
     /**
-     *
      * 작동 방식은 다음과 같습니다.
      * 1. 카카오에서 정해준 형식의 code로 인가 요청을 한다. 응답 받는 부분은 RestTemplate~ 부분.
      * 2. 인가 요청을 할 시에 카카오에서는 액세스 토큰을 발급한다.
@@ -141,6 +141,7 @@ public class KakaoService {
                         .email(kakaoUserInfo.getEmail())
                         .password(password).build();
                 kakaoUser.kakaoIdUpdate(kakaoUserInfo.getId());
+                kakaoUser.setProfileImage("cat.png");
             }
 
             userRepository.save(kakaoUser);

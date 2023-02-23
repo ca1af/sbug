@@ -55,6 +55,8 @@ public class UserServiceImpl implements UserService {
                 .password(password)
                 .build();
 
+        user.setProfileImage("cat.png");
+
         userRepository.save(user);
     }
 
@@ -106,6 +108,12 @@ public class UserServiceImpl implements UserService {
 
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
         user1.setPassword(encodedPassword);
+    }
+
+    @Transactional
+    public void changeProfileImage(User user, String keyName) {
+        user.setProfileImage(keyName);
+        userRepository.save(user);
     }
 
     @Override
