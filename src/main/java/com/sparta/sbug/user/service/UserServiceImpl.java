@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(cacheNames = CacheNames.USER, key = "#user.id")
+    @Cacheable(cacheNames = CacheNames.USERDTO, key = "#user.id")
     public UserResponseDto myPage(User user) {
         User user1 = userRepository.findById(user.getId()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 없습니다")
@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
         return UserResponseDto.of(user1);
     }
     @Override
-    @Cacheable(cacheNames = CacheNames.USER, key = "#id")
+    @Cacheable(cacheNames = CacheNames.USERDTO, key = "#id")
     public UserResponseDto getUser(Long id){
         User findUser = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("선택한 유저가 없습니다.")
