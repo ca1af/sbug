@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ChannelAdminServiceImpl implements ChannelAdminService{
     private final ChannelRepository channelRepository;
     @Override

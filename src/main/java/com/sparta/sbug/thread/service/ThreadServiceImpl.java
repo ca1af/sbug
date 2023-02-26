@@ -32,7 +32,6 @@ public class ThreadServiceImpl implements ThreadService {
     private final ThreadRepository threadRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public Thread findThreadById(Long threadId) {
         Optional<Thread> optionalThread = threadRepository.findThreadByIdAndInUseIsTrue(threadId);
         if (optionalThread.isEmpty()) {
@@ -78,7 +77,7 @@ public class ThreadServiceImpl implements ThreadService {
      * @param user     요청자
      * @return Thread
      */
-    @Transactional
+
     public Thread validateUserAuth(Long threadId, User user) {
         Thread thread = findThreadById(threadId);
         if (!thread.getUser().getId().equals(user.getId())) {

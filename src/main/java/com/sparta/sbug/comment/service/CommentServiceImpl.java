@@ -30,6 +30,7 @@ public class CommentServiceImpl implements CommentService {
         Slice<Comment> comments = commentRepository.findCommentsByThreadIdAndInUseIsTrue(threadId, pageDto.toPageable());
         return comments.map(CommentResponseDto::of);
     }
+    // 컨트롤러에서 호출하는 유일한 매서드.
 
     @Override
     @Transactional
@@ -54,7 +55,6 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
     @Override
-    @Transactional(readOnly = true)
     public Comment getComment(Long commentId) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
         if (optionalComment.isEmpty()) {
