@@ -8,6 +8,7 @@ import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,7 +65,8 @@ public class CommentServiceImpl implements CommentService {
     }
     @Transactional
     @Override
-    public void autoDelete(){
+    @Scheduled(cron = "0 0 5 1 1/3 ? *")
+    public void deleteCommentsOnSchedule(){
         LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
         commentRepository.deleteComments(localDateTime);
     }
@@ -72,5 +74,21 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public boolean existCommentById(Long commentId) {
         return false;
+    }
+
+    // Disable //
+    @Override
+    public void disableCommentByChannelId(Long channelId) {
+
+    }
+
+    @Override
+    public void disableCommentByThreadId(Long threadId) {
+
+    }
+
+    @Override
+    public void disableComment(Long commentId) {
+
     }
 }

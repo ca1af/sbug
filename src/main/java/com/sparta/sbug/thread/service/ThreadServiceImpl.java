@@ -2,6 +2,7 @@ package com.sparta.sbug.thread.service;
 
 
 import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.comment.service.CommentService;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.emoji.dto.EmojiResponseDto;
@@ -11,6 +12,7 @@ import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,8 @@ public class ThreadServiceImpl implements ThreadService {
 
 
     private final ThreadRepository threadRepository;
+
+    private final CommentService commentService;
 
     @Override
     @Transactional(readOnly = true)
@@ -103,9 +107,10 @@ public class ThreadServiceImpl implements ThreadService {
         return responseDto;
     }
 
-    @Transactional
     @Override
-    public void autoDelete(){
+    @Transactional
+    @Scheduled(cron = "0 0 5 1 1/3 ? *")
+    public void deleteThreadsOnSchedule(){
         LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
         threadRepository.deleteThreads(localDateTime);
     }
@@ -113,5 +118,16 @@ public class ThreadServiceImpl implements ThreadService {
     @Override
     public boolean existsThreadById(Long threadId) {
         return threadRepository.existsById(threadId);
+    }
+
+    // Disable //
+    @Override
+    public void disableThreadsByChannelId(Long channelId) {
+        commentService.disableCommentByChannelId(channelId);
+    }
+
+    @Override
+    public void disableThread(Long threadId) {
+        commentService.disableCommentByThreadId(threadId);
     }
 }

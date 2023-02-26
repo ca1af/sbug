@@ -61,4 +61,7 @@ public interface UserChannelService {
      * @return boolean
      */
     boolean isUserJoinedByChannel(User user, Long channelId);
+
+    // Disable //
+    void disableUserChannelByChannelAbsence(Long channelId);
 }

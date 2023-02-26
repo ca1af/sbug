@@ -61,11 +61,18 @@ public interface ThreadService {
     ThreadResponseDto getThread(Long threadId);
 
     /**
-     * 오토 딜리트를 실행하는 부분.
+     * 쓰레드 자동 삭제
+     * - 3개월에 한 번, 1일 새벽 5시에 삭제
+     * - 비활성화된지 3개월이 지난 쓰레드들만 삭제
      */
-    void autoDelete();
+    void deleteThreadsOnSchedule();
     /**
      *
      */
     boolean existsThreadById(Long threadId);
+
+    // Disable //
+    void disableThreadsByChannelId(Long channelId);
+
+    void disableThread(Long threadId);
 }

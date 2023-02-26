@@ -8,9 +8,16 @@ import com.sparta.sbug.user.entity.User;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 public interface ChannelService {
+
+    // CRUD //
+    /**
+     * 채널을 만드는 메서드
+     *
+     * @param channelName 채널 이름
+     * @return Channel
+     */
+    Channel createChannel(String channelName);
 
     /**
      * 채널 ID를 이용해서 일치하는 채널 데이터를 찾아 반환하는 메서드
@@ -19,15 +26,13 @@ public interface ChannelService {
      * @return Channel
      */
     Channel getChannelById(Long channelId);
-    Slice<ChannelResponseDto> getChannels(PageDto pageDto);
 
     /**
-     * 채널을 만드는 메서드
-     *
-     * @param channelName 채널 이름
-     * @return Channel
+     * 요청자가 가입되어 있는 모든 Channel을 반환
+     * @param pageDto
+     * @return
      */
-    Channel createChannel(String channelName);
+    Slice<ChannelResponseDto> getChannels(PageDto pageDto);
 
     /**
      * 채널 이름을 수정하는 메서드
@@ -46,6 +51,7 @@ public interface ChannelService {
      */
     void deleteChannel(Long channelId, User user);
 
+    // Create Thread //
     /**
      * Thread 생성
      *
@@ -65,8 +71,15 @@ public interface ChannelService {
     @Transactional(readOnly = true)
     Channel validateUserInChannel(Long channelId, User user);
 
+    // Delete On Schedule
     /**
-     * 채널 자동 삭제를 위한 매서드.
+     * 채널 자동 삭제
+     * - 3개월에 한 번, 1일 새벽 5시에 삭제
+     * - 비활성화된지 3개월이 지난 채널들만 삭제
      */
-    void autoDelete();
+    void deleteChannelsOnSchedule();
+
+    // Disable
+    void disableChannel(Long channelId);
+
 }

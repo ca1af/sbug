@@ -3,8 +3,6 @@ package com.sparta.sbug.channel.service;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.repository.ChannelRepository;
-import com.sparta.sbug.comment.dto.CommentResponseDto;
-import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
@@ -12,14 +10,12 @@ import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.userchannel.service.UserChannelService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.sparta.sbug.common.exceptions.ErrorCode.BAD_REQUEST_THREAD_CONTENT;
 import static com.sparta.sbug.common.exceptions.ErrorCode.USER_CHANNEL_FORBIDDEN;
@@ -30,9 +26,29 @@ import static com.sparta.sbug.common.exceptions.ErrorCode.USER_CHANNEL_FORBIDDEN
 // springframework stereotype
 @Service
 public class ChannelServiceImpl implements ChannelService {
+
+    /**
+     * 레포지토리
+     */
     private final ChannelRepository channelRepository;
+
+    /**
+     * 하위 레이어 데이터 서비스 - 쓰레드 서비스
+     */
     private final ThreadService threadService;
+
+    /**
+     * 하위 레이어 데이터 서비스 - 유저-채널 서비스
+     */
     private final UserChannelService userChannelService;
+
+    // CRUD //
+    @Override
+    @Transactional
+    public Channel createChannel( String channelName) {
+        Channel channel = Channel.builder().channelName(channelName).build();
+        return channelRepository.save(channel);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -49,14 +65,6 @@ public class ChannelServiceImpl implements ChannelService {
         return channels.map(ChannelResponseDto::of);
     }
 
-
-    @Override
-    @Transactional
-    public Channel createChannel( String channelName) {
-        Channel channel = Channel.builder().channelName(channelName).build();
-        return channelRepository.save(channel);
-    }
-
     @Override
     @Transactional
     public void updateChannelName(Long channelId, User user, String channelName) {
@@ -71,13 +79,7 @@ public class ChannelServiceImpl implements ChannelService {
         channelRepository.delete(channel);
     }
 
-//    private static void validateUserIsChannelAdmin(Channel channel, User user) {
-//        if (!channel.getAdminEmail().equals(user.getEmail())) {
-//            throw new IllegalArgumentException("채널 관리자만 수정 할 수 있습니다.");
-//        }
-//    }
-
-    // Thread 생성
+    // Thread Create //
     @Override
     @Transactional
     public ThreadResponseDto createThread(Long channelId, String requestContent, User user) {
@@ -99,10 +101,21 @@ public class ChannelServiceImpl implements ChannelService {
         return getChannelById(channelId);
     }
 
+    // Auto Delete //
     @Transactional
     @Override
-    public void autoDelete(){
-        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
+    @Scheduled(cron = "0 0 5 1 1/3 ? *")
+    public void deleteChannelsOnSchedule(){
+        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(3);
         channelRepository.deleteChannels(localDateTime);
+    }
+
+    // Disable //
+    @Override
+    @Transactional
+    public void disableChannel(Long channelId) {
+        threadService.disableThreadsByChannelId(channelId);
+        userChannelService.disableUserChannelByChannelAbsence(channelId);
+        channelRepository.disableChannelById(channelId);
     }
 }

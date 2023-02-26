@@ -7,8 +7,6 @@ import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import org.springframework.data.domain.Slice;
 
-import java.time.LocalDateTime;
-
 public interface CommentService {
 
     /**
@@ -52,7 +50,19 @@ public interface CommentService {
      */
     Comment getComment(Long commentId);
 
-    void autoDelete();
+    /**
+     * 코멘트 자동 삭제
+     * - 3개월에 한 번, 1일 새벽 5시에 삭제
+     * - 비활성화된지 3개월이 지난 코멘트들만 삭제
+     */
+    void deleteCommentsOnSchedule();
 
     boolean existCommentById(Long commentId);
+
+    // Disable //
+    void disableCommentByChannelId(Long channelId);
+
+    void disableCommentByThreadId(Long threadId);
+
+    void disableComment(Long commentId);
 }
