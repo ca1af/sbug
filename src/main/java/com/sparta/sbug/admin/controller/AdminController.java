@@ -12,7 +12,6 @@ import com.sparta.sbug.security.dto.TokenResponseDto;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.service.ThreadService;
-import com.sparta.sbug.upperlayerservice.UserChannelUpperLayerService;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +37,6 @@ public class AdminController {
      * 하위 레이어 데이터 서비스 - 채널 서비스
      */
     private final ChannelService channelService;
-
-    /**
-     * 하위 레이어 데이터 서비스 - 유저-채널 서비스
-     */
-    private final UserChannelUpperLayerService userChannelUpperLayerService;
 
     /**
      * 하위 레이어 데이터 서비스 - 쓰레드 서비스
@@ -108,7 +102,7 @@ public class AdminController {
     }
 
     /**
-     * 모든 코멘트들을 조회
+     * 대상 쓰레드 아래 모든 코멘트들을 조회
      *
      * @param channelId 대상 채널
      * @param threadId  대상 쓰레드
@@ -117,7 +111,7 @@ public class AdminController {
      */
     @GetMapping("/channels/{channelId}/threads/{threadId}/comments")
     @PreAuthorize("hasRole('ADMIN')")
-    public Page<CommentResponseDto> getAllCommentsInThread(
+    public Slice<CommentResponseDto> getAllCommentsInThread(
             @PathVariable Long channelId,
             @PathVariable Long threadId,
             @ModelAttribute PageDto pageDto) {
@@ -125,7 +119,7 @@ public class AdminController {
         String infoLog = "[GET] /api/admins/channels/" + channelId + "/threads/" + threadId + "/comments";
         log.info(infoLog);
 
-        return commentService.getAllComments(threadId, pageDto);
+        return commentService.getAllCommentsInThread(threadId, pageDto);
     }
 
     // Update //
@@ -191,22 +185,7 @@ public class AdminController {
         String infoLog = "[PATCH] /api/admins/comments/" + commentId;
         log.info(infoLog);
 
-        commentService.disableComment(commentId);
-    }
-
-    // Delete //
-
-    /**
-     * 채널과 그 채널에 가입된 유저 데이터(유저-채널 데이터)를 삭제
-     * [DELETE] /api/admins/channels/{id}
-     *
-     * @param channelId 채널 ID
-     */
-    @DeleteMapping("/admins/channels/{channelId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public void channel(@PathVariable Long channelId) {
-        // delete channel
-        userChannelUpperLayerService.deleteChannel(channelId);
+        commentService.disableCommentByAdmin(commentId);
     }
 
 }

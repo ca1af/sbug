@@ -47,13 +47,6 @@ public class UserChannelUpperLayerServiceImpl implements UserChannelUpperLayerSe
 
     @Override
     @Transactional
-    public void deleteChannel(Long channelId) {
-        userChannelService.deleteUserChannel(channelId);
-        channelService.deleteChannel(channelId);
-    }
-
-    @Override
-    @Transactional
     public void inviteUser(User user, Long channelId, String email) {
         if (userChannelService.isUserJoinedByChannel(user, channelId)) {
             Channel channel = channelService.getChannelById(channelId);

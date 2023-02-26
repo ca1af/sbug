@@ -25,13 +25,6 @@ public interface UserChannelUpperLayerService {
     ChannelResponseDto createChannelAndUserChannelForRequester(User user, String channelName);
 
     /**
-     * 채널을 삭제하고 그에 종속된 사용자-채널 데이터도 삭제
-     *
-     * @param channelId 삭제할 채널 ID
-     */
-    void deleteChannel(Long channelId);
-
-    /**
      * 채널에 유저를 초대하는 메서드
      * 요청자가 채널에 속해있는지 확인하고 사용자를 초대합니다.
      *

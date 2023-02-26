@@ -1,6 +1,7 @@
 package com.sparta.sbug.thread.service;
 
 import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
@@ -72,9 +73,33 @@ public interface ThreadService {
      */
     Thread findThreadById(Long threadId);
 
+    // 코멘트 생성
+
+    /**
+     * 코멘트를 생성하기 위해서 실행됩니다.
+     *
+     * @param threadId 대상 쓰레드
+     * @param content  코멘트 내용
+     * @param user     요청자
+     * @return CommentResponseDto
+     */
+    CommentResponseDto createComment(Long threadId, String content, User user);
+
     // Disable //
+
+    /**
+     * 관리자가 채널 비활성화 요청을 하면
+     * 그 아래 종속된 모든 쓰레드들이 비활성화 되기 위해서 실행됩니다.
+     *
+     * @param channelId 대상 채널
+     */
     void disableThreadsByChannelId(Long channelId);
 
+    /**
+     * 관리자가 쓰레드 비활성화 요청을 하면 실행됩니다.
+     *
+     * @param threadId 대상 쓰레드
+     */
     void disableThread(Long threadId);
 
     /**

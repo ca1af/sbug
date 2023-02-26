@@ -4,6 +4,7 @@ import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.repository.CommentRepository;
 import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import static com.sparta.sbug.common.exceptions.ErrorCode.COMMENT_NOT_FOUND;
+import static com.sparta.sbug.common.exceptions.ErrorCode.USER_COMMENT_FORBIDDEN;
 
 // lombok
 @RequiredArgsConstructor
@@ -25,12 +28,7 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
 
-    @Override
-    @Transactional(readOnly = true)
-    public Slice<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto) {
-        Slice<Comment> comments = commentRepository.findCommentsByThreadIdAndInUseIsTrue(threadId, pageDto.toPageable());
-        return comments.map(CommentResponseDto::of);
-    }
+    // CRUD
 
     @Override
     @Transactional
@@ -44,51 +42,70 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional
-    public void updateComment(Comment comment, String content) {
-        comment.updateContent(content);
+    @Transactional(readOnly = true)
+    public Slice<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto) {
+        Slice<Comment> comments = commentRepository.findCommentsByThreadIdAndInUseIsTrue(threadId, pageDto.toPageable());
+        return comments.map(CommentResponseDto::of);
     }
 
-    @Override
-    @Transactional
-    public void deleteComment(Comment comment) {
-        commentRepository.delete(comment);
-    }
     @Override
     @Transactional(readOnly = true)
     public Comment getComment(Long commentId) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
         if (optionalComment.isEmpty()) {
-            throw new NoSuchElementException("댓글을 찾을 수 없었습니다.");
+            throw new CustomException(COMMENT_NOT_FOUND);
         }
         return optionalComment.get();
     }
-    @Transactional
+
     @Override
-    @Scheduled(cron = "0 0 5 1 1/3 ? *")
-    public void deleteCommentsOnSchedule(){
-        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
-        commentRepository.deleteComments(localDateTime);
+    @Transactional
+    public void updateComment(Long commentId, String content, User user) {
+        Comment comment = validateUserAuth(commentId, user);
+        comment.updateContent(content);
     }
 
     @Override
-    public boolean existCommentById(Long commentId) {
-        return false;
+    public void disableComment(Long commentId, User user) {
+        Comment comment = validateUserAuth(commentId, user);
+        commentRepository.disableCommentByCommentId(comment.getId());
+    }
+
+
+    // 유저 권한 검증
+
+    @Override
+    @Transactional
+    public Comment validateUserAuth(Long commentId, User user) {
+        Comment comment = getComment(commentId);
+        if (!comment.getUser().getId().equals(user.getId())) {
+            throw new CustomException(USER_COMMENT_FORBIDDEN);
+        }
+
+        return comment;
+    }
+
+    @Transactional
+    @Override
+    @Scheduled(cron = "0 0 5 1 1/3 ? *")
+    public void deleteCommentsOnSchedule() {
+        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
+        commentRepository.deleteComments(localDateTime);
     }
 
     // Disable //
     @Override
     public void disableCommentByChannelId(Long channelId) {
-
+        commentRepository.disableCommentByChannelId(channelId);
     }
 
     @Override
     public void disableCommentByThreadId(Long threadId) {
-
+        commentRepository.disableCommentByThreadId(threadId);
     }
 
     @Override
-    public void disableComment(Long commentId) {
-
+    public void disableCommentByAdmin(Long commentId) {
+        commentRepository.disableCommentByCommentId(commentId);
     }
 }

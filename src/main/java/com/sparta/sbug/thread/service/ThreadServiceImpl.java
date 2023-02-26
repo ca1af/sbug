@@ -2,6 +2,7 @@ package com.sparta.sbug.thread.service;
 
 
 import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.common.exceptions.CustomException;
@@ -107,6 +108,14 @@ public class ThreadServiceImpl implements ThreadService {
             throw new CustomException(THREAD_NOT_FOUND);
         }
         return optionalThread.get();
+    }
+
+    // 코멘트 생성
+    @Override
+    @Transactional
+    public CommentResponseDto createComment(Long threadId, String content, User user) {
+        Thread thread = findThreadById(threadId);
+        return commentService.createComment(thread, content, user);
     }
 
     // Disable by admin //

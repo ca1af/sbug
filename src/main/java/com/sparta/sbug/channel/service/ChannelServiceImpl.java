@@ -72,11 +72,15 @@ public class ChannelServiceImpl implements ChannelService {
         channel.updateChannelName(channelName);
     }
 
+    // 유저의 권한 검증
     @Override
-    @Transactional
-    public void deleteChannel(Long channelId) {
-        Channel channel = getChannelById(channelId);
-        channelRepository.delete(channel);
+    @Transactional(readOnly = true)
+    public Channel validateUserInChannel(Long channelId, User user) {
+        if (!userChannelService.isUserJoinedByChannel(user, channelId)) {
+            throw new CustomException(USER_CHANNEL_FORBIDDEN);
+        }
+
+        return getChannelById(channelId);
     }
 
     // Thread Create //
@@ -89,16 +93,6 @@ public class ChannelServiceImpl implements ChannelService {
 
         Channel channel = validateUserInChannel(channelId, user);
         return threadService.createThread(channel, requestContent, user);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Channel validateUserInChannel(Long channelId, User user) {
-        if (!userChannelService.isUserJoinedByChannel(user, channelId)) {
-            throw new CustomException(USER_CHANNEL_FORBIDDEN);
-        }
-
-        return getChannelById(channelId);
     }
 
     // Auto Delete //
