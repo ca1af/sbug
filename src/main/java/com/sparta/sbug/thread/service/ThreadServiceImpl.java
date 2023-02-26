@@ -11,6 +11,7 @@ import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.sparta.sbug.common.exceptions.ErrorCode.BAD_REQUEST_THREAD_CONTENT;
+import static com.sparta.sbug.common.exceptions.ErrorCode.*;
 
 // lombok
 @RequiredArgsConstructor
@@ -30,20 +31,15 @@ import static com.sparta.sbug.common.exceptions.ErrorCode.BAD_REQUEST_THREAD_CON
 @Service
 public class ThreadServiceImpl implements ThreadService {
 
-
     private final ThreadRepository threadRepository;
 
+    /**
+     * 하위 레이어 데이터 서비스 - 코멘트 서비스
+     */
     private final CommentService commentService;
 
-    @Override
-    @Transactional(readOnly = true)
-    public Thread findThreadById(Long threadId) {
-        Optional<Thread> optionalThread = threadRepository.findThreadByIdAndInUseIsTrue(threadId);
-        if (optionalThread.isEmpty()) {
-            throw new NoSuchElementException("쓰레드를 찾을 수 없습니다.");
-        }
-        return optionalThread.get();
-    }
+
+    // CRUD
 
     @Override
     @Transactional
@@ -54,41 +50,6 @@ public class ThreadServiceImpl implements ThreadService {
                 .channel(channel).build();
         Thread savedThread = threadRepository.save(thread);
         return ThreadResponseDto.of(savedThread);
-    }
-
-    @Override
-    @Transactional
-    public ThreadResponseDto editThread(Long threadId, String requestContent, User user) {
-        if (requestContent.trim().equals("")) {
-            throw new CustomException(BAD_REQUEST_THREAD_CONTENT);
-        }
-
-        Thread thread = validateUserAuth(threadId, user);
-        thread.updateThread(requestContent);
-        return ThreadResponseDto.of(thread);
-    }
-
-    @Override
-    @Transactional
-    public void disableThread(Long threadId, User user) {
-        validateUserAuth(threadId, user);
-        threadRepository.disableThreadById(threadId);
-    }
-
-    /**
-     * 요청자가 대상 쓰레드를 수정 혹은 삭제할 수 있는 권한이 있는지 확인합니다.
-     *
-     * @param threadId 대상 쓰레드 ID
-     * @param user     요청자
-     * @return Thread
-     */
-    @Transactional
-    public Thread validateUserAuth(Long threadId, User user) {
-        Thread thread = findThreadById(threadId);
-        if (!thread.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
-        }
-        return thread;
     }
 
     @Override
@@ -109,25 +70,68 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional
-    @Scheduled(cron = "0 0 5 1 1/3 ? *")
-    public void deleteThreadsOnSchedule(){
-        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
-        threadRepository.deleteThreads(localDateTime);
+    public ThreadResponseDto editThread(Long threadId, String requestContent, User user) {
+        Thread thread = validateUserAuth(threadId, user);
+
+        if (requestContent.trim().equals("")) {
+            throw new CustomException(BAD_REQUEST_THREAD_CONTENT);
+        }
+
+        thread.updateThread(requestContent);
+        return ThreadResponseDto.of(thread);
     }
 
     @Override
-    public boolean existsThreadById(Long threadId) {
-        return threadRepository.existsById(threadId);
+    @Transactional
+    public void disableThread(Long threadId, User user) {
+        validateUserAuth(threadId, user);
+        commentService.disableCommentByThreadId(threadId);
+        threadRepository.disableThreadById(threadId);
     }
 
-    // Disable //
+    // 유저의 권한 검증
     @Override
+    @Transactional
+    public Thread validateUserAuth(Long threadId, User user) {
+        Thread thread = findThreadById(threadId);
+        if (!thread.getUser().getId().equals(user.getId())) {
+            throw new CustomException(USER_THREAD_FORBIDDEN);
+        }
+        return thread;
+    }
+
+    // 쓰레드 데이터 조회
+    @Override
+    @Transactional(readOnly = true)
+    public Thread findThreadById(Long threadId) {
+        Optional<Thread> optionalThread = threadRepository.findThreadByIdAndInUseIsTrue(threadId);
+        if (optionalThread.isEmpty()) {
+            throw new CustomException(THREAD_NOT_FOUND);
+        }
+        return optionalThread.get();
+    }
+
+    // Disable by admin //
+    @Override
+    @Transactional
     public void disableThreadsByChannelId(Long channelId) {
         commentService.disableCommentByChannelId(channelId);
+        threadRepository.disableThreadByChannelId(channelId);
     }
 
     @Override
+    @Transactional
     public void disableThread(Long threadId) {
         commentService.disableCommentByThreadId(threadId);
+        threadRepository.disableThreadById(threadId);
+    }
+
+    // Delete //
+    @Override
+    @Transactional
+    @Scheduled(cron = "0 0 5 1 1/3 ? *")
+    public void deleteThreadsOnSchedule() {
+        LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
+        threadRepository.deleteThreads(localDateTime);
     }
 }

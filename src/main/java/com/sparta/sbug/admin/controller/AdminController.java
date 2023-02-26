@@ -17,6 +17,7 @@ import com.sparta.sbug.user.dto.LoginRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -90,7 +91,7 @@ public class AdminController {
     }
 
     /**
-     * 모든 쓰레드들을 조회
+     * 대상 채널 아래의 모든 쓰레드들을 조회
      *
      * @param channelId 대상 채널
      * @param pageDto   페이징 정보
@@ -98,12 +99,12 @@ public class AdminController {
      */
     @GetMapping("/channels/{channelId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Page<ThreadResponseDto> getAllThreadsInChannel(@PathVariable Long channelId,
-                                                          @ModelAttribute PageDto pageDto) {
+    public Slice<ThreadResponseDto> getAllThreadsInChannel(@PathVariable Long channelId,
+                                                           @ModelAttribute PageDto pageDto) {
         String infoLog = "[GET] /api/admins/channels/" + channelId + "/threads/";
         log.info(infoLog);
 
-        return threadService.getAllThreads(channelId, pageDto);
+        return threadService.getAllThreadsInChannel(channelId, pageDto);
     }
 
     /**
@@ -133,8 +134,8 @@ public class AdminController {
      * 채널 정보 수정 ( 관리자 )
      * [PATCH] /api/admins/channels/{channelId}
      *
-     * @param requestDto  초대할 사람의 이메일
-     * @param channelId   초대할 채널 ID
+     * @param requestDto 초대할 사람의 이메일
+     * @param channelId  초대할 채널 ID
      */
     @PatchMapping("/admins/channels/{channelId}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -196,10 +197,10 @@ public class AdminController {
     // Delete //
 
     /**
-     * 채널과 그 채널에 가입된 유저 데이터(유저-채널 데이터)를 삭제 ( 관리자 )
+     * 채널과 그 채널에 가입된 유저 데이터(유저-채널 데이터)를 삭제
      * [DELETE] /api/admins/channels/{id}
      *
-     * @param channelId   채널 ID
+     * @param channelId 채널 ID
      */
     @DeleteMapping("/admins/channels/{channelId}")
     @PreAuthorize("hasRole('ADMIN')")

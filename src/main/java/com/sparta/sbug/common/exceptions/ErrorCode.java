@@ -25,7 +25,8 @@ public enum ErrorCode {
 
     // 쓰레드, 쓰레드 이모지 오류 (3000)
     BAD_REQUEST_THREAD_CONTENT(HttpStatus.BAD_REQUEST, 4001, "쓰레드 내용에 공백을 입력할 수 없습니다😨"),
-    USER_THREAD_FORBIDDEN(HttpStatus.FORBIDDEN, 3403, "유저의 게시글 접근 권한이 없습니다."),
+    USER_THREAD_FORBIDDEN(HttpStatus.FORBIDDEN, 3403, "게시글에 대한 권한이 없습니다."),
+    THREAD_NOT_FOUND(HttpStatus.NOT_FOUND, 3404, "쓰레드를 찾을 수 없습니다."),
 
 
     // 코멘트, 코멘트 이모지 오류 (4000)

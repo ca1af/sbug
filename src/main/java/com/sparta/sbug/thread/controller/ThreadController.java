@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,93 +22,49 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/channels")
 public class ThreadController {
 
-    private final ThreadService threadService;
     private final ChannelService channelService;
+    private final ThreadService threadService;
 
     /**
      * 대상 채널에 쓰레드를 생성
      * [POST] /api/channels/{id}/threads
      *
-     * @param id               대상 채널 ID
+     * @param channelId        대상 채널 ID
      * @param threadRequestDto 요청 DTO (쓰레드 내용)
      * @param userDetails      요청자 정보
      */
-    @PostMapping("/{id}/threads")
+    @PostMapping("/{channelId}/threads")
     public ThreadResponseDto createThread(
-            @PathVariable Long id, @RequestBody @Valid ThreadRequestDto threadRequestDto,
+            @PathVariable Long channelId, @RequestBody @Valid ThreadRequestDto threadRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        String logBuilder = "[POST] api/channels/" + id + "/threads";
-        log.info(logBuilder);
-
-        channelService.validateUserInChannel(id, userDetails.getUser());
-
-        return channelService.createThread(id, threadRequestDto.getContent(), userDetails.getUser());
-    }
-
-    /**
-     * 대상 쓰레드를 수정
-     * [PATCH] /api/channels/{channelId}/threads/{threadId}
-     *
-     * @param channelId        채널 ID
-     * @param threadId         대상 쓰레드 ID
-     * @param threadRequestDto 요청 DTO (수정될 쓰레드 내용)
-     * @param userDetails      요청자 정보
-     */
-    @PatchMapping("/{channelId}/threads/{threadId}")
-    public ThreadResponseDto updateThread(@PathVariable Long channelId,
-                                          @PathVariable Long threadId,
-                                          @RequestBody ThreadRequestDto threadRequestDto,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        String logBuilder = "[PATCH] api/channels/" + channelId + "/threads/" + threadId;
+        String logBuilder = "[POST] api/channels/" + channelId + "/threads";
         log.info(logBuilder);
 
         channelService.validateUserInChannel(channelId, userDetails.getUser());
 
-        return threadService.editThread(threadId, threadRequestDto.getContent(), userDetails.getUser());
-    }
-
-    /**
-     * 대상 쓰레드를 삭제
-     * [DELETE] /api/channels/{channelId}/threads/{threadId}
-     *
-     * @param channelId   채널 ID
-     * @param threadId    대상 쓰레드 ID
-     * @param userDetails 요청자 정보
-     */
-    @DeleteMapping("{channelId}/threads/{threadId}")
-    public void deleteThread(@PathVariable Long channelId,
-                             @PathVariable Long threadId,
-                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        String logBuilder = "[DELETE] /api/channels/" + channelId + "/threads/" + threadId;
-        log.info(logBuilder);
-
-        channelService.validateUserInChannel(channelId, userDetails.getUser());
-
-        threadService.disableThread(threadId, userDetails.getUser());
+        return channelService.createThread(channelId, threadRequestDto.getContent(), userDetails.getUser());
     }
 
     /**
      * 대상 채널 아래 모든 쓰레드를 조회
-     * [GET] /api/channels/{id}/threads
+     * [GET] /api/channels/{channelId}/threads
      *
-     * @param id      대상 채널
-     * @param pageDto 페이징 DTO
+     * @param channelId 대상 채널
+     * @param pageDto   페이징 DTO
      * @return List&lt;ThreadResponseDto&gt;
      */
-    @GetMapping("/{id}/threads")
-    public Slice<ThreadResponseDto> getAllThreadsInChannel(@PathVariable Long id,
+    @GetMapping("/{channelId}/threads")
+    public Slice<ThreadResponseDto> getAllThreadsInChannel(@PathVariable Long channelId,
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                            @ModelAttribute PageDto pageDto) {
 
-        String logBuilder = "[GET] /api/channels/" + id + "/threads";
+        String logBuilder = "[GET] /api/channels/" + channelId + "/threads";
         log.info(logBuilder);
 
-        channelService.validateUserInChannel(id, userDetails.getUser());
+        channelService.validateUserInChannel(channelId, userDetails.getUser());
 
-        return threadService.getAllThreadsInChannel(id, pageDto);
+        return threadService.getAllThreadsInChannel(channelId, pageDto);
     }
 
     /**
@@ -121,7 +76,7 @@ public class ThreadController {
      * @return ThreadResponseDto
      */
     @GetMapping("{channelId}/threads/{threadId}")
-    public ThreadResponseDto getThreads(@PathVariable Long channelId,
+    public ThreadResponseDto getThread(@PathVariable Long channelId,
                                        @PathVariable Long threadId,
                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
@@ -134,20 +89,39 @@ public class ThreadController {
     }
 
     /**
-     * 모든 쓰레드 조회하기(어드민용)
-     * @param channelId
-     * @param threadId
-     * @return ThreadResponseDto
+     * 작성자가 대상 쓰레드를 수정
+     * [PATCH] /api/threads/{threadId}
+     *
+     * @param threadId         대상 쓰레드 ID
+     * @param threadRequestDto 요청 DTO (수정될 쓰레드 내용)
+     * @param userDetails      요청자 정보
      */
-    @GetMapping("admin/{channelId}/threads/{threadId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ThreadResponseDto getThreads(@PathVariable Long channelId,
-                                        @PathVariable Long threadId) {
+    @PatchMapping("/threads/{threadId}")
+    public ThreadResponseDto updateThread(@PathVariable Long threadId,
+                                          @RequestBody ThreadRequestDto threadRequestDto,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        String logBuilder = "[GET] /api/channels/" + channelId + "/threads/" + threadId;
+        String logBuilder = "[PATCH] /api/threads/" + threadId;
         log.info(logBuilder);
 
-        return threadService.getThread(threadId);
+        return threadService.editThread(threadId, threadRequestDto.getContent(), userDetails.getUser());
+    }
+
+    /**
+     * 작성자가 대상 쓰레드를 삭제
+     * [PATCH] /api/threads/{threadId}
+     *
+     * @param threadId    대상 쓰레드 ID
+     * @param userDetails 요청자 정보
+     */
+    @PutMapping("/threads/{threadId}")
+    public void disableThread(@PathVariable Long threadId,
+                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        String logBuilder = "[PUT] /api/threads/" + threadId;
+        log.info(logBuilder);
+
+        threadService.disableThread(threadId, userDetails.getUser());
     }
 
 }
