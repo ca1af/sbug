@@ -10,6 +10,7 @@ import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.userchannel.service.UserChannelService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -59,8 +60,13 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
+    public Page<ChannelResponseDto> getAllChannelsToPage(PageDto pageDto) {
+        return null;
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public Slice<ChannelResponseDto> getChannels(PageDto pageDto) {
+    public Slice<ChannelResponseDto> getAllChannelsToSlice(PageDto pageDto) {
         Slice<Channel> channels = channelRepository.findAllByInUseIsTrue(pageDto.toPageable());
         return channels.map(ChannelResponseDto::of);
     }

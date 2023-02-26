@@ -5,14 +5,16 @@ import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.user.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface ChannelService {
 
     // CRUD //
+
     /**
-     * 채널을 만드는 메서드
+     * 새로운 채널을 만듦
      *
      * @param channelName 채널 이름
      * @return Channel
@@ -20,7 +22,7 @@ public interface ChannelService {
     Channel createChannel(String channelName);
 
     /**
-     * 채널 ID를 이용해서 일치하는 채널 데이터를 찾아 반환하는 메서드
+     * 채널 ID를 이용해서 일치하는 채널 데이터를 조회
      *
      * @param channelId 채널 ID
      * @return Channel
@@ -28,14 +30,23 @@ public interface ChannelService {
     Channel getChannelById(Long channelId);
 
     /**
-     * 요청자가 가입되어 있는 모든 Channel을 반환
-     * @param pageDto
-     * @return
+     * 모든 채널을 조회
+     *
+     * @param pageDto 페이징 정보
+     * @return Page&lt;ChannelResponseDto&gt;
      */
-    Slice<ChannelResponseDto> getChannels(PageDto pageDto);
+    Page<ChannelResponseDto> getAllChannelsToPage(PageDto pageDto);
 
     /**
-     * 채널 이름을 수정하는 메서드
+     * 요청자가 가입되어 있는 모든 채널을 조회
+     *
+     * @param pageDto 페이징 정보
+     * @return Slice&lt;ChannelResponseDto&gt;
+     */
+    Slice<ChannelResponseDto> getAllChannelsToSlice(PageDto pageDto);
+
+    /**
+     * 채널 이름을 수정
      *
      * @param channelId   채널 ID
      * @param user        요청자
@@ -52,6 +63,7 @@ public interface ChannelService {
     void deleteChannel(Long channelId, User user);
 
     // Create Thread //
+
     /**
      * Thread 생성
      *
@@ -72,6 +84,7 @@ public interface ChannelService {
     Channel validateUserInChannel(Long channelId, User user);
 
     // Delete On Schedule
+
     /**
      * 채널 자동 삭제
      * - 3개월에 한 번, 1일 새벽 5시에 삭제

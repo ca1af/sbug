@@ -5,6 +5,7 @@ import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 
 public interface ThreadService {
@@ -25,6 +26,15 @@ public interface ThreadService {
      * @param user           요청자(=작성자)
      */
     ThreadResponseDto createThread(Channel channel, String requestContent, User user);
+
+    /**
+     * 모든 쓰레드를 조회하는 메서드 ( 관리자 관리 용도 )
+     *
+     * @param channelId
+     * @param pageDto
+     * @return
+     */
+    Page<ThreadResponseDto> getAllThreads(Long channelId, PageDto pageDto);
 
     /**
      * 대상 쓰레드를 수정

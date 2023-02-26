@@ -5,6 +5,7 @@ import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 
 public interface CommentService {
@@ -17,6 +18,14 @@ public interface CommentService {
      * @return List&lt;CommentResponseDto&gt;
      */
     Slice<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto);
+
+    /**
+     *
+     * @param threadId
+     * @param pageDto
+     * @return
+     */
+    Page<CommentResponseDto> getAllComments(Long threadId, PageDto pageDto);
 
     /**
      * 대상 쓰레드 밑에 댓글을 생성하는 메서드
