@@ -13,6 +13,7 @@ import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.user.dto.LoginRequestDto;
+import com.sparta.sbug.userchannel.service.UserChannelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,11 @@ public class AdminController {
      * 하위 레이어 데이터 서비스 - 채널 서비스
      */
     private final ChannelService channelService;
+
+    /**
+     * 하위 레이어 데이터 서비스 - 채널 서비스
+     */
+    private final UserChannelService userChannelService;
 
     /**
      * 하위 레이어 데이터 서비스 - 쓰레드 서비스
@@ -157,7 +163,7 @@ public class AdminController {
         String infoLog = "[PATCH] /api/admins/channels/" + channelId;
         log.info(infoLog);
 
-        channelService.disableChannel(channelId);
+        userChannelService.disableChannel(channelId);
     }
 
     /**

@@ -2,8 +2,8 @@ package com.sparta.sbug.channel.controller;
 
 import com.sparta.sbug.channel.dto.ChannelDto;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
-import com.sparta.sbug.upperlayerservice.UserChannelUpperLayerService;
-import com.sparta.sbug.channel.service.ChannelServiceImpl;
+import com.sparta.sbug.common.exceptions.CustomException;
+import com.sparta.sbug.userchannel.service.UserChannelService;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.sparta.sbug.common.exceptions.ErrorCode.BAD_REQUEST_CHANNEL_NAME;
 
 // lombok
 @RequiredArgsConstructor
@@ -21,12 +23,11 @@ import java.util.List;
 @RequestMapping("/api")
 @CrossOrigin
 public class ChannelController {
-    private final ChannelServiceImpl channelService;
 
     /**
      * 하위 레이어 데이터 서비스 - 유저-채널 서비스
      */
-    private final UserChannelUpperLayerService userChannelUpperLayerService;
+    private final UserChannelService userChannelService;
 
 
     /**
@@ -44,11 +45,11 @@ public class ChannelController {
 
         // channel name check
         if (requestDto.getChannelName().trim().equals("")) {
-            throw new IllegalArgumentException("채널 이름에는 공백이 들어갈 수 없습니다.");
+            throw new CustomException(BAD_REQUEST_CHANNEL_NAME);
         }
 
         // create channel and user-channel mapping data
-        return userChannelUpperLayerService.createChannelAndUserChannelForRequester(userDetails.getUser(), requestDto.getChannelName());
+        return userChannelService.createChannel(userDetails.getUser(), requestDto.getChannelName());
     }
 
     /**
@@ -62,7 +63,7 @@ public class ChannelController {
     public List<ChannelResponseDto> getAllMyChannel(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("[GET] /api/users/channels");
 
-        return userChannelUpperLayerService.getChannelsByUserId(userDetails.getUser().getId());
+        return userChannelService.getChannelsByUserId(userDetails.getUser().getId());
     }
 
     /**
@@ -80,6 +81,6 @@ public class ChannelController {
         String infoLog = "[POST] /api/channels/" + channelId + "/users";
         log.info(infoLog);
 
-        userChannelUpperLayerService.inviteUser(userDetails.getUser(), channelId, requestDto.getEmail());
+        userChannelService.inviteUser(userDetails.getUser(), channelId, requestDto.getEmail());
     }
 }

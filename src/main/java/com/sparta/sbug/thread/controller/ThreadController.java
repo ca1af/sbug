@@ -1,11 +1,13 @@
 package com.sparta.sbug.thread.controller;
 
-import com.sparta.sbug.channel.service.ChannelService;
 import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.exceptions.CustomException;
+import com.sparta.sbug.common.exceptions.ErrorCode;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.thread.dto.ThreadRequestDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.service.ThreadService;
+import com.sparta.sbug.userchannel.service.UserChannelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/channels")
 public class ThreadController {
 
-    private final ChannelService channelService;
+    private final UserChannelService userChannelService;
     private final ThreadService threadService;
 
     /**
@@ -41,9 +43,11 @@ public class ThreadController {
         String logBuilder = "[POST] api/channels/" + channelId + "/threads";
         log.info(logBuilder);
 
-        channelService.validateUserInChannel(channelId, userDetails.getUser());
+        if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
+            throw new CustomException(ErrorCode.USER_CHANNEL_FORBIDDEN);
+        }
 
-        return channelService.createThread(channelId, threadRequestDto.getContent(), userDetails.getUser());
+        return userChannelService.createThread(channelId, threadRequestDto.getContent(), userDetails.getUser());
     }
 
     /**
@@ -62,7 +66,9 @@ public class ThreadController {
         String logBuilder = "[GET] /api/channels/" + channelId + "/threads";
         log.info(logBuilder);
 
-        channelService.validateUserInChannel(channelId, userDetails.getUser());
+        if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
+             throw new CustomException(ErrorCode.USER_CHANNEL_FORBIDDEN);
+        }
 
         return threadService.getAllThreadsInChannel(channelId, pageDto);
     }
@@ -83,7 +89,9 @@ public class ThreadController {
         String logBuilder = "[GET] /api/channels/" + channelId + "/threads/" + threadId;
         log.info(logBuilder);
 
-        channelService.validateUserInChannel(channelId, userDetails.getUser());
+        if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
+            throw new CustomException(ErrorCode.USER_THREAD_FORBIDDEN);
+        }
 
         return threadService.getThread(threadId);
     }

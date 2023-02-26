@@ -1,67 +1,90 @@
 package com.sparta.sbug.userchannel.service;
 
-import com.sparta.sbug.channel.entity.Channel;
+import com.sparta.sbug.channel.dto.ChannelResponseDto;
+import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.userchannel.enttiy.UserChannel;
 
 import java.util.List;
 
 public interface UserChannelService {
-    // TODO: 2023-02-17 유저가 채널에서 나간 경우, 탈퇴한 경우 작업
 
-    //    // 1. 유저가 채널에서 나간 경우
-    //    void leaveChannel(Long channelId, Long userId);
-    //    // 4. 유저가 탈퇴한 경우
-    //    void disableUserChannelByUserAbsence(Long userId);
+    // CRUD
+
+    /**
+     * 채널을 생성하고 요청자와 그 채널과 요청자에 대한 사용자-채널 데이터도 생성
+     *
+     * @param user        요청자
+     * @param channelName 생성할 채널 이름
+     * @return ChannelResponseDto
+     */
+    ChannelResponseDto createChannel(User user, String channelName);
+
+    /**
+     * 채널에 유저를 초대하는 메서드
+     * 요청자가 채널에 속해있는지 확인하고 사용자를 초대합니다.
+     *
+     * @param user      요청자
+     * @param channelId 채널
+     * @param email     초대할 사용자
+     */
+    void inviteUser(User user, Long channelId, String email);
 
     /**
      * 유저가 속해있는 모든 채널을 반환하는 메서드
      *
      * @param userId 사용자
-     * @return List&lt;UserChannel&gt;
+     * @return List&lt;ChannelResponseDto&gt;
      */
-    List<UserChannel> getUserChannelsByUserId(Long userId);
+    List<ChannelResponseDto> getChannelsByUserId(Long userId);
 
     /**
-     * 사용자-채널을 만드는 메서드
+     * 채널에서 나가는 메서드
      *
-     * @param user    사용자
-     * @param channel 채널
-     * @return Long
+     * @param user      요청자
+     * @param channelId 대상 채널
      */
-    Long createUserChannel(User user, Channel channel);
+    void exitChannel(User user, Long channelId);
 
     /**
-     * 채널에 종속된 사용자-채널을 삭제합니다.
+     * 채널 운영자가 사용자를 강퇴하는 메서드
+     * 요청자가 운영자인지 확인하고 사용자를 강퇴합니다.
+     *
+     * @param channelId 채널
+     * @param email     강퇴할 사용자
+     */
+    void kickUser(Long channelId, String email);
+
+    /**
+     * 채널 삭제 ( 논리 삭제 )
      *
      * @param channelId 대상 채널
      */
-    void deleteUserChannel(Long channelId);
+    void disableChannel(Long channelId);
 
     /**
-     * 사용자에 종속된 사용자-채널을 삭제합니다.
+     * 회원 탈퇴 ( 회원 논리 삭제 )
      *
-     * @param userId 사용자
+     * @param user 대상 유저
      */
-    void deleteUserChannelsAboutUser(Long userId);
+    void disableUser(User user);
 
-    /**
-     * 특정 사용자와 채널에 대한 사용자-채널을 삭제합니다.
-     *
-     * @param user    사용자
-     * @param channel 채널
-     */
-    void deleteUserChannelByUserAndChannel(User user, Channel channel);
+    // 유저-채널 존재 검증
 
     /**
      * 특정 사용자가 채널에 속해있는지 확인합니다.
      *
-     * @param user    사용자
+     * @param user      사용자
      * @param channelId 채널
-     * @return boolean
+     * @return
      */
     boolean isUserJoinedByChannel(User user, Long channelId);
 
-    // Disable //
-    void disableUserChannelByChannelAbsence(Long channelId);
+    /**
+     * Thread 생성
+     *
+     * @param channelId      : 생성할 채널 ID
+     * @param requestContent : thread 내용
+     * @param user           : 요청자
+     */
+    ThreadResponseDto createThread(Long channelId, String requestContent, User user);
 }

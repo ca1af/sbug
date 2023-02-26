@@ -8,7 +8,6 @@ import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.userchannel.service.UserChannelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -35,11 +34,6 @@ public class ChannelServiceImpl implements ChannelService {
      * 하위 레이어 데이터 서비스 - 쓰레드 서비스
      */
     private final ThreadService threadService;
-
-    /**
-     * 하위 레이어 데이터 서비스 - 유저-채널 서비스
-     */
-    private final UserChannelService userChannelService;
 
 
     // CRUD //
@@ -72,29 +66,6 @@ public class ChannelServiceImpl implements ChannelService {
         channel.updateChannelName(channelName);
     }
 
-    // 유저의 권한 검증
-    @Override
-    @Transactional(readOnly = true)
-    public Channel validateUserInChannel(Long channelId, User user) {
-        if (!userChannelService.isUserJoinedByChannel(user, channelId)) {
-            throw new CustomException(USER_CHANNEL_FORBIDDEN);
-        }
-
-        return getChannelById(channelId);
-    }
-
-    // Thread Create //
-    @Override
-    @Transactional
-    public ThreadResponseDto createThread(Long channelId, String requestContent, User user) {
-        if (requestContent.trim().equals("")) {
-            throw new CustomException(BAD_REQUEST_THREAD_CONTENT);
-        }
-
-        Channel channel = validateUserInChannel(channelId, user);
-        return threadService.createThread(channel, requestContent, user);
-    }
-
     // Auto Delete //
     @Transactional
     @Override
@@ -109,7 +80,12 @@ public class ChannelServiceImpl implements ChannelService {
     @Transactional
     public void disableChannel(Long channelId) {
         threadService.disableThreadsByChannelId(channelId);
-        userChannelService.disableUserChannelByChannelAbsence(channelId);
         channelRepository.disableChannelById(channelId);
+    }
+
+    @Override
+    public ThreadResponseDto createThread(Long channelId, String requestContent, User user) {
+        Channel channel = getChannelById(channelId);
+        return threadService.createThread(channel, requestContent, user);
     }
 }

@@ -6,7 +6,6 @@ import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.user.entity.User;
 import org.springframework.data.domain.Page;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface ChannelService {
 
@@ -44,29 +43,6 @@ public interface ChannelService {
      */
     void updateChannelName(Long channelId, String channelName);
 
-    // 유저의 권한 검증 //
-
-    /**
-     * 요청자가 대상 채널에 가입되어 있는지 확인하고 채널 엔터티를 반환합니다.
-     *
-     * @param channelId 대상 채널
-     * @param user      요청자
-     * @return Channel
-     */
-    @Transactional(readOnly = true)
-    Channel validateUserInChannel(Long channelId, User user);
-
-    // 쓰레드 생성 //
-
-    /**
-     * Thread 생성
-     *
-     * @param channelId      : 생성할 채널 ID
-     * @param requestContent : thread 내용
-     * @param user           : 요청자
-     */
-    ThreadResponseDto createThread(Long channelId, String requestContent, User user);
-
     // Delete On Schedule
 
     /**
@@ -84,5 +60,14 @@ public interface ChannelService {
      * @param channelId 대상 채널
      */
     void disableChannel(Long channelId);
+
+    /**
+     * Thread 생성
+     *
+     * @param channelId      : 생성할 채널 ID
+     * @param requestContent : thread 내용
+     * @param user           : 요청자
+     */
+    ThreadResponseDto createThread(Long channelId, String requestContent, User user);
 
 }

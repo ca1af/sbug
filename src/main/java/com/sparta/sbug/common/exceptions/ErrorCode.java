@@ -20,11 +20,14 @@ public enum ErrorCode {
     USER_PASSWORD_NOT_MATCH(HttpStatus.FORBIDDEN, 1403, "비밀번호가 일치하지 않습니다."),
 
     // 채널 오류 (2000)
-    USER_CHANNEL_FORBIDDEN(HttpStatus.FORBIDDEN, 2403, "유저의 채널 접근 권한이 없습니다."),
-    CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, 2404, "채널을 찾을 수 없습니다."),
+    BAD_REQUEST_CHANNEL_NAME(HttpStatus.BAD_REQUEST, 2001, "채널 이름에 공백을 입력할 수 없습니다😨"),
+    USER_CHANNEL_FORBIDDEN(HttpStatus.FORBIDDEN, 2002, "유저의 채널 접근 권한이 없습니다."),
+    CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, 2003, "채널을 찾을 수 없습니다."),
+    DUPLICATE_USER_CHANNEL(HttpStatus.BAD_REQUEST, 2004, "중복된 유저-채널 리소스가 존재합니다."),
+    USER_CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, 2005, "유저가 채널의 구성원이 아닙니다."),
 
     // 쓰레드, 쓰레드 이모지 오류 (3000)
-    BAD_REQUEST_THREAD_CONTENT(HttpStatus.BAD_REQUEST, 4001, "쓰레드 내용에 공백을 입력할 수 없습니다😨"),
+    BAD_REQUEST_THREAD_CONTENT(HttpStatus.BAD_REQUEST, 3001, "쓰레드 내용에 공백을 입력할 수 없습니다😨"),
     USER_THREAD_FORBIDDEN(HttpStatus.FORBIDDEN, 3403, "쓰레드에 대한 권한이 없습니다."),
     THREAD_NOT_FOUND(HttpStatus.NOT_FOUND, 3404, "쓰레드를 찾을 수 없습니다."),
 
@@ -32,7 +35,7 @@ public enum ErrorCode {
     // 코멘트, 코멘트 이모지 오류 (4000)
     BAD_REQUEST_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, 4001, "코멘트 내용에 공백을 입력할 수 없습니다😨"),
     USER_COMMENT_FORBIDDEN(HttpStatus.FORBIDDEN, 4403, "코멘트에 대한 권한이 없습니다."),
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, 3404, "코멘트를 찾을 수 없습니다."),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, 4404, "코멘트를 찾을 수 없습니다."),
 
     // 스케쥴 오류 (5000)
 
