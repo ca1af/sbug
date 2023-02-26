@@ -6,6 +6,7 @@ import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface UserService {
      *
      * @param requestDto 회원가입 유저 정보
      */
-    void signup(SignUpRequestDto requestDto);
+    void signUp(SignUpRequestDto requestDto);
 
     /**
      * 로그인
@@ -24,37 +25,6 @@ public interface UserService {
      * @return UserResponseDto
      */
     UserResponseDto login(LoginRequestDto requestDto);
-
-    /**
-     * 회원탈퇴
-     *
-     * @param user 사용자
-     */
-    void unregister(User user);
-
-    /**
-     * 이메일로 사용자 정보 조회
-     *
-     * @param email 이메일
-     * @return User
-     */
-    User getUser(String email);
-
-    /**
-     * 사용자 닉네임 수정
-     *
-     * @param user 사용자
-     * @param dto  수정될 닉네임
-     */
-    void updateNickname(User user, UserUpdateDto.Nickname dto);
-
-    /**
-     * 사용자 비밀번호 변경
-     *
-     * @param user 사용자
-     * @param dto  변경될 비밀번호
-     */
-    void changePassword(User user, UserUpdateDto.Password dto);
 
     /**
      * 전체 사용자 조회
@@ -66,10 +36,10 @@ public interface UserService {
     /**
      * 내 사용자 정보 조회
      *
-     * @param user 사용자
+     * @param user 요청자 (=나)
      * @return UserResponseDto
      */
-    UserResponseDto myPage(User user);
+    UserResponseDto getMyPage(User user);
 
     /**
      * 대상 사용자 정보 조회
@@ -88,10 +58,66 @@ public interface UserService {
     List<ChannelResponseDto> getMyChannels(User user);
 
     /**
-     * 사용자의 아이디로 사용자 엔티티 조회
+     * 사용자 닉네임 수정
+     *
+     * @param user 사용자
+     * @param dto  수정될 닉네임
+     */
+    void updateNickname(User user, UserUpdateDto.Nickname dto);
+
+    /**
+     * 사용자 비밀번호 변경
+     *
+     * @param user 사용자
+     * @param dto  변경될 비밀번호
+     */
+    void changePassword(User user, UserUpdateDto.Password dto);
+
+    /**
+     * 사용자 프로필 이미지 변경
+     *
+     * @param user 사용자
+     * @param key  변경될 프로필 이미지 이름
+     * @return
+     */
+    String changeProfileImage(User user, String key);
+
+    /**
+     * 회원탈퇴
+     *
+     * @param user 사용자
+     */
+    void unregister(User user);
+
+    /**
+     * 이메일로 사용자 엔터티  조회
+     *
+     * @param email 이메일
+     * @return User
+     */
+    User getUserByEmail(String email);
+
+
+    /**
+     * 사용자의 아이디로 사용자 엔터티 조회
      *
      * @param userId 사용자 ID
      * @return User
      */
     User getUserById(Long userId);
+
+    /**
+     * 유저 응답 DTO를 생성
+     *
+     * @param user 대상 유저 엔터티
+     * @return UserResponseDto
+     */
+    UserResponseDto getUserResponseDto(User user);
+
+    /**
+     * S3 미리 인증된 URL을 생성하기 위한 Pre-Signer 생성
+     *
+     * @return S3Presigner
+     */
+    S3Presigner getPreSigner();
 }

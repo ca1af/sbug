@@ -69,7 +69,7 @@ public class ChannelServiceImpl implements ChannelService {
     // Auto Delete //
     @Transactional
     @Override
-    @Scheduled(cron = "0 0 5 1 1/3 ? *")
+    @Scheduled(cron = "0 0 5 1 3,6,9,12 *")
     public void deleteChannelsOnSchedule() {
         LocalDateTime localDateTime = LocalDateTime.now().minusMonths(3);
         channelRepository.deleteChannels(localDateTime);

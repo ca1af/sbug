@@ -50,7 +50,7 @@ public class UserChannelServiceImpl implements UserChannelService {
         }
 
         Channel channel = channelService.getChannelById(channelId);
-        User invitedUser = userService.getUser(email);
+        User invitedUser = userService.getUserByEmail(email);
         UserChannel userChannel = UserChannel.builder().user(invitedUser).channel(channel).build();
         userChannelRepository.save(userChannel);
     }

@@ -87,7 +87,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    @Scheduled(cron = "0 0 5 1 1/3 ? *")
+    @Scheduled(cron = "0 0 5 1 3,6,9,12 *")
     public void deleteCommentsOnSchedule() {
         LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
         commentRepository.deleteComments(localDateTime);

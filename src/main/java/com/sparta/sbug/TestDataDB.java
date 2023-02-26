@@ -7,7 +7,6 @@ import com.sparta.sbug.channel.repository.ChannelRepository;
 import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.repository.CommentRepository;
 import com.sparta.sbug.emoji.entity.ThreadEmoji;
-import com.sparta.sbug.emoji.repository.CommentEmojiRepository;
 import com.sparta.sbug.emoji.repository.ThreadEmojiRepository;
 import com.sparta.sbug.schedule.entity.Schedule;
 import com.sparta.sbug.schedule.entity.ScheduleStatus;
@@ -64,7 +63,7 @@ public class TestDataDB {
 
             User user3 = User.builder().email("user3@naver.com").password(getEncode("password3")).nickname("펭구")
                     .build();
-            User savedUser3 = userRepository.save(user3);
+            userRepository.save(user3);
 
             User user4 = User.builder().email("user4@naver.com").password(getEncode("password4")).nickname("뿡뿡이")
                     .build();
@@ -126,7 +125,8 @@ public class TestDataDB {
 
             ThreadEmoji threadEmoji = new ThreadEmoji("SMILE", user1, thread);
             threadEmojiRepository.save(threadEmoji);
-            Admin admin = Admin.builder().email("admin").password("adminpass").build();
+
+            Admin admin = Admin.builder().email("admin").nickname("관리자1").password(getEncode("adminpass")).build();
             adminRepository.save(admin);
 
             Schedule schedule1 = Schedule.builder()

@@ -1,18 +1,21 @@
 package com.sparta.sbug.comment.controller;
 
-import com.sparta.sbug.channel.service.ChannelService;
 import com.sparta.sbug.comment.dto.CommentRequestDto;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
 import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.thread.service.ThreadService;
+import com.sparta.sbug.userchannel.service.UserChannelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import static com.sparta.sbug.common.exceptions.ErrorCode.USER_THREAD_FORBIDDEN;
 
 // lombok
 @RequiredArgsConstructor
@@ -24,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
 
     private final CommentService commentService;
-    private final ChannelService channelService;
+    private final UserChannelService userChannelService;
     private final ThreadService threadService;
 
     // CRUD
@@ -47,7 +50,9 @@ public class CommentController {
         String logBuilder = "[POST] /api/channels/" + channelId + "/threads/" + threadId + "/comments";
         log.info(logBuilder);
 
-        channelService.validateUserInChannel(channelId, userDetails.getUser());
+        if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
+            throw new CustomException(USER_THREAD_FORBIDDEN);
+        }
 
         return threadService.createComment(threadId, requestDto.getContent(), userDetails.getUser());
     }
@@ -69,9 +74,12 @@ public class CommentController {
             @ModelAttribute PageDto pageDto) {
 
         String logBuilder = "[GET] /api/channels/" + channelId + "/threads/" + threadId + "/comments";
-
         log.info(logBuilder);
-        channelService.validateUserInChannel(channelId, userDetails.getUser());
+
+        if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
+            throw new CustomException(USER_THREAD_FORBIDDEN);
+        }
+
         return commentService.getAllCommentsInThread(threadId, pageDto);
     }
 

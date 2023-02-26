@@ -136,7 +136,7 @@ public class ThreadServiceImpl implements ThreadService {
     // Delete //
     @Override
     @Transactional
-    @Scheduled(cron = "0 0 5 1 1/3 ? *")
+    @Scheduled(cron = "0 0 5 1 3,6,9,12 *")
     public void deleteThreadsOnSchedule() {
         LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
         threadRepository.deleteThreads(localDateTime);

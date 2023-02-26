@@ -5,7 +5,6 @@ import com.sparta.sbug.comment.service.CommentServiceImpl;
 import com.sparta.sbug.emoji.entity.CommentEmoji;
 import com.sparta.sbug.emoji.repository.CommentEmojiRepository;
 import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.user.repository.UserRepository;
 import com.sparta.sbug.user.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ class CommentEmojiServiceImplTest {
     @Test
     void createCommentEmoji() {
         Comment comment = commentService.getComment(1L);
-        User user = userService.getUser("user1");
+        User user = userService.getUserByEmail("user1");
         CommentEmoji commentEmoji = new CommentEmoji("Emoji1", user, comment);
         System.out.println("commentEmoji = " + commentEmoji.getId());
 
