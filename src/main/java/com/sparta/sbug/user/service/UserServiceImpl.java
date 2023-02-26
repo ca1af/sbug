@@ -32,9 +32,6 @@ import java.util.stream.Collectors;
 
 // springframework stereotype
 @Service
-
-// springframework transaction
-@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -51,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private String SECRET_KEY;
 
     @Override
+    @Transactional
     public void signUp(SignUpRequestDto requestDto) {
         String email = requestDto.getEmail();
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -73,6 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponseDto login(LoginRequestDto requestDto) {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
@@ -93,22 +92,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponseDto> getUsers() {
         return userRepository.findAll().stream().map(UserResponseDto::of).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponseDto getMyPage(User user) {
         return getUserResponseDto(user);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponseDto getUser(Long id) {
         User user = getUserById(id);
         return getUserResponseDto(user);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ChannelResponseDto> getMyChannels(User user) {
         var qChannel = QChannel.channel;
         var qUserChannel = QUserChannel.userChannel;
@@ -154,6 +157,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
         return userRepository.findByEmailAndInUseIsTrue(email).orElseThrow(
                 () -> new IllegalArgumentException("유저를 찾을 수 없습니다.")
@@ -161,6 +165,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("선택한 유저가 없습니다.")

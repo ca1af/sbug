@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 // springframework web bind
 @RestController
-@RequestMapping("/api/channels")
+@RequestMapping("/api")
 public class ThreadController {
 
     private final UserChannelService userChannelService;
@@ -35,7 +35,7 @@ public class ThreadController {
      * @param threadRequestDto 요청 DTO (쓰레드 내용)
      * @param userDetails      요청자 정보
      */
-    @PostMapping("/{channelId}/threads")
+    @PostMapping("/channels/{channelId}/threads")
     public ThreadResponseDto createThread(
             @PathVariable Long channelId, @RequestBody @Valid ThreadRequestDto threadRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -58,7 +58,7 @@ public class ThreadController {
      * @param pageDto   페이징 DTO
      * @return List&lt;ThreadResponseDto&gt;
      */
-    @GetMapping("/{channelId}/threads")
+    @GetMapping("/channels/{channelId}/threads")
     public Slice<ThreadResponseDto> getAllThreadsInChannel(@PathVariable Long channelId,
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                            @ModelAttribute PageDto pageDto) {
@@ -81,7 +81,7 @@ public class ThreadController {
      * @param threadId  대상 쓰레드
      * @return ThreadResponseDto
      */
-    @GetMapping("{channelId}/threads/{threadId}")
+    @GetMapping("/channels/{channelId}/threads/{threadId}")
     public ThreadResponseDto getThread(@PathVariable Long channelId,
                                        @PathVariable Long threadId,
                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {

@@ -41,12 +41,12 @@ public class ThreadServiceImpl implements ThreadService {
     // CRUD
 
     @Override
-    @Transactional
     public ThreadResponseDto createThread(Channel channel, String requestContent, User user) {
         Thread thread = Thread.builder()
                 .requestContent(requestContent)
                 .user(user)
-                .channel(channel).build();
+                .build();
+        thread.setChannel(channel);
         Thread savedThread = threadRepository.save(thread);
         return ThreadResponseDto.of(savedThread);
     }
@@ -120,7 +120,6 @@ public class ThreadServiceImpl implements ThreadService {
 
     // Disable by admin //
     @Override
-    @Transactional
     public void disableThreadsByChannelId(Long channelId) {
         commentService.disableCommentByChannelId(channelId);
         threadRepository.disableThreadByChannelId(channelId);

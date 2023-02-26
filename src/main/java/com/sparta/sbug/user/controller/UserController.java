@@ -8,6 +8,7 @@ import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.service.UserServiceImpl;
+import com.sparta.sbug.userchannel.service.UserChannelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import java.util.List;
 @CrossOrigin
 public class UserController {
     private final UserServiceImpl userService;
+    private final UserChannelService userChannelService;
 
     private final JwtProvider jwtProvider;
 
@@ -175,7 +177,7 @@ public class UserController {
     public void unregister(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("[PUT] /api/users");
 
-        userService.unregister(userDetails.getUser());
+        userChannelService.disableUser(userDetails.getUser());
     }
 
     /**

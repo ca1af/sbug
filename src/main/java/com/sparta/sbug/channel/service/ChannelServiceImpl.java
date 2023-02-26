@@ -38,7 +38,6 @@ public class ChannelServiceImpl implements ChannelService {
 
     // CRUD //
     @Override
-    @Transactional
     public Channel createChannel(String channelName) {
         Channel channel = Channel.builder().channelName(channelName).build();
         return channelRepository.save(channel);
@@ -84,6 +83,7 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
+    @Transactional
     public ThreadResponseDto createThread(Long channelId, String requestContent, User user) {
         Channel channel = getChannelById(channelId);
         return threadService.createThread(channel, requestContent, user);

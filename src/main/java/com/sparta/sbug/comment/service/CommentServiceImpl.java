@@ -31,7 +31,6 @@ public class CommentServiceImpl implements CommentService {
     // CRUD
 
     @Override
-    @Transactional
     public CommentResponseDto createComment(Thread thread, String content, User user) {
         Comment comment = Comment.builder()
                 .content(content)
@@ -85,9 +84,9 @@ public class CommentServiceImpl implements CommentService {
         return comment;
     }
 
-    @Transactional
     @Override
     @Scheduled(cron = "0 0 5 1 3,6,9,12 *")
+    @Transactional
     public void deleteCommentsOnSchedule() {
         LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
         commentRepository.deleteComments(localDateTime);
@@ -105,6 +104,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void disableCommentByAdmin(Long commentId) {
         commentRepository.disableCommentByCommentId(commentId);
     }

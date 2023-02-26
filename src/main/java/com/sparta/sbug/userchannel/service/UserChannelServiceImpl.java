@@ -33,6 +33,7 @@ public class UserChannelServiceImpl implements UserChannelService {
     // CRUD
 
     @Override
+    @Transactional
     public ChannelResponseDto createChannel(User user, String channelName) {
         Channel channel = channelService.createChannel(channelName);
         if (userChannelRepository.existsByUserAndChannelAndInUseIsTrue(user, channel)) {
@@ -44,6 +45,7 @@ public class UserChannelServiceImpl implements UserChannelService {
     }
 
     @Override
+    @Transactional
     public void inviteUser(User user, Long channelId, String email) {
         if (!isUserJoinedByChannel(user, channelId)) {
             throw new CustomException(USER_CHANNEL_FORBIDDEN);
@@ -56,6 +58,7 @@ public class UserChannelServiceImpl implements UserChannelService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ChannelResponseDto> getChannelsByUserId(Long userId) {
         List<UserChannel> UserChannels = userChannelRepository.findAllChannelByUserIdAndInUseIsTrue(userId);
         List<Channel> channels = new ArrayList<>();
@@ -66,6 +69,7 @@ public class UserChannelServiceImpl implements UserChannelService {
     }
 
     @Override
+    @Transactional
     public void exitChannel(User user, Long channelId) {
         UserChannel userChannel = userChannelRepository.findByUserAndChannelIdAndInUseIsTrue(user, channelId).orElseThrow(
                 () -> new CustomException(USER_CHANNEL_NOT_FOUND)
@@ -74,24 +78,28 @@ public class UserChannelServiceImpl implements UserChannelService {
     }
 
     @Override
+    @Transactional
     public void kickUser(Long channelId, String email) {
 
     }
 
     @Override
+    @Transactional
     public void disableChannel(Long channelId) {
         userChannelRepository.disableAllUserChannelByChannelIdAndInUse(channelId);
         channelService.disableChannel(channelId);
     }
 
     @Override
+    @Transactional
     public void disableUser(User user) {
-
-
+        userChannelRepository.disableAllUserChannelByUserIdAndInUse(user.getId());
+        userService.unregister(user);
     }
 
     // 유저-채널 존재 검증
     @Override
+    @Transactional(readOnly = true)
     public boolean isUserJoinedByChannel(User user, Long channelId) {
         return userChannelRepository.existsByUserAndChannelIdAndInUseIsTrue(user, channelId);
     }

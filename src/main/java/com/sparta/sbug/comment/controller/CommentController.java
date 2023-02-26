@@ -23,7 +23,7 @@ import static com.sparta.sbug.common.exceptions.ErrorCode.USER_THREAD_FORBIDDEN;
 
 // springframework web bind
 @RestController
-@RequestMapping("/api/channels/")
+@RequestMapping("/api")
 public class CommentController {
 
     private final CommentService commentService;
@@ -41,7 +41,7 @@ public class CommentController {
      * @param requestDto  댓글 요청 DTO (내용)
      * @param userDetails 요청자 정보
      */
-    @PostMapping("{channelId}/threads/{threadId}/comments")
+    @PostMapping("/channels/{channelId}/threads/{threadId}/comments")
     public CommentResponseDto createComment(@PathVariable Long channelId,
                                             @PathVariable Long threadId,
                                             @RequestBody @Valid CommentRequestDto requestDto,
@@ -66,7 +66,7 @@ public class CommentController {
      * @param pageDto   페이징 DTO
      * @return Slice&lt;CommentResponseDto&gt;
      */
-    @GetMapping("{channelId}/threads/{threadId}/comments")
+    @GetMapping("/channels/{channelId}/threads/{threadId}/comments")
     public Slice<CommentResponseDto> getAllCommentsInThread(
             @PathVariable Long channelId,
             @PathVariable Long threadId,
