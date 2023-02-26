@@ -2,7 +2,6 @@ package com.sparta.sbug.upperlayerservice;
 
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.user.entity.User;
-import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
@@ -28,10 +27,9 @@ public interface UserChannelUpperLayerService {
     /**
      * 채널을 삭제하고 그에 종속된 사용자-채널 데이터도 삭제
      *
-     * @param user      요청자
      * @param channelId 삭제할 채널 ID
      */
-    void deleteChannelAndDependentUserChannel(User user, Long channelId);
+    void deleteChannel(Long channelId);
 
     /**
      * 채널에 유저를 초대하는 메서드
@@ -59,5 +57,5 @@ public interface UserChannelUpperLayerService {
      * @param id    채널
      * @param email 강퇴할 사용자
      */
-    // void kickUser(User user, Long id, String email);
+    //void kickUser(User user, Long id, String email);
 }

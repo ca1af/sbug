@@ -6,7 +6,6 @@ import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.user.entity.User;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface ChannelService {
@@ -38,29 +37,19 @@ public interface ChannelService {
     Page<ChannelResponseDto> getAllChannelsToPage(PageDto pageDto);
 
     /**
-     * 요청자가 가입되어 있는 모든 채널을 조회
-     *
-     * @param pageDto 페이징 정보
-     * @return Slice&lt;ChannelResponseDto&gt;
-     */
-    Slice<ChannelResponseDto> getAllChannelsToSlice(PageDto pageDto);
-
-    /**
      * 채널 이름을 수정
      *
      * @param channelId   채널 ID
-     * @param user        요청자
      * @param channelName 채널 이름
      */
-    void updateChannelName(Long channelId, User user, String channelName);
+    void updateChannelName(Long channelId, String channelName);
 
     /**
      * 채널 삭제
      *
      * @param channelId 삭제할 채널 ID
-     * @param user      요청자
      */
-    void deleteChannel(Long channelId, User user);
+    void deleteChannel(Long channelId);
 
     // Create Thread //
 

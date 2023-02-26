@@ -2,6 +2,7 @@ package com.sparta.sbug.admin.controller;
 
 import com.sparta.sbug.admin.dto.AdminResponseDto;
 import com.sparta.sbug.admin.service.AdminService;
+import com.sparta.sbug.channel.dto.ChannelDto;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.service.ChannelService;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
@@ -11,6 +12,7 @@ import com.sparta.sbug.security.dto.TokenResponseDto;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.service.ThreadService;
+import com.sparta.sbug.upperlayerservice.UserChannelUpperLayerService;
 import com.sparta.sbug.user.dto.LoginRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,11 @@ public class AdminController {
      * 하위 레이어 데이터 서비스 - 채널 서비스
      */
     private final ChannelService channelService;
+
+    /**
+     * 하위 레이어 데이터 서비스 - 유저-채널 서비스
+     */
+    private final UserChannelUpperLayerService userChannelUpperLayerService;
 
     /**
      * 하위 레이어 데이터 서비스 - 쓰레드 서비스
@@ -66,6 +73,7 @@ public class AdminController {
 
 
     // Inquiry ( 조회 ) //
+
     /**
      * 모든 채널들을 조회
      *
@@ -119,6 +127,27 @@ public class AdminController {
         return commentService.getAllComments(threadId, pageDto);
     }
 
+    // Update //
+
+    /**
+     * 채널 정보 수정 ( 관리자 )
+     * [PATCH] /api/admins/channels/{channelId}
+     *
+     * @param requestDto  초대할 사람의 이메일
+     * @param channelId   초대할 채널 ID
+     */
+    @PatchMapping("/admins/channels/{channelId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void updateChannelName(@PathVariable Long channelId,
+                                  @RequestBody ChannelDto.ChannelRequest requestDto) {
+        // channel name check
+        if (requestDto.getChannelName().trim().equals("")) {
+            throw new IllegalArgumentException("채널 이름에는 공백이 들어갈 수 없습니다.");
+        }
+
+        // update channel name
+        channelService.updateChannelName(channelId, requestDto.getChannelName());
+    }
 
     // Disable ( 논리 삭제 ) //
 
@@ -163,4 +192,20 @@ public class AdminController {
 
         commentService.disableComment(commentId);
     }
+
+    // Delete //
+
+    /**
+     * 채널과 그 채널에 가입된 유저 데이터(유저-채널 데이터)를 삭제 ( 관리자 )
+     * [DELETE] /api/admins/channels/{id}
+     *
+     * @param channelId   채널 ID
+     */
+    @DeleteMapping("/admins/channels/{channelId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void channel(@PathVariable Long channelId) {
+        // delete channel
+        userChannelUpperLayerService.deleteChannel(channelId);
+    }
+
 }

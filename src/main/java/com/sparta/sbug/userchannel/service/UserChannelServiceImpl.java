@@ -48,7 +48,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
-    public void deleteUserChannelsAboutChannel(Long channelId) {
+    public void deleteUserChannel(Long channelId) {
         userChannelRepository.deleteAllByChannelId(channelId);
     }
 

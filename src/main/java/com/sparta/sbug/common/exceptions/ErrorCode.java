@@ -21,6 +21,7 @@ public enum ErrorCode {
 
     // 채널 오류 (2000)
     USER_CHANNEL_FORBIDDEN(HttpStatus.FORBIDDEN, 2403, "유저의 채널 접근 권한이 없습니다."),
+    CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, 2404, "채널을 찾을 수 없습니다."),
 
     // 쓰레드, 쓰레드 이모지 오류 (3000)
     BAD_REQUEST_THREAD_CONTENT(HttpStatus.BAD_REQUEST, 4001, "쓰레드 내용에 공백을 입력할 수 없습니다😨"),

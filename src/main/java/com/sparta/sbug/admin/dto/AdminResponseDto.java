@@ -22,7 +22,7 @@ public class AdminResponseDto {
         this.email = admin.getEmail();
     }
 
-    public static AdminResponseDto of(Admin admin){
+    public static AdminResponseDto of(Admin admin) {
         return new AdminResponseDto(admin);
     }
 }

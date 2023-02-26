@@ -36,7 +36,7 @@ public interface UserChannelService {
      *
      * @param channelId 대상 채널
      */
-    void deleteUserChannelsAboutChannel(Long channelId);
+    void deleteUserChannel(Long channelId);
 
     /**
      * 사용자에 종속된 사용자-채널을 삭제합니다.

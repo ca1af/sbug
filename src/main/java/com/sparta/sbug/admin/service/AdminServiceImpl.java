@@ -16,7 +16,7 @@ import static com.sparta.sbug.common.exceptions.ErrorCode.*;
 
 // springframework stereotype
 @Service
-public class AdminServiceImpl implements AdminService{
+public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
 
@@ -24,8 +24,7 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     @Transactional(readOnly = true)
-    public void signUpAdmin(String email, String password, String nickname){
-
+    public void signUpAdmin(String email, String password, String nickname) {
         if (adminRepository.existsAdminByEmail(email)) {
             throw new CustomException(DUPLICATE_ADMIN);
         }
@@ -41,13 +40,12 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     @Transactional(readOnly = true)
-    public AdminResponseDto loginAdmin(String email, String password){
-
+    public AdminResponseDto loginAdmin(String email, String password) {
         Admin admin = adminRepository.findByEmail(email).orElseThrow(
                 () -> new CustomException(ADMIN_NOT_FOUND)
         );
 
-        if (!passwordEncoder.matches(password, admin.getPassword())){
+        if (!passwordEncoder.matches(password, admin.getPassword())) {
             throw new CustomException(ADMIN_PASSWORD_NOT_MATCH);
         }
 

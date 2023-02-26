@@ -89,7 +89,7 @@ class UserChannelServiceImplTest {
 
         // when
         System.out.println("======================== test query start =============================");
-        userChannelService.deleteUserChannelsAboutChannel(channel1.getId());
+        userChannelService.deleteUserChannel(channel1.getId());
         System.out.println("=======================================================================");
 
         // then
