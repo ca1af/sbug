@@ -19,9 +19,9 @@ public class EmojiResponseDto {
     private EmojiType emojiType;
     private Long count;
 
-    private EmojiResponseDto(Emoji emoji) {
-        this.emojiType = emoji.getEmojiType();
-        this.userId = emoji.getUser().getId();
+    private EmojiResponseDto(EmojiType emojiType, Long count) {
+        this.emojiType = emojiType;
+        this.count = count;
     }
 
     public static EmojiResponseDto of(EmojiType emojiType, Long count) {

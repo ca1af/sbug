@@ -5,8 +5,9 @@ import com.sparta.sbug.emoji.dto.EmojiResponseDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 /**
  * 댓글 응답 DTO
@@ -22,17 +23,21 @@ public class CommentResponseDto {
     private String userNickname;
     private List<EmojiResponseDto> emojis;
 
-    private CommentResponseDto(Comment comment) {
-        this.id = comment.getId();
+    private CommentResponseDto(Comment comment, Map<Long, List<EmojiResponseDto>> commentEmojiCountMap) {
+        this.commentId = comment.getId();
         this.content = comment.getContent();
         this.createdAt = comment.getCreatedAt();
         this.userId = comment.getUser().getId();
         this.userNickname = comment.getUser().getNickname();
-        this.emojis = comment.getEmojis().stream().map(EmojiResponseDto::of).collect(Collectors.toList());
+        if (commentEmojiCountMap != null) {
+            this.emojis = commentEmojiCountMap.get(comment.getId());
+        } else {
+            this.emojis = new ArrayList<>();
+        }
     }
 
-    public static CommentResponseDto of(Comment comment) {
-        return new CommentResponseDto(comment);
+    public static CommentResponseDto of(Comment comment, Map<Long, List<EmojiResponseDto>> commentEmojiCountMap) {
+        return new CommentResponseDto(comment, commentEmojiCountMap);
     }
 
 }

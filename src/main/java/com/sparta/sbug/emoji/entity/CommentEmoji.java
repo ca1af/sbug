@@ -16,12 +16,16 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("COMMENT")
 public class CommentEmoji extends Emoji {
 
+    @Column(updatable = false, insertable = false)
+    private Long comment_id;
+
     /**
      * 생성자
      */
     public CommentEmoji(String emojiType, User user, Comment comment) {
         super(emojiType, user);
-        this.comment = comment;
+        setComment(comment);
+        this.comment_id = comment.getId();
     }
 
     /**

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
 
 import static com.sparta.sbug.common.exceptions.ErrorCode.COMMENT_NOT_FOUND;
 import static com.sparta.sbug.common.exceptions.ErrorCode.USER_COMMENT_FORBIDDEN;
@@ -48,7 +48,10 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public Slice<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto) {
         Slice<Comment> comments = commentRepository.findCommentsByThreadIdAndInUseIsTrue(threadId, pageDto.toPageable());
-        return comments.map(CommentResponseDto::of);
+        List<Long> commentIds = comments.getContent().stream().map(Comment::getId).toList();
+        List<EmojiCountDto> emojiCountDtoList = commentEmojiService.getCommentEmojiCount(commentIds);
+        Map<Long, List<EmojiResponseDto>> commentEmojiCountMap = EmojiResponseDto.getEmojiCountMap(emojiCountDtoList);
+        return comments.map(comment -> CommentResponseDto.of(comment, commentEmojiCountMap));
     }
 
     @Override
