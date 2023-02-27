@@ -41,5 +41,5 @@ out/
 *.swp
 
 ### my ignore ###
-sr/main/resources/application.yml
+src/main/resources/application.yml
 resources/aws.yml
