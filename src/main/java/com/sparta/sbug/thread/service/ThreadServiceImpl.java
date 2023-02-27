@@ -46,17 +46,6 @@ public class ThreadServiceImpl implements ThreadService {
     // CRUD
 
     @Override
-    @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.THREAD, key = "#threadId")
-    public Thread findThreadById(Long threadId) {
-        Optional<Thread> optionalThread = threadRepository.findThreadByIdAndInUseIsTrue(threadId);
-        if (optionalThread.isEmpty()) {
-            throw new NoSuchElementException("쓰레드를 찾을 수 없습니다.");
-        }
-        return optionalThread.get();
-    }
-
-    @Override
     @Transactional
     @CacheEvict(cacheNames = CacheNames.THREADSINCHANNEL, key = "#channel.channelId")
     public ThreadResponseDto createThread(Channel channel, String requestContent, User user) {
@@ -70,29 +59,6 @@ public class ThreadServiceImpl implements ThreadService {
     }
 
     @Override
-    @Transactional
-    public void disableThread(Long threadId, User user) {
-        validateUserAuth(threadId, user);
-        threadRepository.disableThreadById(threadId);
-    }
-
-    /**
-     * 요청자가 대상 쓰레드를 수정 혹은 삭제할 수 있는 권한이 있는지 확인합니다.
-     *
-     * @param threadId 대상 쓰레드 ID
-     * @param user     요청자
-     * @return Thread
-     */
-    @Transactional
-    public Thread validateUserAuth(Long threadId, User user) {
-        Thread thread = findThreadById(threadId);
-        if (!thread.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
-        }
-        return thread;
-    }
-
-    @Override
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = CacheNames.THREADSINCHANNEL, key = "#channelId")
     public Slice<ThreadResponseDto> getAllThreadsInChannel(Long channelId, PageDto pageDto) {
@@ -102,7 +68,6 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.THREAD, key = "#threadId")
     public ThreadResponseDto getThread(Long threadId) {
         Thread thread = findThreadById(threadId);
         ThreadResponseDto responseDto = ThreadResponseDto.of(thread);
@@ -124,8 +89,10 @@ public class ThreadServiceImpl implements ThreadService {
         return ThreadResponseDto.of(thread);
     }
 
+    //THREADSINCHANNEL도 evict 해줘야 할것 같은데, channelId를 가져올 수 없음
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.THREAD, key = "#threadId")
     public void disableThread(Long threadId, User user) {
         validateUserAuth(threadId, user);
         commentService.disableCommentByThreadId(threadId);
@@ -146,6 +113,7 @@ public class ThreadServiceImpl implements ThreadService {
     // 쓰레드 데이터 조회
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.THREAD, key = "#threadId")
     public Thread findThreadById(Long threadId) {
         Optional<Thread> optionalThread = threadRepository.findThreadByIdAndInUseIsTrue(threadId);
         if (optionalThread.isEmpty()) {
