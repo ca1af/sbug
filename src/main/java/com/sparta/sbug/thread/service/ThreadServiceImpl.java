@@ -47,7 +47,7 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.THREADSINCHANNEL, key = "#channel.channelId")
+    @CacheEvict(cacheNames = CacheNames.THREADSINCHANNEL, key = "#channel.id")
     public ThreadResponseDto createThread(Channel channel, String requestContent, User user) {
         Thread thread = Thread.builder()
                 .requestContent(requestContent)

@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
    // CRUD
     
     @Override
-    @CacheEvict(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#thread.threadId")
+    @CacheEvict(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#thread.id")
     public CommentResponseDto createComment(Thread thread, String content, User user) {
         Comment comment = Comment.builder()
                 .content(content)
@@ -67,7 +67,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.COMMENT, key = "#comment.commentId")
+    @CacheEvict(cacheNames = CacheNames.COMMENT, key = "#commentId")
     public void updateComment(Long commentId, String content, User user) {
         Comment comment = validateUserAuth(commentId, user);
         comment.updateContent(content);
