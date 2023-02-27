@@ -19,4 +19,12 @@ public class SignUpRequestDto {
     private String password;
     @Pattern(regexp = "^[가-힣a-zA-Z0-9]{2,10}$", message = "닉네임은 완성형 한글이나 영문, 숫자로 이루어져야 하고, 2~10글자여야 합니다.")
     private String nickname;
+
+    /**
+     * ALLUSERS cache의 key를 생성하기 위한 method
+     */
+    @Override
+    public String toString() {
+        return "ALLUSERS_CACHE_KEY";
+    }
 }

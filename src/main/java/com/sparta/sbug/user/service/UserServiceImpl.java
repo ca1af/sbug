@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     private String SECRET_KEY;
 
     @Override
-    @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "ALLUSERS")
+    @CacheEvict(cacheNames = CacheNames.ALLUSERS)
     @Transactional
     public void signUp(SignUpRequestDto requestDto) {
         String email = requestDto.getEmail();
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Caching(evict = {
-        @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "ALLUSERS"),
+        @CacheEvict(cacheNames = CacheNames.ALLUSERS),
         @CacheEvict(cacheNames = CacheNames.USER, key = "#user.email")})
     public void unregister(User user) {
         userRepository.disableInUseByEmail(user.getEmail());
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.ALLUSERS, key = "ALLUSERS")
+    @Cacheable(cacheNames = CacheNames.ALLUSERS)
     public List<UserResponseDto> getUsers() {
         return userRepository.findAll().stream().map(UserResponseDto::of).collect(Collectors.toList());
     }
@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @Caching(evict = {
-        @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "ALLUSERS"),
+        @CacheEvict(cacheNames = CacheNames.ALLUSERS),
         @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id")})
     public void updateNickname(User user, UserUpdateDto.Nickname dto) {
         User user1 = getUserById(user.getId());
