@@ -106,7 +106,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.USERDTO, key = "#user.id")
     public UserResponseDto getMyPage(User user) {
         return getUserResponseDto(user);
     }
@@ -145,6 +144,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id")
     @Transactional
     public void changePassword(User user, UserUpdateDto.Password dto) {
         User user1 = getUserById(user.getId());
@@ -154,6 +154,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id")
     @Transactional
     public String changeProfileImage(User user, String key) {
         String uniqueKey = key + user.getEmail();
