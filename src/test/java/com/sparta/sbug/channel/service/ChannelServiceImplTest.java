@@ -94,7 +94,7 @@ class ChannelServiceImplTest {
 
         // when
         System.out.println("======================== test query start =============================");
-        channelService.deleteChannel(savedChannel.getId());
+        channelService.disableChannel(savedChannel.getId());
         System.out.println("=======================================================================");
 
         // then

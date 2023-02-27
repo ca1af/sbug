@@ -6,6 +6,9 @@ import com.sparta.sbug.common.exceptions.ErrorCode;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.thread.dto.ThreadRequestDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
+import com.sparta.sbug.thread.repository.query.ThreadQueryRepository;
+import com.sparta.sbug.thread.repository.query.ThreadQueryRepositoryImpl;
+import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
 import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.userchannel.service.UserChannelService;
 import jakarta.validation.Valid;
@@ -14,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // lombok
 @RequiredArgsConstructor
@@ -26,6 +31,7 @@ public class ThreadController {
 
     private final UserChannelService userChannelService;
     private final ThreadService threadService;
+    private final ThreadQueryRepositoryImpl threadQueryRepository;
 
     /**
      * 대상 채널에 쓰레드를 생성
@@ -131,5 +137,8 @@ public class ThreadController {
 
         threadService.disableThread(threadId, userDetails.getUser());
     }
-
+    @GetMapping("/threads/search")
+    public List<ThreadResponseDto> searchByCond(@RequestBody ThreadSearchCond threadSearchCond){
+        return threadQueryRepository.findThreadBySearchCondition(threadSearchCond);
+    }
 }

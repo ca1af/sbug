@@ -1,6 +1,7 @@
 package com.sparta.sbug.thread.repository;
 
 import com.sparta.sbug.thread.entity.Thread;
+import com.sparta.sbug.thread.repository.query.ThreadQueryRepository;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface ThreadRepository extends JpaRepository<Thread, Long> {
+public interface ThreadRepository extends JpaRepository<Thread, Long>, ThreadQueryRepository {
     /**
      * 활성화된 쓰레드만 조회
      * @param threadId
