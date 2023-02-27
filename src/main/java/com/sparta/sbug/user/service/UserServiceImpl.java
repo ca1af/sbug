@@ -1,6 +1,7 @@
 package com.sparta.sbug.user.service;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sparta.sbug.aws.service.S3Service;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.channel.entity.QChannel;
@@ -13,12 +14,18 @@ import com.sparta.sbug.user.repository.UserRepository;
 import com.sparta.sbug.userchannel.enttiy.QUserChannel;
 import com.sparta.sbug.cache.CacheNames;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,17 +36,25 @@ import java.util.stream.Collectors;
 
 // springframework stereotype
 @Service
-
-// springframework transaction
-@Transactional
 public class UserServiceImpl implements UserService {
-    private final PasswordEncoder passwordEncoder;
+
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final JPAQueryFactory queryFactory;
+
+    // for S3
+    private final S3Service s3Service;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+    @Value("${cloud.aws.credentials.access-key}")
+    private String ACCESS_KEY;
+    @Value("${cloud.aws.credentials.secret-key}")
+    private String SECRET_KEY;
 
     @Override
     @CacheEvict(cacheNames = CacheNames.ALLUSERS)
-    public void signup(SignUpRequestDto requestDto) {
+    @Transactional
+    public void signUp(SignUpRequestDto requestDto) {
         String email = requestDto.getEmail();
         String password = passwordEncoder.encode(requestDto.getPassword());
         String nickName = requestDto.getNickname();
@@ -61,6 +76,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponseDto login(LoginRequestDto requestDto) {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
@@ -71,15 +87,14 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("사용자를 찾을수 없습니다.");
         }
-        
+
         return UserResponseDto.of(user);
     }
-
 
     @Override
     @CacheEvict(cacheNames = CacheNames.ALLUSERS)
     public void unregister(User user) {
-        userRepository.deleteByEmail(user.getEmail());
+        userRepository.disableInUseByEmail(user.getEmail());
     }
 
     @Override
@@ -88,6 +103,39 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmailAndInUseIsTrue(email).orElseThrow(
                 () -> new IllegalArgumentException("유저를 찾을 수 없습니다.")
         );
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserResponseDto> getUsers() {
+        return userRepository.findAll().stream().map(UserResponseDto::of).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponseDto getMyPage(User user) {
+        return getUserResponseDto(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponseDto getUser(Long id) {
+        User user = getUserById(id);
+        return getUserResponseDto(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ChannelResponseDto> getMyChannels(User user) {
+        var qChannel = QChannel.channel;
+        var qUserChannel = QUserChannel.userChannel;
+
+        List<Channel> fetch = queryFactory
+                .select(qChannel)
+                .from(qUserChannel)
+                .where(qUserChannel.user.id.eq(user.getId()))
+                .fetch();
+
+        return fetch.stream().map(ChannelResponseDto::of).collect(Collectors.toList());
     }
 
     @Override
@@ -110,10 +158,18 @@ public class UserServiceImpl implements UserService {
         user1.setPassword(encodedPassword);
     }
 
+    @Override
     @Transactional
-    public void changeProfileImage(User user, String keyName) {
-        user.setProfileImage(keyName);
+    public String changeProfileImage(User user, String key) {
+        String uniqueKey = key + user.getEmail();
+
+        S3Presigner preSigner = getPreSigner();
+        String url = s3Service.putObjectPreSignedUrl(bucketName, uniqueKey, preSigner);
+        preSigner.close();
+
+        user.setProfileImage(uniqueKey);
         userRepository.save(user);
+        return url;
     }
 
     @Override
@@ -138,29 +194,43 @@ public class UserServiceImpl implements UserService {
         );
         return UserResponseDto.of(findUser);
     }
-
-
-    @Override
-    public List<ChannelResponseDto> getMyChannels(User user){
-        var qChannel = QChannel.channel;
-        var qUserChannel = QUserChannel.userChannel;
-
-        List<Channel> fetch = queryFactory
-                .select(qChannel)
-                .from(qUserChannel)
-                .where(qUserChannel.user.id.eq(user.getId()))
-                .fetch();
-
-        return fetch.stream().map(ChannelResponseDto::of).collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmailAndInUseIsTrue(email).orElseThrow(
+                () -> new IllegalArgumentException("유저를 찾을 수 없습니다.")
+        );
     }
-    // 요청한 유자가 가진 채널의 목록을 조회
 
     @Override
     @Cacheable(cacheNames = CacheNames.USER, key = "#userId")
+    @Transactional(readOnly = true)
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("선택한 유저가 없습니다.")
         );
     }
-    
+
+    @Override
+    public UserResponseDto getUserResponseDto(User user) {
+        UserResponseDto responseDto = UserResponseDto.of(user);
+
+        S3Presigner preSigner = getPreSigner();
+        responseDto.setProfileImageUrl(s3Service.getObjectPreSignedUrl(bucketName, user.getProfileImage(), preSigner));
+
+        preSigner.close();
+        return responseDto;
+    }
+
+    @Override
+    public S3Presigner getPreSigner() {
+        AwsCredentialsProvider awsCredentialsProvider;
+        AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY);
+        awsCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
+
+        Region region = Region.AP_NORTHEAST_2;
+        return S3Presigner.builder()
+                .region(region)
+                .credentialsProvider(awsCredentialsProvider)
+                .build();
+    }
 }

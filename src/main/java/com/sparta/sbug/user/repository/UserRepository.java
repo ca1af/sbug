@@ -18,12 +18,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmailAndInUseIsTrue(String email);
 
     /**
-     * 이메일로 대상 유저를 삭제
+     * 이메일로 대상 유저를 삭제 ( 논리 삭제 )
      *
      * @param email 이메일
      */
-    void deleteByEmail(String email);
-
     @Query("update User u set u.inUse = false where u.email = :email")
     @Modifying(clearAutomatically = true)
     void disableInUseByEmail(@Param("email") String email);

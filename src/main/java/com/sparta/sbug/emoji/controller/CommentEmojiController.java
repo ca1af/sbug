@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import static com.sparta.sbug.common.exceptions.ErrorCode.USER_THREAD_FORBIDDEN;
+import static com.sparta.sbug.common.exceptions.ErrorCode.USER_COMMENT_FORBIDDEN;
 
 // lombok
 @RequiredArgsConstructor
@@ -37,8 +37,9 @@ public class CommentEmojiController {
             @RequestBody String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
+
         if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
-            throw new CustomException(USER_THREAD_FORBIDDEN);
+            throw new CustomException(USER_COMMENT_FORBIDDEN);
         }
         return commentEmojiService.reactCommentEmoji(emojiType, userDetails.getUser(), commentId);
     }

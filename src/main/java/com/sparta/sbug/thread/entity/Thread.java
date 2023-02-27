@@ -68,6 +68,11 @@ public class Thread extends Timestamp {
      * addChannel : thread - comment 편의 메소드
      * addEmoji : thread - thread_emoji 편의 메소드
      */
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+        channel.addThread(this);
+    }
+
     public void addComment(Comment comment) {
         this.comments.add(comment);
     }
@@ -80,7 +85,5 @@ public class Thread extends Timestamp {
      * 서비스 메소드
      */
     // Thread 수정 메소드
-    public void changeThread(String requestContent){this.content = requestContent;}
-
     public void updateThread(String requestContent){this.content = requestContent;}
 }

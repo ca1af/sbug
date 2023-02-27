@@ -47,8 +47,4 @@ public class UserChannel extends Timestamp {
     @JoinColumn(name = "channel_id")
     Channel channel;
 
-
-
-
-
 }

@@ -34,19 +34,21 @@ public interface UserChannelRepository extends JpaRepository<UserChannel, Long> 
     void deleteAllByUserId(@Param("userId") Long userId);
 
     /**
-     * 유저 ID와 채널 ID가 모두 포함된 UserChannel 엔티티를 조회(select)
+     * 유저 ID와 채널 ID가 모두 포함된 UserChannel 엔티티를 조회(Exists)
      * InUse 칼럼을 확인해서 True 인 객체들만 조회합니다.
      *
      * @param user    대상 유저
      * @param channel 대상 채널
-     * @return Optional&lt;UserChannel&gt;
+     * @return Boolean
      */
-    Optional<UserChannel> findByUserAndChannelAndInUseIsTrue(User user, Channel channel);
+    Boolean existsByUserAndChannelAndInUseIsTrue(User user, Channel channel);
+
+    Optional<UserChannel> findByUserAndChannelIdAndInUseIsTrue(User user, Long channelId);
 
     /**
      * 유저 ID와 채널 ID가 모두 포함된 UserChannel 엔티티가 있는지 확인(exist)
      *
-     * @param user    대상 유저
+     * @param user      대상 유저
      * @param channelId 대상 채널
      * @return boolean
      */
@@ -80,7 +82,7 @@ public interface UserChannelRepository extends JpaRepository<UserChannel, Long> 
      */
 
 //    @Query("update UserChannel uc set uc.inUse = false where uc.channel.id = :channelId")
-    @Query(nativeQuery = true,value = "update user_channel set in_use = false where channel_id =:channelId")
+    @Query(nativeQuery = true, value = "update user_channel set in_use = false where channel_id =:channelId")
     @Modifying(clearAutomatically = true)
     void disableAllUserChannelByChannelIdAndInUse(@Param("channelId") Long channelId);
 

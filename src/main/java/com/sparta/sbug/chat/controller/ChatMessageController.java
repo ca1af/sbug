@@ -49,7 +49,7 @@ public class ChatMessageController {
 
         // sender
         String email = jwtProvider.getSubject(rawToken.substring(7));
-        User sender = userService.getUser(email);
+        User sender = userService.getUserByEmail(email);
 
         // room
         ChatRoom room = chatRoomService.getChatRoomById(requestDto.getRoomId());
