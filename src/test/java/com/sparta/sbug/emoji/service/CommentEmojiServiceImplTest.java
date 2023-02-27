@@ -3,6 +3,7 @@ package com.sparta.sbug.emoji.service;
 import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.service.CommentServiceImpl;
 import com.sparta.sbug.emoji.entity.CommentEmoji;
+import com.sparta.sbug.emoji.repository.query.CommentEmojiQueryImpl;
 import com.sparta.sbug.emoji.repository.CommentEmojiRepository;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserServiceImpl;
@@ -15,8 +16,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class CommentEmojiServiceImplTest {
     @Autowired
     CommentServiceImpl commentService;
+
     @Autowired
     CommentEmojiRepository commentEmojiRepository;
+
+    @Autowired
+    CommentEmojiQueryImpl commentEmojiQuery;
+
     @Autowired
     UserServiceImpl userService;
     @Test

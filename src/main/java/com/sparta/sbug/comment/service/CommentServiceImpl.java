@@ -5,6 +5,9 @@ import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.repository.CommentRepository;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.common.exceptions.CustomException;
+import com.sparta.sbug.emoji.dto.EmojiCountDto;
+import com.sparta.sbug.emoji.dto.EmojiResponseDto;
+import com.sparta.sbug.emoji.service.CommentEmojiService;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,7 @@ import static com.sparta.sbug.common.exceptions.ErrorCode.USER_COMMENT_FORBIDDEN
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentEmojiService commentEmojiService;
 
     // CRUD
 
@@ -37,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
                 .user(user)
                 .build();
         comment.setThread(thread);
-        return CommentResponseDto.of(commentRepository.save(comment));
+        return CommentResponseDto.of(commentRepository.save(comment), null);
     }
 
     @Override
@@ -106,5 +110,11 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public void disableCommentByAdmin(Long commentId) {
         commentRepository.disableCommentByCommentId(commentId);
+    }
+
+    @Override
+    public boolean reactCommentEmoji(String emojiType, User user, Long commentId) {
+        Comment comment = getComment(commentId);
+        return commentEmojiService.reactCommentEmoji(emojiType, user, comment);
     }
 }

@@ -45,7 +45,7 @@ public interface ThreadService {
      * @param requestContent 수정될 쓰레드 내용
      * @param user           요청자
      */
-    ThreadResponseDto editThread(Long threadId, String requestContent, User user);
+    void editThread(Long threadId, String requestContent, User user);
 
     /**
      * 대상 쓰레드를 비활성화 ( 논리 삭제 )
@@ -108,4 +108,6 @@ public interface ThreadService {
      * - 비활성화된지 3개월이 지난 쓰레드들만 삭제
      */
     void deleteThreadsOnSchedule();
+
+    boolean reactThreadEmoji(String emojiType, User user, Long threadId);
 }

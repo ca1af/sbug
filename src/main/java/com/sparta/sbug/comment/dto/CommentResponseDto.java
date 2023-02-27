@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor
 public class CommentResponseDto {
-    private Long id;
+    private Long commentId;
     private String content;
     private LocalDateTime createdAt;
     private Long userId;
