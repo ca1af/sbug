@@ -33,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
 
 
-    // CRUD
+   // CRUD
     
     @Override
     @CacheEvict(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#thread.threadId")
@@ -46,14 +46,6 @@ public class CommentServiceImpl implements CommentService {
         return CommentResponseDto.of(commentRepository.save(comment));
     }
 
-    @Override
-    @Transactional
-    @Caching(evict = {
-        @CacheEvict(cacheNames = CacheNames.COMMENT, key = "#comment.commentId"),
-        @CacheEvict(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#comment.thread.threadId")})
-    public void deleteComment(Comment comment) {
-        commentRepository.delete(comment);
-    }
     @Override
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#threadId")
@@ -82,6 +74,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @CacheEvict(cacheNames = CacheNames.COMMENT, key = "#commentId")
     public void disableComment(Long commentId, User user) {
         Comment comment = validateUserAuth(commentId, user);
         commentRepository.disableCommentByCommentId(comment.getId());
@@ -115,6 +108,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @CacheEvict(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#threadId")
     public void disableCommentByThreadId(Long threadId) {
         commentRepository.disableCommentByThreadId(threadId);
     }
