@@ -74,7 +74,6 @@ public class CommentServiceImpl implements CommentService {
     // 유저 권한 검증
 
     @Override
-    @Transactional
     public Comment validateUserAuth(Long commentId, User user) {
         Comment comment = getComment(commentId);
         if (!comment.getUser().getId().equals(user.getId())) {
