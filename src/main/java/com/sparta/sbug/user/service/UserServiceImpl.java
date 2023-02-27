@@ -98,20 +98,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(cacheNames = CacheNames.USER, key = "#email")
-    public User getUser(String email) {
-        return userRepository.findByEmailAndInUseIsTrue(email).orElseThrow(
-                () -> new IllegalArgumentException("유저를 찾을 수 없습니다.")
-        );
-    }
-    @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.ALLUSERS)
     public List<UserResponseDto> getUsers() {
         return userRepository.findAll().stream().map(UserResponseDto::of).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.USERDTO, key = "#user.id")
     public UserResponseDto getMyPage(User user) {
         return getUserResponseDto(user);
     }
@@ -173,27 +168,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(cacheNames = CacheNames.ALLUSERS)
-    public List<UserResponseDto> getUsers() {
-        return userRepository.findAll().stream().map(UserResponseDto::of).collect(Collectors.toList());
-    }
-
-    @Override
-    @Cacheable(cacheNames = CacheNames.USERDTO, key = "#user.id")
-    public UserResponseDto myPage(User user) {
-        User user1 = userRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 없습니다")
-        );
-        return UserResponseDto.of(user1);
-    }
-    @Override
-    @Cacheable(cacheNames = CacheNames.USERDTO, key = "#id")
-    public UserResponseDto getUser(Long id){
-        User findUser = userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("선택한 유저가 없습니다.")
-        );
-        return UserResponseDto.of(findUser);
-    }
+    @Cacheable(cacheNames = CacheNames.USER, key = "#email")
     @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
         return userRepository.findByEmailAndInUseIsTrue(email).orElseThrow(
