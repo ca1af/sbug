@@ -72,10 +72,10 @@ public class ScheduleServiceImplTest {
     @BeforeEach
     public void init() {
 
-        request = new ScheduleRequestDto(
-            "팀 최종 프로젝트 미팅",
-            LocalDateTime.of(2023, 5, 4, 12, 20)
-        );
+//        request = new ScheduleRequestDto(
+//            "팀 최종 프로젝트 미팅",
+//            LocalDateTime.of(2023, 5, 4, 12, 20)
+//        );
 
         user = User.builder()
             .email("123")
@@ -126,7 +126,7 @@ public class ScheduleServiceImplTest {
 
         startDate = LocalDateTime.of(2023, 5, 1, 00, 00);
         endDate = LocalDateTime.of(2023, 6, 1, 00, 00);
-        periodDto = new PeriodRequestDto(startDate, endDate);
+//        periodDto = new PeriodRequestDto(startDate, endDate);
 
     }
 
