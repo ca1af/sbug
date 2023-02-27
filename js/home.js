@@ -128,7 +128,7 @@ function validateErrorResponse(response) {
 		location.href = "./frontdoor.html"
 		// 리이슈
 	} else if (response.status === 401) {
-		var url = "http://" + window.location.hostname + ":8080/account/reissue";
+		var url = "http://" + window.location.hostname + ":8080/api/users/reissue";
 		$.ajax({
 			type: "GET",
 			url: url,

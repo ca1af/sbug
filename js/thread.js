@@ -100,16 +100,16 @@ function makeThread(id, nickname, userId, time, content, emojis) {
       const element = emojis[i];
       switch (element.emojiType) {
         case 'SMILE':
-          countSmile++;
+          countSmile = element.count;
           break;
         case 'CRY':
-          countCry++;
+          countCry = element.count;
           break;
         case 'HEART':
-          countHeart++;
+          countHeart = element.count;
           break;
         case 'LIKE':
-          countLike++;
+          countLike = element.count;
           break;
         default:
           break;
@@ -192,7 +192,7 @@ function onClickUpdateThread(id) {
 }
 
 function updateThread(id) {
-  var url = "http://" + window.location.hostname + ":8080/api/channels/" + channelId + "/threads/" + id
+  var url = "http://" + window.location.hostname + ":8080/api/threads/" + id
   var inputText = $("#th-txtarea-" + id).val();
   var text = inputText.replaceAll(/(\n|\r\n)/g, "<br>");
   text = text.replace(/<br>$/, '');
@@ -224,10 +224,10 @@ function updateThread(id) {
 
 // 쓰레드 삭제
 function deleteThread(id) {
-  var url = "http://" + window.location.hostname + ":8080/api/channels/" + channelId + "/threads/" + id
+  var url = "http://" + window.location.hostname + ":8080/api/threads/" + id
 
   $.ajax({
-    type: "DELETE",
+    type: "PUT",
     url: url,
     contentType: "application/json",
     headers: {
@@ -291,6 +291,7 @@ function getComments(page) {
       "RTK": getCookie('refreshToken')
     },
     success: function (response) {
+      console.log(response);
       let comments = response['content'];
 
       for (let i = 0; i < comments.length; i++) {
@@ -298,7 +299,7 @@ function getComments(page) {
         let date = new Date(comment.createdAt);
         var tempDateHtml = makeDateHtml(date);
         let time = toStringTime(date);
-        let tempHtml = makeComment(comment.id, comment.userNickname, comment.userId, time, comment.content, comment.emojis);
+        let tempHtml = makeComment(comment.commentId, comment.userNickname, comment.userId, time, comment.content, comment.emojis);
         $('#comment-history').prepend(tempHtml);
         if (isDifferentDate(recentDate, date)) {
           recentDate = date;
@@ -355,7 +356,7 @@ function publishComment() {
     success: function (response) {
       console.log(response);
       let time = toStringTime(new Date(response.createdAt));
-      let tempHtml = makeComment(response.id, response.userNickname, response.userId, time, response.content, response.emojis);
+      let tempHtml = makeComment(response.commentId, response.userNickname, response.userId, time, response.content, response.emojis);
       $('#comment-history').append(tempHtml);
       $('.chat-history').scrollTop($('.chat-history')[0].scrollHeight)
       $('#message-to-send').val("");
@@ -484,7 +485,7 @@ function onClickUpdateComment(id) {
 }
 
 function updateComment(id) {
-  var url = "http://" + window.location.hostname + ":8080/api/channels/" + channelId + "/threads/comments/" + id
+  var url = "http://" + window.location.hostname + ":8080/api/comments/" + id
   var inputText = $("#c-txtarea-" + id).val();
   var text = inputText.replaceAll(/(\n|\r\n)/g, "<br>");
 
@@ -516,10 +517,10 @@ function updateComment(id) {
 // 댓글 삭제
 
 function deleteComment(id) {
-  var url = "http://" + window.location.hostname + ":8080/api/channels/" + channelId + "/threads/comments/" + id
+  var url = "http://" + window.location.hostname + ":8080/api/comments/" + id
 
   $.ajax({
-    type: "DELETE",
+    type: "PUT",
     url: url,
     headers: {
       "Authorization": getCookie('accessToken'),
@@ -627,7 +628,6 @@ function reactEmojiToComment(emojiType, id) {
 }
 
 // 로그인 회원 정보조회
-// 로그인 회원 정보조회
 var loginuserid = '';
 
 function getUserInformation() {
@@ -666,7 +666,7 @@ function validateErrorResponse(response) {
 		location.href = "./frontdoor.html"
 		// 리이슈
 	} else if (response.status === 401) {
-		var url = "http://" + window.location.hostname + ":8080/account/reissue";
+		var url = "http://" + window.location.hostname + ":8080/api/users/reissue";
 		$.ajax({
 			type: "GET",
 			url: url,
@@ -686,15 +686,15 @@ function validateErrorResponse(response) {
 				} else {
 					alert("로그인 갱신 실패! 서버의 응답이 없습니다😭 다시 로그인해주세요.");
 				}
-				clearCookie('accessToken');
-				clearCookie('refreshToken');
-				location.href = "./frontdoor.html"
+				// clearCookie('accessToken');
+				// clearCookie('refreshToken');
+				// location.href = "./frontdoor.html"
 			}
 		})
 
-		clearCookie('accessToken');
-		clearCookie('refreshToken');
-		location.href = "./frontdoor.html"
+		// clearCookie('accessToken');
+		// clearCookie('refreshToken');
+		// location.href = "./frontdoor.html"
 	} else {
 		alert("⚠️오류 : " + response.message);
 	}

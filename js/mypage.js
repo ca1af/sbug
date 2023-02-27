@@ -1,11 +1,14 @@
-var usetInfo = getUserInformation();
+var userInfo = getUserInformation();
+console.log(userInfo.userId);
 
 // 이미지 수정
 function changeImage() {
     var url = "http://" + window.location.hostname + ":8080/api/users/image"
     var image = $('#i-image').get(0).files;
 
-    console.log(image[0])
+    var imageName = image[0].name;
+    var fileType = "." + imageName.substring(imageName.lastIndexOf(".") + 1, imageName.length);
+    console.log(fileType);
 
     $.ajax({
         type: "PATCH",
@@ -15,11 +18,12 @@ function changeImage() {
             "RTK": getCookie('refreshToken')
         },
         contentType: "text/plain",
-        data: image[0].name,
+        //data: image[0].name,
+        data: fileType,
         success: function (response) {
             console.log(response);
             presignedUrl = response;
-            
+
             $.ajax({
                 type: "PUT",
                 url: presignedUrl,
@@ -47,17 +51,6 @@ function changeImage() {
             }
         }
     })
-
-    // var r = new FileReader();
-    // r.onload = function() {
-    //     console.log(r.result);
-    //     console.log(image[0].name);
-
-    //     var presignedUrl;
-        
-    // }
-
-    // r.readAsBinaryString(image[0]);
 }
 
 // 닉네임 수정
@@ -122,7 +115,54 @@ function changePassword() {
 }
 
 // 회원 탈퇴
+function unregister() {
+    var url = "http://" + window.location.hostname + ":8080/api/users";
+    var userInfo;
+    $.ajax({
+        type: "PUT",
+        url: url,
+        async: false,
+        headers: {
+            "Authorization": getCookie('accessToken'),
+            "RTK": getCookie('refreshToken')
+        },
+        success: function (response) {
+            console.log(response);
+            logout();
+        },
+        error: function (response) {
+            if (response.responseJSON) {
+                validateErrorResponse(response.responseJSON);
+            } else {
+                alert("회원 탈퇴 실패! 서버의 응답이 없습니다😭");
+            }
+        }
+    })
+}
 
+// 로그아웃
+function logout() {
+    var url = "http://" + window.location.hostname + ":8080/api/users/logout"
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        headers: {
+            "Authorization": getCookie('accessToken'),
+            "RTK": getCookie('refreshToken')
+        },
+        success: function (response) {
+            clearCookie('accessToken');
+            clearCookie('refreshToken');
+            location.href = "./frontdoor.html";
+        },
+        error: function (response) {
+            clearCookie('accessToken');
+            clearCookie('refreshToken');
+            location.href = "./frontdoor.html";
+        }
+    })
+}
 
 // 로그인 회원 정보조회
 function getUserInformation() {
@@ -157,45 +197,45 @@ function getUserInformation() {
 
 function validateErrorResponse(response) {
 
-	if (response.status === 403) {
-		alert("토큰이 만료되었습니다🤔. 다시 로그인해주세요.");
-		clearCookie('accessToken');
-		clearCookie('refreshToken');
-		location.href = "./frontdoor.html"
-		// 리이슈
-	} else if (response.status === 401) {
-		var url = "http://" + window.location.hostname + ":8080/account/reissue";
-		$.ajax({
-			type: "GET",
-			url: url,
-			async: false,
-			headers: {
-				"Authorization": getCookie('accessToken'),
-				"RTK": getCookie('refreshToken')
-			},
-			success: function (response) {
-				setCookie('accessToken', response.atk);
-				setCookie('refreshToken', response.rtk);
-			},
-			error: function (response) {
-				if (response.responseJSON) {
-					console.log("리이슈 실패! : " + response.responseJSON.message);
-					alert("로그인 갱신 실패! 인증 정보에 문제가 있습니다😨 다시 로그인해주세요.")
-				} else {
-					alert("로그인 갱신 실패! 서버의 응답이 없습니다😭 다시 로그인해주세요.");
-				}
-				clearCookie('accessToken');
-				clearCookie('refreshToken');
-				location.href = "./frontdoor.html"
-			}
-		})
+    if (response.status === 403) {
+        alert("토큰이 만료되었습니다🤔. 다시 로그인해주세요.");
+        clearCookie('accessToken');
+        clearCookie('refreshToken');
+        location.href = "./frontdoor.html"
+        // 리이슈
+    } else if (response.status === 401) {
+        var url = "http://" + window.location.hostname + ":8080/account/reissue";
+        $.ajax({
+            type: "GET",
+            url: url,
+            async: false,
+            headers: {
+                "Authorization": getCookie('accessToken'),
+                "RTK": getCookie('refreshToken')
+            },
+            success: function (response) {
+                setCookie('accessToken', response.atk);
+                setCookie('refreshToken', response.rtk);
+            },
+            error: function (response) {
+                if (response.responseJSON) {
+                    console.log("리이슈 실패! : " + response.responseJSON.message);
+                    alert("로그인 갱신 실패! 인증 정보에 문제가 있습니다😨 다시 로그인해주세요.")
+                } else {
+                    alert("로그인 갱신 실패! 서버의 응답이 없습니다😭 다시 로그인해주세요.");
+                }
+                clearCookie('accessToken');
+                clearCookie('refreshToken');
+                location.href = "./frontdoor.html"
+            }
+        })
 
-		clearCookie('accessToken');
-		clearCookie('refreshToken');
-		location.href = "./frontdoor.html"
-	} else {
-		alert("인증 문제가 아닌 오류 : " + response.message);
-	}
+        clearCookie('accessToken');
+        clearCookie('refreshToken');
+        location.href = "./frontdoor.html"
+    } else {
+        alert("인증 문제가 아닌 오류 : " + response.message);
+    }
 }
 
 // 쿠키 설정
