@@ -92,7 +92,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @CacheEvict(cacheNames = CacheNames.ALLUSERS)
+    @Caching(evict = {
+        @CacheEvict(cacheNames = CacheNames.ALLUSERS),
+        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.email")})
     public void unregister(User user) {
         userRepository.disableInUseByEmail(user.getEmail());
     }
@@ -144,7 +146,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id")
     @Transactional
     public void changePassword(User user, UserUpdateDto.Password dto) {
         User user1 = getUserById(user.getId());
