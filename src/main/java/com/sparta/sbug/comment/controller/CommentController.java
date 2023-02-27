@@ -1,19 +1,21 @@
 package com.sparta.sbug.comment.controller;
 
-import com.sparta.sbug.channel.service.ChannelService;
 import com.sparta.sbug.comment.dto.CommentRequestDto;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
 import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
-import com.sparta.sbug.upperlayerservice.ThreadCommentUpperLayerService;
+import com.sparta.sbug.thread.service.ThreadService;
+import com.sparta.sbug.userchannel.service.UserChannelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import static com.sparta.sbug.common.exceptions.ErrorCode.USER_THREAD_FORBIDDEN;
 
 // lombok
 @RequiredArgsConstructor
@@ -21,48 +23,14 @@ import org.springframework.web.bind.annotation.*;
 
 // springframework web bind
 @RestController
-@RequestMapping("/api/channels/")
+@RequestMapping("/api")
 public class CommentController {
 
     private final CommentService commentService;
-    private final ChannelService channelService;
-    private final ThreadCommentUpperLayerService threadCommentUpperLayerService;
+    private final UserChannelService userChannelService;
+    private final ThreadService threadService;
 
-    /**
-     * 쓰레드에 달린 모든 댓글을 조회
-     * [GET] /api/channels/{channelId}/threads/{threadId}/comments
-     *
-     * @param channelId 채널 ID
-     * @param threadId  쓰레드 ID
-     * @param pageDto   페이징 DTO
-     * @return List&lt;CommentResponseDto&gt;
-     */
-    @GetMapping("{channelId}/threads/{threadId}/comments")
-    public Slice<CommentResponseDto> getAllCommentsInThread(
-            @PathVariable Long channelId,
-            @PathVariable Long threadId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @ModelAttribute PageDto pageDto) {
-
-        String logBuilder = "[GET] /api/channels/" + channelId + "/threads/" + threadId + "/comments";
-
-        log.info(logBuilder);
-        channelService.validateUserInChannel(channelId, userDetails.getUser());
-        return commentService.getAllCommentsInThread(threadId, pageDto);
-    }
-
-    @GetMapping("admin/{channelId}/threads/{threadId}/comments")
-    @PreAuthorize("hasRole('ADMIN')")
-    public Slice<CommentResponseDto> getAllCommentsInThreadAdmin(
-            @PathVariable Long channelId,
-            @PathVariable Long threadId,
-            @ModelAttribute PageDto pageDto) {
-
-        String logBuilder = "[GET] /api/channels/" + channelId + "/threads/" + threadId + "/comments";
-
-        log.info(logBuilder);
-        return commentService.getAllCommentsInThread(threadId, pageDto);
-    }
+    // CRUD
 
     /**
      * 쓰레드에 댓글을 생성
@@ -73,62 +41,82 @@ public class CommentController {
      * @param requestDto  댓글 요청 DTO (내용)
      * @param userDetails 요청자 정보
      */
-    @PostMapping("{channelId}/threads/{threadId}/comments")
+    @PostMapping("/channels/{channelId}/threads/{threadId}/comments")
     public CommentResponseDto createComment(@PathVariable Long channelId,
-                              @PathVariable Long threadId,
-                              @RequestBody @Valid CommentRequestDto requestDto,
-                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                            @PathVariable Long threadId,
+                                            @RequestBody @Valid CommentRequestDto requestDto,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String logBuilder = "[POST] /api/channels/" + channelId + "/threads/" + threadId + "/comments";
         log.info(logBuilder);
 
-        channelService.validateUserInChannel(channelId, userDetails.getUser());
+        if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
+            throw new CustomException(USER_THREAD_FORBIDDEN);
+        }
 
-        return threadCommentUpperLayerService.createComment(threadId, requestDto.getContent(), userDetails.getUser());
+        return threadService.createComment(threadId, requestDto.getContent(), userDetails.getUser());
+    }
+
+    /**
+     * 쓰레드에 달린 모든 댓글을 조회
+     * [GET] /api/channels/{channelId}/threads/{threadId}/comments
+     *
+     * @param channelId 채널 ID
+     * @param threadId  쓰레드 ID
+     * @param pageDto   페이징 DTO
+     * @return Slice&lt;CommentResponseDto&gt;
+     */
+    @GetMapping("/channels/{channelId}/threads/{threadId}/comments")
+    public Slice<CommentResponseDto> getAllCommentsInThread(
+            @PathVariable Long channelId,
+            @PathVariable Long threadId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @ModelAttribute PageDto pageDto) {
+
+        String logBuilder = "[GET] /api/channels/" + channelId + "/threads/" + threadId + "/comments";
+        log.info(logBuilder);
+
+        if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
+            throw new CustomException(USER_THREAD_FORBIDDEN);
+        }
+
+        return commentService.getAllCommentsInThread(threadId, pageDto);
     }
 
     /**
      * 대상 댓글을 수정
-     * [PATCH] /api/channels/{channelId}/threads/comments/{id}
+     * [PATCH] /api/comments/{id}
      *
-     * @param channelId   채널 ID
      * @param commentId   댓글 ID
      * @param requestDto  댓글 요청 DTO (내용)
      * @param userDetails 요청자 정보
      */
-    @PatchMapping("{channelId}/threads/comments/{commentId}")
-    public void updateComment(@PathVariable Long channelId,
-                              @PathVariable Long commentId,
+    @PatchMapping("/comments/{commentId}")
+    public void updateComment(@PathVariable Long commentId,
                               @RequestBody CommentRequestDto requestDto,
                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        String logBuilder = "[PATCH] /api/channels/" + channelId + "/threads/comments/" + commentId;
+        String logBuilder = "[PATCH] /api/comments/" + commentId;
         log.info(logBuilder);
 
-        channelService.validateUserInChannel(channelId, userDetails.getUser());
-
-        threadCommentUpperLayerService.updateComment(commentId, requestDto.getContent(), userDetails.getUser());
+        commentService.updateComment(commentId, requestDto.getContent(), userDetails.getUser());
     }
 
     /**
      * 대상 댓글을 삭제
-     * [DELETE] /api/channels/{channelId}/threads/comments/{id}
+     * [DELETE] /api/comments/{id}
      *
-     * @param channelId   채널 ID
      * @param commentId   댓글 ID
      * @param userDetails 요청자 정보
      */
-    @DeleteMapping("/{channelId}/threads/comments/{commentId}")
-    public void deleteComment(@PathVariable Long channelId,
-                              @PathVariable Long commentId,
-                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PutMapping("/comments/{commentId}")
+    public void disableComment(@PathVariable Long commentId,
+                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        String logBuilder = "[DELETE] /api/channels/" + channelId + "/threads/comments/" + commentId;
+        String logBuilder = "[PUT] /api/comments/" + commentId;
         log.info(logBuilder);
 
-        channelService.validateUserInChannel(channelId, userDetails.getUser());
-
-        threadCommentUpperLayerService.deleteComment(commentId, userDetails.getUser());
+        commentService.disableComment(commentId, userDetails.getUser());
     }
 
 }

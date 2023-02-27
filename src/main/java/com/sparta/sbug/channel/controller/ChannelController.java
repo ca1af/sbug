@@ -2,17 +2,17 @@ package com.sparta.sbug.channel.controller;
 
 import com.sparta.sbug.channel.dto.ChannelDto;
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
-import com.sparta.sbug.channel.entity.Channel;
-import com.sparta.sbug.upperlayerservice.UserChannelUpperLayerService;
-import com.sparta.sbug.channel.service.ChannelServiceImpl;
+import com.sparta.sbug.common.exceptions.CustomException;
+import com.sparta.sbug.userchannel.service.UserChannelService;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.sparta.sbug.common.exceptions.ErrorCode.BAD_REQUEST_CHANNEL_NAME;
 
 // lombok
 @RequiredArgsConstructor
@@ -23,42 +23,12 @@ import java.util.List;
 @RequestMapping("/api")
 @CrossOrigin
 public class ChannelController {
-    private final ChannelServiceImpl channelService;
-    private final UserChannelUpperLayerService userChannelUpperLayerService;
-
 
     /**
-     * 단일 채널 정보 불러오기
-     * [GET] /api/channels/{id}
-     *
-     * @param id 정보를 불러올 채널의 ID
-     * @return ChannelResponseDto
+     * 하위 레이어 데이터 서비스 - 유저-채널 서비스
      */
-    @GetMapping("/channels/{id}")
-    public ChannelResponseDto channel(@PathVariable Long id) {
-        Channel channel = channelService.getChannelById(id);
-        return ChannelResponseDto.of(channel);
-    }
+    private final UserChannelService userChannelService;
 
-    /**
-     * 모든 채널 조회하기 (어드민용)
-     * @return List&lt;ChannelResponseDto&gt;
-     */
-
-    /**
-     * 내가 속한 채널의 리스트를 불러오기
-     * [GET] /api/users/channels
-     *
-     * @param userDetails 요청자 정보
-     * @return List&lt;ChannelResponseDto&gt;
-     */
-    @GetMapping("/users/channels")
-    public List<ChannelResponseDto> allMyChannel(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("[GET] /users/channels");
-        return userChannelUpperLayerService.getChannelsByUserId(userDetails.getUser().getId());
-    }
-
-    // 채널 생성
 
     /**
      * 채널 만들기
@@ -69,18 +39,32 @@ public class ChannelController {
      * @return ChannelResponseDto
      */
     @PostMapping("/channels")
-    public ChannelResponseDto channel(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                        @RequestBody ChannelDto.ChannelRequest requestDto) {
+    public ChannelResponseDto createChannel(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                            @RequestBody ChannelDto.ChannelRequest requestDto) {
+        log.info("[POST] /api/channels");
 
         // channel name check
         if (requestDto.getChannelName().trim().equals("")) {
-            throw new IllegalArgumentException("채널 이름에는 공백이 들어갈 수 없습니다.");
+            throw new CustomException(BAD_REQUEST_CHANNEL_NAME);
         }
 
         // create channel and user-channel mapping data
-        return userChannelUpperLayerService.createChannelAndUserChannelForRequester(userDetails.getUser(), requestDto.getChannelName());
+        return userChannelService.createChannel(userDetails.getUser(), requestDto.getChannelName());
     }
 
+    /**
+     * 내가 속한 채널의 리스트를 불러오기
+     * [GET] /api/users/channels
+     *
+     * @param userDetails 요청자 정보
+     * @return List&lt;ChannelResponseDto&gt;
+     */
+    @GetMapping("/users/channels")
+    public List<ChannelResponseDto> getAllMyChannel(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("[GET] /api/users/channels");
+
+        return userChannelService.getChannelsByUserId(userDetails.getUser().getId());
+    }
 
     /**
      * 채널에 유저 초대하기
@@ -88,51 +72,15 @@ public class ChannelController {
      *
      * @param userDetails 요청자
      * @param requestDto  초대할 사람의 이메일
-     * @param id          초대할 채널 ID
+     * @param channelId   초대할 채널 ID
      */
-    @PostMapping("/channels/{id}/users")
+    @PostMapping("/channels/{channelId}/users")
     public void inviteUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
                            @RequestBody ChannelDto.InvitationRequest requestDto,
-                           @PathVariable Long id) {
-        // invite user (=create user-channel mapping data)
-        userChannelUpperLayerService.inviteUser(userDetails.getUser(), id, requestDto.getEmail());
+                           @PathVariable Long channelId) {
+        String infoLog = "[POST] /api/channels/" + channelId + "/users";
+        log.info(infoLog);
+
+        userChannelService.inviteUser(userDetails.getUser(), channelId, requestDto.getEmail());
     }
-
-    /**
-     * 채널 정보 수정
-     * [PATCH] /api/channels/{id}
-     *
-     * @param userDetails 요청자
-     * @param requestDto  초대할 사람의 이메일
-     * @param id          초대할 채널 ID
-     */
-    @PatchMapping("/channels/{id}")
-    public void channelName(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails,
-                            @RequestBody ChannelDto.ChannelRequest requestDto) {
-        // channel name check
-        if (requestDto.getChannelName().trim().equals("")) {
-            throw new IllegalArgumentException("채널 이름에는 공백이 들어갈 수 없습니다.");
-        }
-
-        // update channel name
-        channelService.updateChannelName(id, userDetails.getUser(), requestDto.getChannelName());
-    }
-
-    /**
-     * 채널과 그 채널에 가입된 유저 데이터(유저-채널 데이터)를 삭제
-     * [DELETE] /api/channels/{id}
-     *
-     * @param userDetails 유저 정보
-     * @param id          채널 ID
-     */
-    @DeleteMapping("/channels/{id}")
-    public void channel(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
-        // delete channel
-        userChannelUpperLayerService.deleteChannelAndDependentUserChannel(userDetails.getUser(), id);
-    }
-
-//    @GetMapping("/channel/{id}/threads")
-//    public List<ThreadResponseDto> getThreads(@PathVariable Long id){
-//        return channelService.getThreads(id);
-//    }
 }

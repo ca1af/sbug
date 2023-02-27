@@ -2,6 +2,7 @@ package com.sparta.sbug.thread.repository;
 
 import com.sparta.sbug.thread.entity.Thread;
 import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,6 +27,7 @@ public interface ThreadRepository extends JpaRepository<Thread, Long> {
      */
 
     Slice<Thread> findThreadsByChannelIdAndInUseIsTrue(Long channelId, Pageable pageable);
+
 //    @Query("update Thread t set t.inUse = false where t.id = :threadId")
     @Query(nativeQuery = true, value = "update thread set in_use =true where id =:threadId")
     @Modifying(clearAutomatically = true)

@@ -23,7 +23,7 @@ class ThreadEmojiServiceImplTest {
     @Test
     void createThreadEmoji() {
         Thread thread = threadService.findThreadById(1L);
-        User user1 = userService.getUser("user1");
+        User user1 = userService.getUserByEmail("user1");
         ThreadEmoji threadEmoji = new ThreadEmoji("Emoji1",user1,thread);
         threadEmojiRepository.save(threadEmoji);
 

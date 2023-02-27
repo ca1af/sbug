@@ -72,7 +72,7 @@ class ChannelServiceImplTest {
 
         // when
         System.out.println("======================== test query start =============================");
-        channelService.updateChannelName(channel.getId(), user1, newChannelName);
+        channelService.updateChannelName(channel.getId(), newChannelName);
         System.out.println("=======================================================================");
 
         // then
@@ -94,7 +94,7 @@ class ChannelServiceImplTest {
 
         // when
         System.out.println("======================== test query start =============================");
-        channelService.deleteChannel(savedChannel.getId(), user1);
+        channelService.deleteChannel(savedChannel.getId());
         System.out.println("=======================================================================");
 
         // then
