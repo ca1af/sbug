@@ -10,9 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -22,8 +19,6 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
     private final CommentServiceImpl commentService;
     private final JPAQueryFactory queryFactory;
 
-
-    // CommentEmoji 생성
     @Override
     public boolean reactCommentEmoji(String emojiType, User user, Long commentId){
         QCommentEmoji qCommentEmoji = QCommentEmoji.commentEmoji;
@@ -34,6 +29,7 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
                         .and(qCommentEmoji.user.id.eq(user.getId()))
                         .and(qCommentEmoji.emojiType.eq(EmojiType.valueOf(emojiType))))
                 .fetchOne();
+
         if (commentEmoji!= null) {
             commentEmojiRepository.delete(commentEmoji);
             return false;
@@ -45,21 +41,7 @@ public class CommentEmojiServiceImpl implements CommentEmojiService {
         }
     }
 
-    // CommentEmoji 삭제
-    @Override
-    public void deleteCommentEmoji(String emojiType, User user, Long commentId) {
-        QCommentEmoji qCommentEmoji = QCommentEmoji.commentEmoji;
+    public void countEmojis(Long commentId) {
 
-        CommentEmoji commentEmoji = queryFactory
-                .selectFrom(qCommentEmoji)
-                .where(qCommentEmoji.comment.id.eq(commentId)
-                        .and(qCommentEmoji.user.id.eq(user.getId()))
-                        .and(qCommentEmoji.emojiType.eq(EmojiType.valueOf(emojiType))))
-                .fetchOne();
-
-        if (commentEmoji==null) {
-            throw new NoSuchElementException("해당 이모지 반응을 찾을 수 없습니다.");
-        }
-        commentEmojiRepository.delete(commentEmoji);
     }
 }
