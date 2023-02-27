@@ -1,5 +1,6 @@
 package com.sparta.sbug.thread.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.sparta.sbug.emoji.dto.EmojiResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
 import lombok.Getter;
@@ -22,7 +23,6 @@ public class ThreadResponseDto {
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-
     private List<EmojiResponseDto> emojis;
 
     private ThreadResponseDto(Thread thread) {
@@ -33,6 +33,16 @@ public class ThreadResponseDto {
         this.createdAt = thread.getCreatedAt();
         this.modifiedAt = thread.getModifiedAt();
         this.emojis = thread.getEmojis().stream().map(EmojiResponseDto::of).collect(Collectors.toList());
+        // 이부분에서 LazyLoading 발생. BatchSize 만큼의 in 절 발생.
+    }
+    @QueryProjection
+    public ThreadResponseDto(Long threadId, String userNickname, Long userId, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        this.threadId = threadId;
+        this.userNickname = userNickname;
+        this.userId = userId;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
 
     /**
