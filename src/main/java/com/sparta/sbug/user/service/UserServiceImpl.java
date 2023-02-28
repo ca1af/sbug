@@ -94,7 +94,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Caching(evict = {
         @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "'SimpleKey []'"),
-        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.email")})
+        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
+        @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     public void unregister(User user) {
         userRepository.disableInUseByEmail(user.getEmail());
     }
@@ -138,7 +139,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Caching(evict = {
         @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "'SimpleKey []'"),
-        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id")})
+        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
+        @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     public void updateNickname(User user, UserUpdateDto.Nickname dto) {
         User user1 = getUserById(user.getId());
 
@@ -155,7 +157,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id")
+    @Caching(evict = {
+        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
+        @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     @Transactional
     public String changeProfileImage(User user, String key) {
         String uniqueKey = key + user.getEmail();
@@ -170,7 +174,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(cacheNames = CacheNames.USER, key = "#email")
     @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
         return userRepository.findByEmailAndInUseIsTrue(email).orElseThrow(
