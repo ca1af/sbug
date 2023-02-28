@@ -30,7 +30,6 @@ public class ThreadController {
 
     private final UserChannelService userChannelService;
     private final ThreadService threadService;
-    private final ThreadQueryRepositoryImpl threadQueryRepository;
 
     /**
      * 대상 채널에 쓰레드를 생성
@@ -138,6 +137,6 @@ public class ThreadController {
     }
     @GetMapping("/threads/search")
     public List<ThreadResponseDto> searchByCond(@RequestBody ThreadSearchCond threadSearchCond){
-        return threadQueryRepository.findThreadBySearchCondition(threadSearchCond);
+        return threadService.findThreadBySearchCondition(threadSearchCond);
     }
 }
