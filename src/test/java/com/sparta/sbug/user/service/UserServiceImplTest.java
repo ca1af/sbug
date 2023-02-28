@@ -54,11 +54,11 @@ class UserServiceImplTest {
         assertEquals(user.getNickname(), "newNickname");
         assertEquals(user.getPassword(),"newPass1#" );
 
-        UserUpdateDto userUpdateDto = new UserUpdateDto("  ", "password1#");
-        if (!userUpdateDto.getNickname().trim().equals("")){
-            user.setNickname(userUpdateDto.getNickname());
-        }
-        user.setPassword(userUpdateDto.getPassword());
+//        UserUpdateDto userUpdateDto = new UserUpdateDto("  ", "password1#");
+//        if (!userUpdateDto.getNickname().trim().equals("")){
+//            user.setNickname(userUpdateDto.getNickname());
+//        }
+//        user.setPassword(userUpdateDto.getPassword());
 
         assertEquals(user.getNickname(), "newNickname");
     }

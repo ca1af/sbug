@@ -98,4 +98,13 @@ public interface CommentService {
      * @param commentId 대상 코멘트
      */
     void disableCommentByAdmin(Long commentId);
+
+    /**
+     * 코멘트 ID로 코멘트를 찾고 이모지 코멘트 서비스에서 코멘트 반응 메소드를 호출합니다.
+     *
+     * @param emojiType 이모지 종류
+     * @param user      반응한 유저
+     * @param commentId 대상 댓글
+     */
+    boolean reactCommentEmoji(String emojiType, User user, Long commentId);
 }

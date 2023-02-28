@@ -6,10 +6,13 @@ import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.common.exceptions.CustomException;
+import com.sparta.sbug.emoji.dto.EmojiCountDto;
 import com.sparta.sbug.emoji.dto.EmojiResponseDto;
+import com.sparta.sbug.emoji.service.ThreadEmojiService;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
+import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.cache.CacheNames;
 
@@ -21,8 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
-
 import java.time.LocalDateTime;
+import java.util.*;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,6 +46,11 @@ public class ThreadServiceImpl implements ThreadService {
      */
     private final CommentService commentService;
 
+    /**
+     * 하위 레이어 데이터 서비스 - 쓰레드 이모지 서비스
+     */
+    private final ThreadEmojiService threadEmojiService;
+
 
     // CRUD
 
@@ -55,7 +64,7 @@ public class ThreadServiceImpl implements ThreadService {
                 .build();
         thread.setChannel(channel);
         Thread savedThread = threadRepository.save(thread);
-        return ThreadResponseDto.of(savedThread);
+        return ThreadResponseDto.of(savedThread, null);
     }
 
     @Override
@@ -63,22 +72,25 @@ public class ThreadServiceImpl implements ThreadService {
     @Cacheable(cacheNames = CacheNames.THREADSINCHANNEL, key = "#channelId")
     public Slice<ThreadResponseDto> getAllThreadsInChannel(Long channelId, PageDto pageDto) {
         Slice<Thread> threads = threadRepository.findThreadsByChannelIdAndInUseIsTrue(channelId, pageDto.toPageable());
-        return threads.map(ThreadResponseDto::of);
+        List<Long> threadIds = threads.getContent().stream().map(Thread::getId).toList();
+        List<EmojiCountDto> emojiCountDtoList = threadEmojiService.getThreadsEmojiCount(threadIds);
+        Map<Long, List<EmojiResponseDto>> threadEmojiCountMap = EmojiResponseDto.getEmojiCountMap(emojiCountDtoList);
+        return threads.map(thread -> ThreadResponseDto.of(thread, threadEmojiCountMap));
     }
 
     @Override
     @Transactional(readOnly = true)
     public ThreadResponseDto getThread(Long threadId) {
         Thread thread = findThreadById(threadId);
-        ThreadResponseDto responseDto = ThreadResponseDto.of(thread);
-        responseDto.setEmojis(thread.getEmojis().stream().map(EmojiResponseDto::of).collect(Collectors.toList()));
-        return responseDto;
+        List<EmojiCountDto> emojiCountDtoList = threadEmojiService.getThreadEmojiCount(threadId);
+        Map<Long, List<EmojiResponseDto>> threadEmojiCountMap = EmojiResponseDto.getEmojiCountMap(emojiCountDtoList);
+        return ThreadResponseDto.of(thread, threadEmojiCountMap);
     }
 
     @Override
     @Transactional
     @CacheEvict(cacheNames = CacheNames.THREAD, key = "#threadId")
-    public ThreadResponseDto editThread(Long threadId, String requestContent, User user) {
+    public void editThread(Long threadId, String requestContent, User user) {
         Thread thread = validateUserAuth(threadId, user);
 
         if (requestContent.trim().equals("")) {
@@ -86,7 +98,6 @@ public class ThreadServiceImpl implements ThreadService {
         }
 
         thread.updateThread(requestContent);
-        return ThreadResponseDto.of(thread);
     }
 
     //THREADSINCHANNEL도 evict 해줘야 할것 같은데, channelId를 가져올 수 없음
@@ -151,5 +162,16 @@ public class ThreadServiceImpl implements ThreadService {
     public void deleteThreadsOnSchedule() {
         LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
         threadRepository.deleteThreads(localDateTime);
+    }
+
+    @Override
+    public boolean reactThreadEmoji(String emojiType, User user, Long threadId) {
+        Thread thread = findThreadById(threadId);
+        return threadEmojiService.reactThreadEmoji(emojiType, user, thread);
+
+    @Override
+    public List<ThreadResponseDto> findThreadBySearchCondition(ThreadSearchCond threadSearchCond){
+        return threadRepository.findThreadBySearchCondition(threadSearchCond);
+
     }
 }

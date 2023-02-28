@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class KakaoController {
     private final KakaoService kakaoService;
 
-    //https://kauth.kakao.com/oauth/authorize?client_id=a6be9b62b761e5b5ee34bfa49d268617&redirect_uri=http://localhost:5500/login.html&response_type=code
     @GetMapping("/api/users/kakao")
     public TokenResponseDto kakaoLogin(HttpServletRequest request) throws JsonProcessingException {
         var code = request.getHeader("code");
