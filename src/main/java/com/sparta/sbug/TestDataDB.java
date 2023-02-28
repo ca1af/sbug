@@ -53,7 +53,6 @@ public class TestDataDB {
             // 유저 생성
             User user1 = User.builder().email("user1@naver.com").password(getEncode("password1")).nickname("뽀로로")
                     .build();
-            user1.setProfileImage("2022christmastree.jpeg");
             User savedUser1 = userRepository.save(user1);
 
 

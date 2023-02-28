@@ -22,8 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.sparta.sbug.common.exceptions.ErrorCode.*;
 
@@ -156,6 +156,7 @@ public class ThreadServiceImpl implements ThreadService {
     }
 
     @Override
+    @Transactional
     public boolean reactThreadEmoji(String emojiType, User user, Long threadId) {
         Thread thread = findThreadById(threadId);
         return threadEmojiService.reactThreadEmoji(emojiType, user, thread);

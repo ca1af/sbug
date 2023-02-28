@@ -6,7 +6,6 @@ import com.sparta.sbug.common.exceptions.ErrorCode;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.thread.dto.ThreadRequestDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
-import com.sparta.sbug.thread.repository.query.ThreadQueryRepositoryImpl;
 import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
 import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.userchannel.service.UserChannelService;
@@ -18,6 +17,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.sparta.sbug.common.exceptions.ErrorCode.USER_THREAD_FORBIDDEN;
 
 // lombok
 @RequiredArgsConstructor
@@ -138,5 +139,31 @@ public class ThreadController {
     @GetMapping("/threads/search")
     public List<ThreadResponseDto> searchByCond(@RequestBody ThreadSearchCond threadSearchCond){
         return threadService.findThreadBySearchCondition(threadSearchCond);
+    }
+
+    /**
+     * 쓰레드 이모지 반응을 생성하거나 이미 동일한 반응이 존재한다면 삭제
+     * [POST] /api/channels/{channelId}/threads/{threadId}/emojis
+     *
+     * @param channelId   채널 ID
+     * @param threadId    쓰레드 ID
+     * @param emojiType   이모지 반응 타입(열거형)
+     * @param userDetails 요청자 정보
+     */
+    @PostMapping("/channels/{channelId}/threads/{threadId}/emojis")
+    public boolean reactThreadEmoji(
+            @PathVariable Long channelId,
+            @PathVariable Long threadId,
+            @RequestBody String emojiType,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        String infoLog = "[POST] /api/channels/" + channelId + "/threads/" + threadId +"/emojis";
+        log.info(infoLog);
+
+        if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
+            throw new CustomException(USER_THREAD_FORBIDDEN);
+        }
+
+        return threadService.reactThreadEmoji(emojiType, userDetails.getUser(), threadId);
     }
 }

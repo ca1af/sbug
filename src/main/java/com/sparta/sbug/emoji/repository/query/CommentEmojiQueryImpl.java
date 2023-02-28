@@ -45,7 +45,8 @@ public class CommentEmojiQueryImpl implements CommentEmojiQuery {
     public List<EmojiCountDto> getCommentEmojiCount(List<Long> commentIds) {
         return jpaQueryFactory.select(Projections.constructor(EmojiCountDto.class, commentEmoji.comment.id, commentEmoji.emojiType, commentEmoji.count()))
                 .from(commentEmoji)
-                .where(commentEmoji.comment_id.in(commentIds))
+                .groupBy(commentEmoji.comment_id, commentEmoji.emojiType)
+                .having(commentEmoji.comment_id.in(commentIds))
                 .fetch();
     }
 }
