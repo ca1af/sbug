@@ -458,6 +458,7 @@ function getUserInformation() {
       "RTK": getCookie('refreshToken')
     },
     success: function (response) {
+      console.log(response);
       userInfo = response;
       $("#profile-img").attr("src", response.profileImageUrl)
     },
