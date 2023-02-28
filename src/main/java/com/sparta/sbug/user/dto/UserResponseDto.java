@@ -3,11 +3,13 @@ package com.sparta.sbug.user.dto;
 import com.sparta.sbug.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 /**
  * 유저 정보 응답 DTO
  */
 @Getter
+@NoArgsConstructor
 public class UserResponseDto {
     Long userId;
     String email;

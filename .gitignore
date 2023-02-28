@@ -43,3 +43,6 @@ out/
 ### my ignore ###
 src/main/resources/application.yml
 resources/aws.yml
+
+### Redis Cache ###
+dump.rdb
