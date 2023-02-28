@@ -3,7 +3,6 @@ package com.sparta.sbug.thread.repository;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.query.ThreadQueryRepository;
 import io.lettuce.core.dynamic.annotation.Param;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,10 +15,12 @@ import java.util.Optional;
 public interface ThreadRepository extends JpaRepository<Thread, Long>, ThreadQueryRepository {
     /**
      * 활성화된 쓰레드만 조회
+     *
      * @param threadId
      * @return
      */
     Optional<Thread> findThreadByIdAndInUseIsTrue(Long threadId);
+
     /**
      * 대상 채널에 작성된 모든 쓰레드를 조회
      *
@@ -29,19 +30,16 @@ public interface ThreadRepository extends JpaRepository<Thread, Long>, ThreadQue
 
     Slice<Thread> findThreadsByChannelIdAndInUseIsTrue(Long channelId, Pageable pageable);
 
-//    @Query("update Thread t set t.inUse = false where t.id = :threadId")
-    @Query(nativeQuery = true, value = "update thread set in_use =true where id =:threadId")
     @Modifying(clearAutomatically = true)
+    @Query("update Thread t set t.inUse = false where t.id = :threadId")
     void disableThreadById(@Param("id") Long threadId);
 
-//    @Query("update Thread t set t.inUse = false where t.channel.id = :channelId")
-    @Query(nativeQuery = true, value = "update thread set in_use = false where channel_id =:channelId")
     @Modifying(clearAutomatically = true)
+    @Query("update Thread t set t.inUse = false where t.channel.id = :channelId")
     void disableThreadByChannelId(@Param("id") Long channelId);
 
     @Modifying(clearAutomatically = true)
-//    @Query("delete from Thread t where t.inUse = false and t.modifiedAt < :localDateTime ")
-    @Query(nativeQuery = true, value = "delete from thread where in_use = false and modified_at <:localDateTime")
+    @Query("delete from Thread t where t.inUse = false and t.modifiedAt <:localDateTime ")
     void deleteThreads(@Param("localDateTime") LocalDateTime localDateTime);
 
     boolean existsById(Long threadId);

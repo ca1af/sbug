@@ -48,7 +48,7 @@ public interface ThreadService {
      * @param requestContent 수정될 쓰레드 내용
      * @param user           요청자
      */
-    ThreadResponseDto editThread(Long threadId, String requestContent, User user);
+    void editThread(Long threadId, String requestContent, User user);
 
     /**
      * 대상 쓰레드를 비활성화 ( 논리 삭제 )
@@ -111,6 +111,16 @@ public interface ThreadService {
      * - 비활성화된지 3개월이 지난 쓰레드들만 삭제
      */
     void deleteThreadsOnSchedule();
+
+    /**
+     * 쓰레드에 이모지 반응을 남기거나 삭제함
+     *
+     * @param emojiType 이모지 종류
+     * @param user      요청자
+     * @param threadId  대상 쓰레드
+     * return boolean ( true = 생성됨, false = 삭제됨 )
+     */
+    boolean reactThreadEmoji(String emojiType, User user, Long threadId);
 
     /**
      * 동적 쿼리를 사용한 쓰레드 조회

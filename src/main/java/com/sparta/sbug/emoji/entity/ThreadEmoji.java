@@ -16,13 +16,16 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("THREAD")
 public class ThreadEmoji extends Emoji{
 
+    @Column(updatable = false, insertable = false)
+    private Long thread_id;
+
     /**
      * 생성자
      */
     public ThreadEmoji(String emojiType, User user, Thread thread){
         super(emojiType, user);
         setThread(thread);
-        // TODO: 2023-02-21 새 쓰레드이모지 객체가 생성 될 때 Thread 에 selecet 쿼리가 나가는 문제. 해결 가능할까?
+        this.thread_id = thread.getId();
     }
 
     /**

@@ -7,8 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 /**
  * 쓰레드 반환 DTO
@@ -25,16 +26,21 @@ public class ThreadResponseDto {
     private LocalDateTime modifiedAt;
     private List<EmojiResponseDto> emojis;
 
-    private ThreadResponseDto(Thread thread) {
+    private ThreadResponseDto(Thread thread, Map<Long, List<EmojiResponseDto>> threadEmojiCountMap) {
         this.threadId = thread.getId();
         this.userNickname = thread.getUser().getNickname(); // 이름으로 넣을지 확인
         this.userId = thread.getUser().getId();
         this.content = thread.getContent();
         this.createdAt = thread.getCreatedAt();
         this.modifiedAt = thread.getModifiedAt();
-        this.emojis = thread.getEmojis().stream().map(EmojiResponseDto::of).collect(Collectors.toList());
+        if (threadEmojiCountMap != null) {
+            this.emojis = threadEmojiCountMap.get(thread.getId());
+        } else {
+            this.emojis = new ArrayList<>();
+        }
         // 이부분에서 LazyLoading 발생. BatchSize 만큼의 in 절 발생.
     }
+
     @QueryProjection
     public ThreadResponseDto(Long threadId, String userNickname, Long userId, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.threadId = threadId;
@@ -45,13 +51,8 @@ public class ThreadResponseDto {
         this.modifiedAt = modifiedAt;
     }
 
-    /**
-     * 쓰레드 객체를 받아 응답 DTO로 반환하는 메서드
-     *
-     * @param thread 대상 객체
-     */
-    public static ThreadResponseDto of(Thread thread) {
-        return new ThreadResponseDto(thread);
+    public static ThreadResponseDto of(Thread thread, Map<Long, List<EmojiResponseDto>> threadEmojiCountMap) {
+        return new ThreadResponseDto(thread, threadEmojiCountMap);
     }
 
     public void setEmojis(List<EmojiResponseDto> emojis) {
