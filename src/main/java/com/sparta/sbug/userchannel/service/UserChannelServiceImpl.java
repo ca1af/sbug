@@ -108,10 +108,6 @@ public class UserChannelServiceImpl implements UserChannelService {
     @Override
     @Transactional
     public ThreadResponseDto createThread(Long channelId, String requestContent, User user) {
-        if (isUserJoinedByChannel(user, channelId)) {
-            throw new CustomException(USER_CHANNEL_FORBIDDEN);
-        }
-
         if (requestContent.trim().equals("")) {
             throw new CustomException(BAD_REQUEST_THREAD_CONTENT);
         }

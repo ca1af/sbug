@@ -83,7 +83,6 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    @Transactional
     public ThreadResponseDto createThread(Long channelId, String requestContent, User user) {
         Channel channel = getChannelById(channelId);
         return threadService.createThread(channel, requestContent, user);
