@@ -5,8 +5,11 @@ import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
+import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
 import com.sparta.sbug.user.entity.User;
 import org.springframework.data.domain.Slice;
+
+import java.util.List;
 
 public interface ThreadService {
 
@@ -108,4 +111,11 @@ public interface ThreadService {
      * - 비활성화된지 3개월이 지난 쓰레드들만 삭제
      */
     void deleteThreadsOnSchedule();
+
+    /**
+     * 동적 쿼리를 사용한 쓰레드 조회
+     * @param threadSearchCond
+     * @return
+     */
+    List<ThreadResponseDto> findThreadBySearchCondition(ThreadSearchCond threadSearchCond);
 }
