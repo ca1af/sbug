@@ -6,6 +6,8 @@ import com.sparta.sbug.common.exceptions.ErrorCode;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.thread.dto.ThreadRequestDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
+import com.sparta.sbug.thread.repository.query.ThreadQueryRepositoryImpl;
+import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
 import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.userchannel.service.UserChannelService;
 import jakarta.validation.Valid;
@@ -14,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // lombok
 @RequiredArgsConstructor
@@ -105,14 +109,14 @@ public class ThreadController {
      * @param userDetails      요청자 정보
      */
     @PatchMapping("/threads/{threadId}")
-    public ThreadResponseDto updateThread(@PathVariable Long threadId,
+    public void updateThread(@PathVariable Long threadId,
                                           @RequestBody ThreadRequestDto threadRequestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String logBuilder = "[PATCH] /api/threads/" + threadId;
         log.info(logBuilder);
 
-        return threadService.editThread(threadId, threadRequestDto.getContent(), userDetails.getUser());
+        threadService.editThread(threadId, threadRequestDto.getContent(), userDetails.getUser());
     }
 
     /**
@@ -131,5 +135,8 @@ public class ThreadController {
 
         threadService.disableThread(threadId, userDetails.getUser());
     }
-
+    @GetMapping("/threads/search")
+    public List<ThreadResponseDto> searchByCond(@RequestBody ThreadSearchCond threadSearchCond){
+        return threadService.findThreadBySearchCondition(threadSearchCond);
+    }
 }
