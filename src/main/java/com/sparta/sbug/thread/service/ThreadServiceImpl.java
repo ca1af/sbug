@@ -10,6 +10,7 @@ import com.sparta.sbug.emoji.dto.EmojiResponseDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
+import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -101,7 +103,6 @@ public class ThreadServiceImpl implements ThreadService {
 
     // 쓰레드 데이터 조회
     @Override
-    @Transactional(readOnly = true)
     public Thread findThreadById(Long threadId) {
         Optional<Thread> optionalThread = threadRepository.findThreadByIdAndInUseIsTrue(threadId);
         if (optionalThread.isEmpty()) {
@@ -139,5 +140,9 @@ public class ThreadServiceImpl implements ThreadService {
     public void deleteThreadsOnSchedule() {
         LocalDateTime localDateTime = LocalDateTime.now().minusMonths(6);
         threadRepository.deleteThreads(localDateTime);
+    }
+    @Override
+    public List<ThreadResponseDto> findThreadBySearchCondition(ThreadSearchCond threadSearchCond){
+        return threadRepository.findThreadBySearchCondition(threadSearchCond);
     }
 }
