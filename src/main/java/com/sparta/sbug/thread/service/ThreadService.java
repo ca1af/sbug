@@ -5,8 +5,11 @@ import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
+import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
 import com.sparta.sbug.user.entity.User;
 import org.springframework.data.domain.Slice;
+
+import java.util.List;
 
 public interface ThreadService {
 
@@ -109,5 +112,20 @@ public interface ThreadService {
      */
     void deleteThreadsOnSchedule();
 
+    /**
+     * 쓰레드에 이모지 반응을 남기거나 삭제함
+     *
+     * @param emojiType 이모지 종류
+     * @param user      요청자
+     * @param threadId  대상 쓰레드
+     * return boolean ( true = 생성됨, false = 삭제됨 )
+     */
     boolean reactThreadEmoji(String emojiType, User user, Long threadId);
+
+    /**
+     * 동적 쿼리를 사용한 쓰레드 조회
+     * @param threadSearchCond
+     * @return
+     */
+    List<ThreadResponseDto> findThreadBySearchCondition(ThreadSearchCond threadSearchCond);
 }
