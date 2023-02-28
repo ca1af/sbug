@@ -152,6 +152,7 @@ public class ThreadServiceImpl implements ThreadService {
     public boolean reactThreadEmoji(String emojiType, User user, Long threadId) {
         Thread thread = findThreadById(threadId);
         return threadEmojiService.reactThreadEmoji(emojiType, user, thread);
+    }
 
     @Override
     public List<ThreadResponseDto> findThreadBySearchCondition(ThreadSearchCond threadSearchCond){
