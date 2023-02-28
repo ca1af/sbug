@@ -16,6 +16,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.sparta.sbug.cache.CacheNames;
+import org.springframework.cache.annotation.CacheEvict;
+
 import java.security.Key;
 import java.time.Duration;
 import java.util.Date;
@@ -139,6 +142,7 @@ public class JwtProvider {
      *
      * @param key Refresh Token
      */
+    @CacheEvict(cacheNames = CacheNames.USERDETAILS, key = "#key")
     public void deleteRtk(String key) {
         redisDao.deleteValues(key);
     }
