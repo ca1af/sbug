@@ -47,7 +47,8 @@ public class ThreadEmojiQueryImpl implements ThreadEmojiQuery {
     public List<EmojiCountDto> getThreadEmojiCount(Long threadId) {
         return jpaQueryFactory.select(Projections.constructor(EmojiCountDto.class, threadEmoji.thread.id, threadEmoji.emojiType, threadEmoji.count()))
                 .from(threadEmoji)
-                .where(threadEmoji.thread_id.eq(threadId))
+                .groupBy(threadEmoji.thread_id, threadEmoji.emojiType)
+                .having(threadEmoji.thread_id.eq(threadId))
                 .fetch();
     }
 
@@ -55,7 +56,8 @@ public class ThreadEmojiQueryImpl implements ThreadEmojiQuery {
     public List<EmojiCountDto> getThreadsEmojiCount(List<Long> threadIds) {
         return jpaQueryFactory.select(Projections.constructor(EmojiCountDto.class, threadEmoji.thread.id, threadEmoji.emojiType, threadEmoji.count()))
                 .from(threadEmoji)
-                .where(threadEmoji.thread_id.in(threadIds))
+                .groupBy(threadEmoji.thread_id, threadEmoji.emojiType)
+                .having(threadEmoji.thread_id.in(threadIds))
                 .fetch();
     }
 }

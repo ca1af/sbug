@@ -21,9 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.sparta.sbug.common.exceptions.ErrorCode.*;
 
@@ -155,10 +152,10 @@ public class ThreadServiceImpl implements ThreadService {
     public boolean reactThreadEmoji(String emojiType, User user, Long threadId) {
         Thread thread = findThreadById(threadId);
         return threadEmojiService.reactThreadEmoji(emojiType, user, thread);
+    }
 
     @Override
     public List<ThreadResponseDto> findThreadBySearchCondition(ThreadSearchCond threadSearchCond){
         return threadRepository.findThreadBySearchCondition(threadSearchCond);
-
     }
 }

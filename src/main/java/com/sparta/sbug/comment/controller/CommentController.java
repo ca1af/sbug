@@ -5,7 +5,6 @@ import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
 import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.common.exceptions.CustomException;
-import com.sparta.sbug.emoji.service.CommentEmojiService;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.thread.service.ThreadService;
 import com.sparta.sbug.userchannel.service.UserChannelService;
@@ -29,7 +28,6 @@ import static com.sparta.sbug.common.exceptions.ErrorCode.USER_THREAD_FORBIDDEN;
 public class CommentController {
 
     private final CommentService commentService;
-    private final CommentEmojiService emojiService;
     private final UserChannelService userChannelService;
     private final ThreadService threadService;
 
@@ -123,13 +121,15 @@ public class CommentController {
     }
 
     // 이모지 반응
-    @PostMapping("/{channelId}/threads/comments/{commentId}/emojis")
+    @PostMapping("/channels/{channelId}/threads/comments/{commentId}/emojis")
     public boolean reactThreadEmoji(
             @PathVariable Long channelId,
             @PathVariable Long commentId,
             @RequestBody String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
+        String infoLog = "[POST] /channels/" + channelId + "/threads/comments/" + commentId + "/emojis";
+        log.info(infoLog);
 
         if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
             throw new CustomException(USER_COMMENT_FORBIDDEN);

@@ -64,8 +64,7 @@ public class UserServiceImpl implements UserService {
                 .nickname(nickName)
                 .password(password)
                 .build();
-
-        user.setProfileImage("cat.png");
+        user.setProfileImage("default.png");
 
         userRepository.save(user);
     }
