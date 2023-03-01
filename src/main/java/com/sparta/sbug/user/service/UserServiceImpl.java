@@ -174,6 +174,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(cacheNames = CacheNames.USERBYEMAIL, key = "#email")
     @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
         return userRepository.findByEmailAndInUseIsTrue(email).orElseThrow(
