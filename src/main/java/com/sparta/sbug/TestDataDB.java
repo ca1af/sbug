@@ -53,20 +53,23 @@ public class TestDataDB {
             // 유저 생성
             User user1 = User.builder().email("user1@naver.com").password(getEncode("password1")).nickname("뽀로로")
                     .build();
-            user1.setProfileImage("2022christmastree.jpeg");
+            user1.setProfileImage("default.png");
             User savedUser1 = userRepository.save(user1);
 
 
             User user2 = User.builder().email("user2@naver.com").password(getEncode("password2")).nickname("루피")
                     .build();
+            user2.setProfileImage("default.png");
             userRepository.save(user2);
 
             User user3 = User.builder().email("user3@naver.com").password(getEncode("password3")).nickname("펭구")
                     .build();
+            user3.setProfileImage("default.png");
             userRepository.save(user3);
 
             User user4 = User.builder().email("user4@naver.com").password(getEncode("password4")).nickname("뿡뿡이")
                     .build();
+            user4.setProfileImage("default.png");
             userRepository.save(user4);
 
             // 채널 생성

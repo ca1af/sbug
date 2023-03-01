@@ -113,18 +113,6 @@ public class UserController {
         return userService.getUser(userId);
     }
 
-//    /**
-//     * 요청자 자신이 구성원인 모든 채널을 조회
-//     *
-//     * @param userDetails 요청자
-//     * @return List&lt;ChannelResponseDto&gt;
-//     */
-//    @GetMapping("/users/channels")
-//    public List<ChannelResponseDto> getMyChannels(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        log.info("[GET /api/users/channels");
-//        return userService.getMyChannels(userDetails.getUser());
-//    }
-
     /**
      * 회원 정보 수정 ( 닉네임 )
      * [PATCH] /api/users/nickname
