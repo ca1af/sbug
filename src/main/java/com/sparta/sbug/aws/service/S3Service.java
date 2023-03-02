@@ -56,4 +56,26 @@ public class S3Service {
         }
         return null;
     }
+
+    // 쓰레드 이미지 업로드
+    public String imageObjectPreSignedUrl(String bucketName, String keyName, S3Presigner preSigner) {
+        try {
+            PutObjectRequest objectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(keyName)
+                    .contentType("image/png")
+                    .build();
+
+            PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofMinutes(10))
+                    .putObjectRequest(objectRequest)
+                    .build();
+
+            PresignedPutObjectRequest preSignedRequest = preSigner.presignPutObject(preSignRequest);
+            return preSignedRequest.url().toString();
+        } catch (S3Exception e) {
+            e.getStackTrace();
+        }
+        return null;
+    }
 }

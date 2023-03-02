@@ -120,6 +120,25 @@ public class ThreadController {
     }
 
     /**
+     * 작성자가 대상 쓰레드에 이미지를 업로드
+     * [POST] /api/threads/{threadId}/image
+     *
+     * @param threadId         대상 쓰레드 ID
+     * @param imageFileName    요청 파일 이름
+     * @param userDetails      요청자 정보
+     */
+    @PostMapping("/threads/{threadId}/images")
+    public String imageUploadOnThread(@PathVariable Long threadId,
+                                      @RequestBody String imageFileName,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        String logBuilder = "[POST] /api/threads/" + threadId + "/images/";
+        log.info(logBuilder);
+
+        return threadService.imageUploadOnThread(threadId, imageFileName, userDetails.getUser());
+    }
+
+    /**
      * 작성자가 대상 쓰레드를 삭제
      * [PATCH] /api/threads/{threadId}
      *

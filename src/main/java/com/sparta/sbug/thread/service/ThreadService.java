@@ -8,6 +8,7 @@ import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
 import com.sparta.sbug.user.entity.User;
 import org.springframework.data.domain.Slice;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.util.List;
 
@@ -128,4 +129,8 @@ public interface ThreadService {
      * @return
      */
     List<ThreadResponseDto> findThreadBySearchCondition(ThreadSearchCond threadSearchCond);
+
+    String imageUploadOnThread(Long threadId, String imageFileName, User user);
+
+    S3Presigner getPreSigner();
 }

@@ -1,6 +1,7 @@
 package com.sparta.sbug.thread.service;
 
 
+import com.sparta.sbug.aws.service.S3Service;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
@@ -15,15 +16,22 @@ import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
 import com.sparta.sbug.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 import static com.sparta.sbug.common.exceptions.ErrorCode.*;
 
@@ -46,9 +54,16 @@ public class ThreadServiceImpl implements ThreadService {
      */
     private final ThreadEmojiService threadEmojiService;
 
+    // for S3
+    private final S3Service s3Service;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+    @Value("${cloud.aws.credentials.access-key}")
+    private String ACCESS_KEY;
+    @Value("${cloud.aws.credentials.secret-key}")
+    private String SECRET_KEY;
 
     // CRUD
-
     @Override
     public ThreadResponseDto createThread(Channel channel, String requestContent, User user) {
         Thread thread = Thread.builder()
@@ -155,10 +170,46 @@ public class ThreadServiceImpl implements ThreadService {
     public boolean reactThreadEmoji(String emojiType, User user, Long threadId) {
         Thread thread = findThreadById(threadId);
         return threadEmojiService.reactThreadEmoji(emojiType, user, thread);
+    }
 
     @Override
     public List<ThreadResponseDto> findThreadBySearchCondition(ThreadSearchCond threadSearchCond){
         return threadRepository.findThreadBySearchCondition(threadSearchCond);
+    }
 
+    // 쓰레드 이미지 업로드
+    @Override
+    @Transactional
+    public String imageUploadOnThread(Long threadId, String keyName, User user) {
+        Thread thread = findThreadById(threadId);
+
+        // 디렉토리 이름
+        String dirName = "ThreadNo."+ threadId; // Thread No. -> url에서 Thread+No.로 보여짐 -> ThreadNo.로 변경
+        // 파일 이름
+        String fileName = keyName + threadId + user.getId() + LocalDateTime.now(); // 모아보기 방식에 따라 threadId 불필요
+        // 저장경로가 포함된 파일 이름(key)
+        String objKeyName = dirName + "/" + fileName;
+
+        S3Presigner preSigner = getPreSigner();
+        String url = s3Service.imageObjectPreSignedUrl(bucketName, objKeyName, preSigner);
+        preSigner.close();
+
+        thread.setImageFile(objKeyName);
+        threadRepository.save(thread);
+        return url;
+    }
+
+
+    @Override
+    public S3Presigner getPreSigner(){
+        AwsCredentialsProvider awsCredentialsProvider;
+        AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY);
+        awsCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
+
+        Region region = Region.AP_NORTHEAST_2;
+        return S3Presigner.builder()
+                .region(region)
+                .credentialsProvider(awsCredentialsProvider)
+                .build();
     }
 }
