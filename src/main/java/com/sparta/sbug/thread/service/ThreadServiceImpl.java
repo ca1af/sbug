@@ -53,7 +53,6 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.THREADSINCHANNEL, key = "#channel.id")
     public ThreadResponseDto createThread(Channel channel, String requestContent, User user) {
         Thread thread = Thread.builder()
                 .requestContent(requestContent)
@@ -66,7 +65,6 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.THREADSINCHANNEL, key = "#channelId")
     public Slice<ThreadResponseDto> getAllThreadsInChannel(Long channelId, PageDto pageDto) {
         Slice<Thread> threads = threadRepository.findThreadsByChannelIdAndInUseIsTrue(channelId, pageDto.toPageable());
         List<Long> threadIds = threads.getContent().stream().map(Thread::getId).toList();
@@ -98,7 +96,6 @@ public class ThreadServiceImpl implements ThreadService {
         thread.updateThread(requestContent);
     }
 
-    //THREADSINCHANNEL도 evict 해줘야 할것 같은데, channelId를 가져올 수 없음
     @Override
     @Transactional
     @CacheEvict(cacheNames = CacheNames.THREAD, key = "#threadId")
