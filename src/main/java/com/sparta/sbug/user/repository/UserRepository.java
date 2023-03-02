@@ -1,6 +1,8 @@
 package com.sparta.sbug.user.repository;
 
+import com.sparta.sbug.cache.CacheNames;
 import com.sparta.sbug.user.entity.User;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email 이메일
      * @return Optional&lt;User&gt;
      */
+    @Cacheable(cacheNames = CacheNames.USERBYEMAIL, key = "#email", unless = "#result == null" )
     Optional<User> findByEmailAndInUseIsTrue(String email);
 
     /**

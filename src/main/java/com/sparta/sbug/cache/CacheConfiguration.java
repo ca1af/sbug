@@ -23,6 +23,7 @@ public class CacheConfiguration {
 
         RedisCacheConfiguration defaultConfig
             = RedisCacheConfiguration.defaultCacheConfig()
+                .disableCachingNullValues()
                 .serializeValuesWith(
                     RedisSerializationContext
                     .SerializationPair
