@@ -4,7 +4,7 @@ package com.sparta.sbug.thread.service;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
-import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.emoji.dto.EmojiCountDto;
 import com.sparta.sbug.emoji.dto.EmojiResponseDto;

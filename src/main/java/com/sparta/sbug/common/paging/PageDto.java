@@ -1,4 +1,4 @@
-package com.sparta.sbug.common.dto;
+package com.sparta.sbug.common.paging;
 
 import lombok.Builder;
 import lombok.Getter;

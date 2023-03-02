@@ -2,7 +2,7 @@ package com.sparta.sbug.thread.service;
 
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
-import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.query.ThreadSearchCond;

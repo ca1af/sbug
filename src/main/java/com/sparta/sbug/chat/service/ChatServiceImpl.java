@@ -5,15 +5,17 @@ import com.sparta.sbug.chat.entity.Chat;
 import com.sparta.sbug.chat.entity.ChatStatus;
 import com.sparta.sbug.chat.repository.ChatRepository;
 import com.sparta.sbug.chatroom.entity.ChatRoom;
-import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.user.entity.User;
+import com.sparta.sbug.websocket.handler.ChatPreHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Set;
 
 // lombok
 @RequiredArgsConstructor
@@ -25,27 +27,14 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ChatResponseDto> readAllMessageInChatRoom(Long requesterId, Long roomId, PageDto pageDto) {
-        Page<Chat> pageChats = chatRepository.findMessagesInChatRoom(roomId, pageDto.toPageable());
-        convertToRead(requesterId, pageChats);
-        return getDtoListFromEntities(pageChats);
-    }
-
-    @Override
     @Transactional
-    public void convertToRead(Long requesterId, Page<Chat> chats) {
-        for (Chat chat : chats.getContent()) {
-            if (chat.getReceiver().getId().equals(requesterId)) {
-                chat.setStatus(ChatStatus.READ);
-            }
-        }
-    }
-
-    @Override
-    public List<ChatResponseDto> getDtoListFromEntities(Page<Chat> pageChats) {
-        List<Chat> chats = pageChats.getContent();
-        return chats.stream().map(ChatResponseDto::of).collect(Collectors.toList());
+    public Slice<ChatResponseDto> readAllMessageInChatRoom(Long requesterId, Long roomId, PageDto pageDto) {
+        Slice<ChatResponseDto> sliceChats = chatRepository.findMessagesInChatRoom(roomId, pageDto.toPageable());
+        List<Long> chatIds = sliceChats.stream()
+                .filter(chatResponseDto -> chatResponseDto.getReceiverId().equals(requesterId))
+                .map(ChatResponseDto::getId).toList();
+        chatRepository.convertMessagesStatusToRead(chatIds);
+        return sliceChats;
     }
 
     @Override
@@ -56,45 +45,25 @@ public class ChatServiceImpl implements ChatService {
                 .sender(sender)
                 .message(message)
                 .receiver(receiver).build();
-        Chat savedChat = chatRepository.saveAndFlush(chat);
+        if (ChatPreHandler.CHAT_ROOM_USER_MAP.containsKey("/topic/chats/rooms/" + chatRoom.getId())) {
+            Set<String> tests = ChatPreHandler.CHAT_ROOM_USER_MAP.get("/topic/chats/rooms/" + chatRoom.getId());
+            if (tests.size() > 1) {
+                chat.setStatus(ChatStatus.READ);
+            }
+        }
+        Chat savedChat = chatRepository.save(chat);
         return ChatResponseDto.of(savedChat);
     }
 
     @Override
-    @Transactional
-    public void updateMessage(Long messageId, User user, String message) {
-        Chat chat = findChatById(messageId);
-        validateUserIsSender(chat, user);
-        chat.updateMessage(message);
-        chatRepository.save(chat);
-    }
-
-    @Override
-    @Transactional
-    public void deleteMessage(Long messageId, User user) {
-        Chat chat = findChatById(messageId);
-        validateUserIsSender(chat, user);
-        chatRepository.delete(chat);
-    }
-
-    @Override
     @Transactional(readOnly = true)
-    public Chat findChatById(Long messageId) {
-        return chatRepository.findById(messageId).orElseThrow();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public void validateUserIsSender(Chat chat, User user) {
-        if (!chat.getSender().equals(user)) {
-            // 수정 예정, 권한이 없을 때
-            throw new IllegalArgumentException();
-        }
+    public Map<Long, Long> countNewMessageByChatRoom(User user) {
+        return chatRepository.countNewMessageByChatRoom(user.getId());
     }
 
     @Override
     @Transactional(readOnly = true)
     public Long countNewMessages(User user) {
-        return chatRepository.countByReceiverIdAndStatus(user.getId(), ChatStatus.NEW);
+        return chatRepository.countNewMessageByReceiverId(user.getId());
     }
 }

@@ -1,7 +1,12 @@
 package com.sparta.sbug.aws.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
@@ -13,6 +18,13 @@ import java.time.Duration;
 @Service
 @RequiredArgsConstructor
 public class S3Service {
+
+    @Value("${cloud.aws.s3.bucket}")
+    public String bucketName;
+    @Value("${cloud.aws.credentials.access-key}")
+    private String ACCESS_KEY;
+    @Value("${cloud.aws.credentials.secret-key}")
+    private String SECRET_KEY;
 
     // 조회
     public String getObjectPreSignedUrl(String bucketName, String keyName, S3Presigner preSigner) {
@@ -55,5 +67,17 @@ public class S3Service {
             e.getStackTrace();
         }
         return null;
+    }
+
+    public S3Presigner getPreSigner() {
+        AwsCredentialsProvider awsCredentialsProvider;
+        AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY);
+        awsCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
+
+        Region region = Region.AP_NORTHEAST_2;
+        return S3Presigner.builder()
+                .region(region)
+                .credentialsProvider(awsCredentialsProvider)
+                .build();
     }
 }

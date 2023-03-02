@@ -54,7 +54,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     }
 
     /**
-     * web.ignoring() 설정으로 필터 적용을 제외해줄 요청을 정의합니다.
+     * web.ignoring() 설정으로 필터 적용을 제외해줄 요청을 정의합니다.;
      *
      * @return WebSecurityCustomizer
      */

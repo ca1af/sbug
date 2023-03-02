@@ -74,6 +74,10 @@ dependencies {
 	// aws-sdk-java-v2 (s3에 Multipart 업로드를 위함)
 	implementation platform('software.amazon.awssdk:bom:2.17.53')
 	implementation 'software.amazon.awssdk:s3'
+
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka:'
+	implementation 'com.google.guava:guava:31.1-jre'
 }
 
 	tasks.named('test') {

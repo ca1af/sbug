@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 
@@ -141,5 +142,28 @@ public class JwtProvider {
      */
     public void deleteRtk(String key) {
         redisDao.deleteValues(key);
+    }
+
+    /**
+     * 채팅 메세지 토큰을 검증하는 메서드
+     *
+     * @param token 검증할 토큰
+     * @return boolean : true = 검증 성공, false = 검증 실패
+     */
+    public boolean validateMessageToken(String token) {
+        try {
+            var encodeKey = Base64.getEncoder().encodeToString(byteKey);
+            Jwts.parserBuilder().setSigningKey(encodeKey).build().parseClaimsJws(token);
+            return true;
+        } catch (SecurityException | MalformedJwtException e) {
+            log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+        }
+        return false;
     }
 }

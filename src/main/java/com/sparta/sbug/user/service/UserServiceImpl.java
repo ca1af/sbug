@@ -13,14 +13,9 @@ import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
 import com.sparta.sbug.userchannel.enttiy.QUserChannel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.util.List;
@@ -40,12 +35,6 @@ public class UserServiceImpl implements UserService {
 
     // for S3
     private final S3Service s3Service;
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
-    @Value("${cloud.aws.credentials.access-key}")
-    private String ACCESS_KEY;
-    @Value("${cloud.aws.credentials.secret-key}")
-    private String SECRET_KEY;
 
     @Override
     @Transactional
@@ -104,8 +93,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponseDto getUser(Long id) {
-        User user = getUserById(id);
+    public UserResponseDto getUser(String email) {
+        User user = getUserByEmail(email);
         return getUserResponseDto(user);
     }
 
@@ -146,8 +135,8 @@ public class UserServiceImpl implements UserService {
     public String changeProfileImage(User user, String key) {
         String uniqueKey = key + user.getEmail();
 
-        S3Presigner preSigner = getPreSigner();
-        String url = s3Service.putObjectPreSignedUrl(bucketName, uniqueKey, preSigner);
+        S3Presigner preSigner = s3Service.getPreSigner();
+        String url = s3Service.putObjectPreSignedUrl(s3Service.bucketName, uniqueKey, preSigner);
         preSigner.close();
 
         user.setProfileImage(uniqueKey);
@@ -174,24 +163,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUserResponseDto(User user) {
         UserResponseDto responseDto = UserResponseDto.of(user);
-
-        S3Presigner preSigner = getPreSigner();
-        responseDto.setProfileImageUrl(s3Service.getObjectPreSignedUrl(bucketName, user.getProfileImage(), preSigner));
-
+        S3Presigner preSigner = s3Service.getPreSigner();
+        responseDto.setProfileImageUrl(s3Service.getObjectPreSignedUrl(s3Service.bucketName, user.getProfileImage(), preSigner));
         preSigner.close();
         return responseDto;
-    }
-
-    @Override
-    public S3Presigner getPreSigner() {
-        AwsCredentialsProvider awsCredentialsProvider;
-        AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY);
-        awsCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
-
-        Region region = Region.AP_NORTHEAST_2;
-        return S3Presigner.builder()
-                .region(region)
-                .credentialsProvider(awsCredentialsProvider)
-                .build();
     }
 }

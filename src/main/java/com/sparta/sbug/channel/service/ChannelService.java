@@ -2,7 +2,7 @@ package com.sparta.sbug.channel.service;
 
 import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.entity.Channel;
-import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.user.entity.User;
 import org.springframework.data.domain.Page;

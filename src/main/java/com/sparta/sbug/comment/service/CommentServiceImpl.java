@@ -3,7 +3,7 @@ package com.sparta.sbug.comment.service;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.repository.CommentRepository;
-import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.emoji.dto.EmojiCountDto;
 import com.sparta.sbug.emoji.dto.EmojiResponseDto;
