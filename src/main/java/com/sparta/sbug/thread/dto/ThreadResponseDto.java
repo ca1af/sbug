@@ -6,6 +6,11 @@ import com.sparta.sbug.thread.entity.Thread;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.*;
+import com.fasterxml.jackson.datatype.jsr310.deser.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +27,15 @@ public class ThreadResponseDto {
     private String userNickname;
     private Long userId;
     private String content;
+    
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createdAt;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime modifiedAt;
+
     private List<EmojiResponseDto> emojis;
 
     private ThreadResponseDto(Thread thread, Map<Long, List<EmojiResponseDto>> threadEmojiCountMap) {
