@@ -77,6 +77,7 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.THREAD, key = "#threadId")
     public ThreadResponseDto getThread(Long threadId) {
         Thread thread = findThreadById(threadId);
         List<EmojiCountDto> emojiCountDtoList = threadEmojiService.getThreadEmojiCount(threadId);
@@ -121,7 +122,6 @@ public class ThreadServiceImpl implements ThreadService {
     // 쓰레드 데이터 조회
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.THREAD, key = "#threadId")
     public Thread findThreadById(Long threadId) {
         Optional<Thread> optionalThread = threadRepository.findThreadByIdAndInUseIsTrue(threadId);
         if (optionalThread.isEmpty()) {
@@ -133,6 +133,7 @@ public class ThreadServiceImpl implements ThreadService {
     // 코멘트 생성
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.THREAD, key = "#threadId")
     public CommentResponseDto createComment(Long threadId, String content, User user) {
         Thread thread = findThreadById(threadId);
         return commentService.createComment(thread, content, user);
@@ -162,6 +163,7 @@ public class ThreadServiceImpl implements ThreadService {
     }
 
     @Override
+    @CacheEvict(cacheNames = CacheNames.THREAD, key = "#threadId")
     public boolean reactThreadEmoji(String emojiType, User user, Long threadId) {
         Thread thread = findThreadById(threadId);
         return threadEmojiService.reactThreadEmoji(emojiType, user, thread);
