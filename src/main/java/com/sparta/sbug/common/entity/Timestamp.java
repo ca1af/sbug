@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.*;
 import com.fasterxml.jackson.datatype.jsr310.deser.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -22,7 +23,7 @@ import java.time.LocalDateTime;
 // jpa
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class Timestamp {
+public class Timestamp implements Serializable {
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

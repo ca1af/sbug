@@ -1,8 +1,10 @@
 package com.sparta.sbug.security.userDetails;
 
+import com.sparta.sbug.cache.CacheNames;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,6 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new UserDetailsImpl(user, user.getEmail());
     }
 
+    @Cacheable(cacheNames = CacheNames.USERBYEMAIL, key = "#email")
     public User findUserByEmail(String email) {
        return userRepository.findByEmailAndInUseIsTrue(email)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));

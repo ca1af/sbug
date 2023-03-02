@@ -14,21 +14,13 @@ import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
 import com.sparta.sbug.user.entity.User;
-import com.sparta.sbug.cache.CacheNames;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.CacheEvict;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.sparta.sbug.common.exceptions.ErrorCode.*;
 
@@ -40,7 +32,7 @@ import static com.sparta.sbug.common.exceptions.ErrorCode.*;
 public class ThreadServiceImpl implements ThreadService {
 
     private final ThreadRepository threadRepository;
-    
+
     /**
      * 하위 레이어 데이터 서비스 - 코멘트 서비스
      */
@@ -55,8 +47,6 @@ public class ThreadServiceImpl implements ThreadService {
     // CRUD
 
     @Override
-    @Transactional
-    @CacheEvict(cacheNames = CacheNames.THREADSINCHANNEL, key = "#channel.id")
     public ThreadResponseDto createThread(Channel channel, String requestContent, User user) {
         Thread thread = Thread.builder()
                 .requestContent(requestContent)
@@ -69,7 +59,6 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.THREADSINCHANNEL, key = "#channelId")
     public Slice<ThreadResponseDto> getAllThreadsInChannel(Long channelId, PageDto pageDto) {
         Slice<Thread> threads = threadRepository.findThreadsByChannelIdAndInUseIsTrue(channelId, pageDto.toPageable());
         List<Long> threadIds = threads.getContent().stream().map(Thread::getId).toList();
@@ -89,7 +78,6 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.THREAD, key = "#threadId")
     public void editThread(Long threadId, String requestContent, User user) {
         Thread thread = validateUserAuth(threadId, user);
 
@@ -100,10 +88,8 @@ public class ThreadServiceImpl implements ThreadService {
         thread.updateThread(requestContent);
     }
 
-    //THREADSINCHANNEL도 evict 해줘야 할것 같은데, channelId를 가져올 수 없음
     @Override
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.THREAD, key = "#threadId")
     public void disableThread(Long threadId, User user) {
         validateUserAuth(threadId, user);
         commentService.disableCommentByThreadId(threadId);
@@ -123,8 +109,6 @@ public class ThreadServiceImpl implements ThreadService {
 
     // 쓰레드 데이터 조회
     @Override
-    @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.THREAD, key = "#threadId")
     public Thread findThreadById(Long threadId) {
         Optional<Thread> optionalThread = threadRepository.findThreadByIdAndInUseIsTrue(threadId);
         if (optionalThread.isEmpty()) {
@@ -165,13 +149,14 @@ public class ThreadServiceImpl implements ThreadService {
     }
 
     @Override
+    @Transactional
     public boolean reactThreadEmoji(String emojiType, User user, Long threadId) {
         Thread thread = findThreadById(threadId);
         return threadEmojiService.reactThreadEmoji(emojiType, user, thread);
+    }
 
     @Override
     public List<ThreadResponseDto> findThreadBySearchCondition(ThreadSearchCond threadSearchCond){
         return threadRepository.findThreadBySearchCondition(threadSearchCond);
-
     }
 }
