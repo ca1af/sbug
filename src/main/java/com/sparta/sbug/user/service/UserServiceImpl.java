@@ -114,6 +114,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.USER, key = "#userId")
     public UserResponseDto getUser(Long id) {
         User user = getUserById(id);
         return getUserResponseDto(user);
@@ -182,7 +183,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(cacheNames = CacheNames.USER, key = "#userId")
     @Transactional(readOnly = true)
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
