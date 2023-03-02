@@ -16,13 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import java.io.Serializable;
+
 /**
  * 쓰레드 반환 DTO
  */
 // lombok
 @Getter
 @NoArgsConstructor
-public class ThreadResponseDto {
+public class ThreadResponseDto implements Serializable {
     private Long threadId;
     private String userNickname;
     private Long userId;
