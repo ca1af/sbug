@@ -63,11 +63,7 @@ public class CacheConfiguration {
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(
-            CacheNames.COMMENTSINTHREAD,
-            defaultConfig.entryTtl(Duration.ofHours(4))
-        );
-        redisCacheConfigMap.put(
-            CacheNames.EMOJI,
+            CacheNames.CHANNELS,
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
 

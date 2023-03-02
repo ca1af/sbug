@@ -40,7 +40,6 @@ public class CommentServiceImpl implements CommentService {
    // CRUD
     
     @Override
-    @CacheEvict(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#thread.id")
     public CommentResponseDto createComment(Thread thread, String content, User user) {
         Comment comment = Comment.builder()
                 .content(content)
@@ -52,7 +51,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#threadId")
     public Slice<CommentResponseDto> getAllCommentsInThread(Long threadId, PageDto pageDto) {
         Slice<Comment> comments = commentRepository.findCommentsByThreadIdAndInUseIsTrue(threadId, pageDto.toPageable());
         List<Long> commentIds = comments.getContent().stream().map(Comment::getId).toList();
@@ -115,7 +113,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @CacheEvict(cacheNames = CacheNames.COMMENTSINTHREAD, key = "#threadId")
     public void disableCommentByThreadId(Long threadId) {
         commentRepository.disableCommentByThreadId(threadId);
     }

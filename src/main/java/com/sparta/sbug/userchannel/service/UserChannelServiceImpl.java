@@ -12,6 +12,9 @@ import com.sparta.sbug.userchannel.repository.UserChannelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.sparta.sbug.cache.CacheNames;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +62,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.CHANNELS, key = "#userId")
     public List<ChannelResponseDto> getChannelsByUserId(Long userId) {
         List<UserChannel> UserChannels = userChannelRepository.findAllChannelByUserIdAndInUseIsTrue(userId);
         List<Channel> channels = new ArrayList<>();
@@ -70,6 +74,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     public void exitChannel(User user, Long channelId) {
         UserChannel userChannel = userChannelRepository.findByUserAndChannelIdAndInUseIsTrue(user, channelId).orElseThrow(
                 () -> new CustomException(USER_CHANNEL_NOT_FOUND)
