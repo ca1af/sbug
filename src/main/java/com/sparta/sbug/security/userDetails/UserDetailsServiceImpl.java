@@ -2,10 +2,12 @@ package com.sparta.sbug.security.userDetails;
 
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
+import com.sparta.sbug.security.RedisDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
 import com.sparta.sbug.cache.CacheNames;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,6 +19,8 @@ import org.springframework.cache.annotation.Cacheable;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
+    private final RedisDao redisDao;
+    private final GenericJackson2JsonRedisSerializer redisSerializer;
 
     /**
      * 이메일로 사용자 객체를 찾아 UserDetails 구현체에 담습니다.
@@ -32,7 +36,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Cacheable(cacheNames = CacheNames.USERBYEMAIL, key = "#email")
     public User findUserByEmail(String email) {
-       return userRepository.findByEmailAndInUseIsTrue(email)
+        String keyString = "CACHE_USERBYEMAIL::" + email;
+        String cacheData = redisDao.getValues(keyString);
+        if (cacheData != null) {
+            byte[] cacheByteData = cacheData.getBytes();
+            User user = redisSerializer.deserialize(cacheByteData, User.class);
+            return user;
+        } else {
+            return userRepository.findByEmailAndInUseIsTrue(email)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        }
     }
+
 }
