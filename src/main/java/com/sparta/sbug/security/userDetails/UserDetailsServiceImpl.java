@@ -2,10 +2,12 @@ package com.sparta.sbug.security.userDetails;
 
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
+import com.sparta.sbug.security.RedisDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
 
 // lombok
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
+    private final RedisDao redisDao;
+    private final GenericJackson2JsonRedisSerializer redisSerializer;
 
     /**
      * 이메일로 사용자 객체를 찾아 UserDetails 구현체에 담습니다.

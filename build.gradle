@@ -83,6 +83,12 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
 	implementation 'com.fasterxml.jackson.core:jackson-core:2.12.1'
 	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.1'
+  
+  // Redis caching : entity 정보의 serialization
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+	// AOP
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
 
 	tasks.named('test') {

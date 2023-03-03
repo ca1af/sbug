@@ -12,10 +12,18 @@ import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.repository.UserRepository;
 import com.sparta.sbug.userchannel.enttiy.QUserChannel;
+import com.sparta.sbug.cache.CacheNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.util.List;
@@ -37,6 +45,7 @@ public class UserServiceImpl implements UserService {
     private final S3Service s3Service;
 
     @Override
+    @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "'SimpleKey []'")
     @Transactional
     public void signUp(SignUpRequestDto requestDto) {
         String email = requestDto.getEmail();
@@ -75,12 +84,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(evict = {
+        @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "'SimpleKey []'"),
+        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
+        @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     public void unregister(User user) {
         userRepository.disableInUseByEmail(user.getEmail());
     }
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.ALLUSERS)
     public List<UserResponseDto> getUsers() {
         return userRepository.findAll().stream().map(UserResponseDto::of).collect(Collectors.toList());
     }
@@ -93,8 +107,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponseDto getUser(String email) {
-        User user = getUserByEmail(email);
+//<<<<<<< feat/sentiment
+//    public UserResponseDto getUser(String email) {
+//        User user = getUserByEmail(email);
+//=======
+    @Cacheable(cacheNames = CacheNames.USER, key = "#id")
+    public UserResponseDto getUser(Long id) {
+        User user = getUserById(id);
+//>>>>>>> develop
         return getUserResponseDto(user);
     }
 
@@ -115,6 +135,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "'SimpleKey []'"),
+        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
+        @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     public void updateNickname(User user, UserUpdateDto.Nickname dto) {
         User user1 = getUserById(user.getId());
 
@@ -123,6 +147,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")
     public void changePassword(User user, UserUpdateDto.Password dto) {
         User user1 = getUserById(user.getId());
 
@@ -131,6 +156,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(evict = {
+        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
+        @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     @Transactional
     public String changeProfileImage(User user, String key) {
         String uniqueKey = key + user.getEmail();

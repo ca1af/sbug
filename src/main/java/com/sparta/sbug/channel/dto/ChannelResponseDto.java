@@ -3,12 +3,15 @@ package com.sparta.sbug.channel.dto;
 import com.sparta.sbug.channel.entity.Channel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
+
 /**
  * 채널 반환 DTO
  */
 // lombok
 @Getter
 @Setter
+@NoArgsConstructor
 public class ChannelResponseDto {
 
     private Long id;

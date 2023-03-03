@@ -1,5 +1,6 @@
 package com.sparta.sbug.user.controller;
 
+import com.sparta.sbug.aop.ExeTimer;
 import com.sparta.sbug.security.dto.TokenResponseDto;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
@@ -54,6 +55,7 @@ public class UserController {
      * @return TokenResponseDto 토큰이 담긴 응답 DTO
      */
     @PostMapping("/users/login")
+    @ExeTimer
     public TokenResponseDto login(@RequestBody LoginRequestDto requestDto) {
         log.info("[POST] /api/users/login");
 
