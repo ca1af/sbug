@@ -2,6 +2,7 @@ package com.sparta.sbug.security.userDetails;
 
 import com.sparta.sbug.admin.entity.Admin;
 import com.sparta.sbug.admin.respository.AdminRepository;
+import com.sparta.sbug.cache.CacheNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

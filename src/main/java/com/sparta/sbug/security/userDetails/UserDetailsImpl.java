@@ -3,6 +3,7 @@ package com.sparta.sbug.security.userDetails;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.entity.UserRole;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,11 +16,12 @@ import java.util.Collection;
  */
 // lombok
 @Getter
+@NoArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
-    private final User user;
+    private User user;
 
-    private final String username;
+    private String username;
 
     /**
      * 생성자

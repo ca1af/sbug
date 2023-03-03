@@ -104,7 +104,7 @@ public class UserController {
 
     /**
      * 대상 사용자의 유저 정보를 조회
-     * [GET] /api/users/my-page
+     * [GET] /api/users/{userId}
      *
      * @param userId 대상 사용자
      * @return UserResponseDto

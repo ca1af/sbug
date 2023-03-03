@@ -122,7 +122,7 @@ public class ThreadController {
 
     /**
      * 작성자가 대상 쓰레드를 삭제
-     * [PATCH] /api/threads/{threadId}
+     * [PUT] /api/threads/{threadId}
      *
      * @param threadId    대상 쓰레드 ID
      * @param userDetails 요청자 정보

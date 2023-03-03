@@ -75,6 +75,9 @@ dependencies {
 	implementation platform('software.amazon.awssdk:bom:2.17.53')
 	implementation 'software.amazon.awssdk:s3'
 
+    // Redis caching : entity 정보의 serialization
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 	// AOP
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
