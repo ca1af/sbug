@@ -16,6 +16,7 @@ public class UserResponseDto {
     String nickname;
     @Setter
     String profileImageUrl;
+    Float temperature;
 
     /**
      * 생성자
@@ -24,6 +25,7 @@ public class UserResponseDto {
         this.userId = user.getId();
         this.email = user.getEmail();
         this.nickname = user.getNickname();
+        this.temperature = user.getTemperature();
     }
 
     /**

@@ -14,7 +14,6 @@ import com.sparta.sbug.user.repository.UserRepository;
 import com.sparta.sbug.userchannel.enttiy.QUserChannel;
 import com.sparta.sbug.cache.CacheNames;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,12 +43,6 @@ public class UserServiceImpl implements UserService {
 
     // for S3
     private final S3Service s3Service;
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
-    @Value("${cloud.aws.credentials.access-key}")
-    private String ACCESS_KEY;
-    @Value("${cloud.aws.credentials.secret-key}")
-    private String SECRET_KEY;
 
     @Override
     @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "'SimpleKey []'")
@@ -114,9 +107,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+//<<<<<<< feat/sentiment
+//    public UserResponseDto getUser(String email) {
+//        User user = getUserByEmail(email);
+//=======
     @Cacheable(cacheNames = CacheNames.USER, key = "#id")
     public UserResponseDto getUser(Long id) {
         User user = getUserById(id);
+//>>>>>>> develop
         return getUserResponseDto(user);
     }
 
@@ -165,13 +163,26 @@ public class UserServiceImpl implements UserService {
     public String changeProfileImage(User user, String key) {
         String uniqueKey = key + user.getEmail();
 
-        S3Presigner preSigner = getPreSigner();
-        String url = s3Service.putObjectPreSignedUrl(bucketName, uniqueKey, preSigner);
+        S3Presigner preSigner = s3Service.getPreSigner();
+        String url = s3Service.putObjectPreSignedUrl(s3Service.bucketName, uniqueKey, preSigner);
         preSigner.close();
 
         user.setProfileImage(uniqueKey);
         userRepository.save(user);
         return url;
+    }
+
+    @Override
+    @Transactional
+    public void AddOrSubtractTemperatureByConfidence(User user, String confidence) {
+        Float temp = user.getTemperature();
+        if (confidence.equals("positive")) {
+            temp += 0.1f;
+        } else if (confidence.equals("negative")) {
+            temp -= 0.1f;
+        }
+        user.setTemperature(temp);
+        userRepository.save(user);
     }
 
     @Override
@@ -193,24 +204,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUserResponseDto(User user) {
         UserResponseDto responseDto = UserResponseDto.of(user);
-
-        S3Presigner preSigner = getPreSigner();
-        responseDto.setProfileImageUrl(s3Service.getObjectPreSignedUrl(bucketName, user.getProfileImage(), preSigner));
-
+        S3Presigner preSigner = s3Service.getPreSigner();
+        responseDto.setProfileImageUrl(s3Service.getObjectPreSignedUrl(s3Service.bucketName, user.getProfileImage(), preSigner));
         preSigner.close();
         return responseDto;
-    }
-
-    @Override
-    public S3Presigner getPreSigner() {
-        AwsCredentialsProvider awsCredentialsProvider;
-        AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY);
-        awsCredentialsProvider = StaticCredentialsProvider.create(awsBasicCredentials);
-
-        Region region = Region.AP_NORTHEAST_2;
-        return S3Presigner.builder()
-                .region(region)
-                .credentialsProvider(awsCredentialsProvider)
-                .build();
     }
 }

@@ -1,7 +1,10 @@
 package com.sparta.sbug.chatroom.service;
 
+import com.sparta.sbug.chatroom.dto.ChatRoomDto;
 import com.sparta.sbug.chatroom.entity.ChatRoom;
 import com.sparta.sbug.user.entity.User;
+
+import java.util.List;
 
 public interface ChatRoomService {
 
@@ -31,4 +34,12 @@ public interface ChatRoomService {
      * @return ChatRoom
      */
     ChatRoom getChatRoomById(Long id);
+
+    /**
+     * 유저가 속해있는 채팅방의 리스트를 찾습니다.
+     *
+     * @param user 대상 유저
+     * @return List&lt;ChatRoomDto&gt;
+     */
+    List<ChatRoomDto> getChatRoomList(User user);
 }

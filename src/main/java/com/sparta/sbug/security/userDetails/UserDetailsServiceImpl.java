@@ -33,8 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public User findUserByEmail(String email) {
-        return userRepository.findByEmailAndInUseIsTrue(email)
+       return userRepository.findByEmailAndInUseIsTrue(email)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
     }
 }
-

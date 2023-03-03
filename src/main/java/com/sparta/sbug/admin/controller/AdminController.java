@@ -7,7 +7,7 @@ import com.sparta.sbug.channel.dto.ChannelResponseDto;
 import com.sparta.sbug.channel.service.ChannelService;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
-import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.security.dto.TokenResponseDto;
 import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;

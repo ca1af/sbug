@@ -3,7 +3,7 @@ package com.sparta.sbug.comment.controller;
 import com.sparta.sbug.comment.dto.CommentRequestDto;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
-import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import com.sparta.sbug.thread.service.ThreadService;

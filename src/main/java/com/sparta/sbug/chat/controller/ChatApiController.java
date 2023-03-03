@@ -2,13 +2,14 @@ package com.sparta.sbug.chat.controller;
 
 import com.sparta.sbug.chat.dto.ChatResponseDto;
 import com.sparta.sbug.chat.service.ChatService;
-import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 // lombok
 @RequiredArgsConstructor
@@ -31,35 +32,21 @@ public class ChatApiController {
      * @return List&lt;ChatResponseDto&gt;
      */
     @GetMapping("/rooms/{roomId}/messages")
-    public List<ChatResponseDto> readMessagesInChatRoom(@PathVariable Long roomId, @ModelAttribute PageDto pageDto,
-                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Slice<ChatResponseDto> readMessagesInChatRoom(@PathVariable Long roomId, @ModelAttribute PageDto pageDto,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return chatService.readAllMessageInChatRoom(userDetails.getUser().getId(), roomId, pageDto);
     }
 
     /**
-     * 메세지 아이디로 메세지를 찾고 해당 메세지의 내용을 업데이트 합니다.
-     * [PATCH] /api/chats/messages/{id}
+     * 요청자가 속한 채팅방에서 아직 읽지 않은 메세지의 개수들을 조회합니다.
+     * [GET] /api/chats/rooms
      *
-     * @param id          메세지의 아이디입니다.
-     * @param message     이 메세지 내용으로 업데이트 합니다.
-     * @param userDetails 요청한 유저의 정보입니다. 이 정보는 메세지를 업데이트 할 권한이 있는지 검증하는데 사용됩니다.
+     * @param userDetails 요청자
+     * @return List&lt;NewMessageCountDto&gt;
      */
-    @PatchMapping("/messages/{id}")
-    public void updateMessage(@PathVariable Long id, @RequestParam String message,
-                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        chatService.updateMessage(id, userDetails.getUser(), message);
-    }
-
-    /**
-     * 메세지 아이디로 메세지를 찾고 해당 메세지의 내용을 삭제 합니다.
-     * [DELETE] /api/chats/messages/{id}
-     *
-     * @param id          메세지의 아이디입니다.
-     * @param userDetails 메세지를 삭제 할 권한이 있는지 검증하는데 사용될 요청한 유저의 정보입니다.
-     */
-    @DeleteMapping("/messages/{id}")
-    public void deleteMessage(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        chatService.deleteMessage(id, userDetails.getUser());
+    @GetMapping("/rooms")
+    public Map<Long, Long> countNewMessageByChatRoom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return chatService.countNewMessageByChatRoom(userDetails.getUser());
     }
 
     /**
