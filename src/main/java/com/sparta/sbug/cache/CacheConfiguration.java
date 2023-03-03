@@ -43,7 +43,7 @@ public class CacheConfiguration {
         Map<String, RedisCacheConfiguration> redisCacheConfigMap
             = new HashMap<>();
         redisCacheConfigMap.put(
-            CacheNames.SINGLEUSER,
+            CacheNames.USER,
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(

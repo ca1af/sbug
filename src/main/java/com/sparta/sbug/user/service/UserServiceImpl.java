@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Caching(evict = {
         @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "'SimpleKey []'"),
-        @CacheEvict(cacheNames = CacheNames.SINGLEUSER, key = "#user.id"),
+        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
         @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     public void unregister(User user) {
         userRepository.disableInUseByEmail(user.getEmail());
@@ -114,6 +114,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheNames.USER, key = "#id")
     public UserResponseDto getUser(Long id) {
         User user = getUserById(id);
         return getUserResponseDto(user);
@@ -138,7 +139,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Caching(evict = {
         @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "'SimpleKey []'"),
-        @CacheEvict(cacheNames = CacheNames.SINGLEUSER, key = "#user.id"),
+        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
         @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     public void updateNickname(User user, UserUpdateDto.Nickname dto) {
         User user1 = getUserById(user.getId());
@@ -158,7 +159,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Caching(evict = {
-        @CacheEvict(cacheNames = CacheNames.SINGLEUSER, key = "#user.id"),
+        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
         @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     @Transactional
     public String changeProfileImage(User user, String key) {
@@ -183,7 +184,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.SINGLEUSER, key = "#userId")
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("선택한 유저가 없습니다.")
