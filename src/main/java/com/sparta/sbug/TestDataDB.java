@@ -28,17 +28,17 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class TestDataDB {
-    private final InitService initService;
+    private final Initializer initializer;
 
     @PostConstruct
     public void initialize() {
-        initService.init();
+        initializer.init();
     }
 
     @Component
     @Transactional
     @RequiredArgsConstructor
-    static class InitService {
+    static class Initializer {
 
         private final ThreadRepository threadRepository;
         private final UserRepository userRepository;
