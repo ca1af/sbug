@@ -94,6 +94,7 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.THREAD, key = "#threadId")
     public void disableThread(Long threadId, User user) {
         validateUserAuth(threadId, user);
         commentService.disableCommentByThreadId(threadId);
@@ -155,6 +156,7 @@ public class ThreadServiceImpl implements ThreadService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.THREAD, key = "#threadId")
     public boolean reactThreadEmoji(String emojiType, User user, Long threadId) {
         Thread thread = findThreadById(threadId);
         return threadEmojiService.reactThreadEmoji(emojiType, user, thread);
