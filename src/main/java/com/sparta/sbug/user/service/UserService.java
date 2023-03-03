@@ -6,7 +6,7 @@ import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -44,10 +44,10 @@ public interface UserService {
     /**
      * 대상 사용자 정보 조회
      *
-     * @param id 대상 사용자 ID
+     * @param email 대상 사용자 email
      * @return UserResponseDto
      */
-    UserResponseDto getUser(Long id);
+    UserResponseDto getUser(String email);
 
     /**
      * 사용자가 속한 채널들의 정보를 조회
@@ -89,6 +89,9 @@ public interface UserService {
      */
     void unregister(User user);
 
+    @Transactional
+    void AddOrSubtractTemperatureByConfidence(User user, String confidence);
+
     /**
      * 이메일로 사용자 엔터티  조회
      *
@@ -113,11 +116,4 @@ public interface UserService {
      * @return UserResponseDto
      */
     UserResponseDto getUserResponseDto(User user);
-
-    /**
-     * S3 미리 인증된 URL을 생성하기 위한 Pre-Signer 생성
-     *
-     * @return S3Presigner
-     */
-    S3Presigner getPreSigner();
 }

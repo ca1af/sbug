@@ -75,8 +75,17 @@ dependencies {
 	implementation platform('software.amazon.awssdk:bom:2.17.53')
 	implementation 'software.amazon.awssdk:s3'
 
-    // Redis caching : entity 정보의 serialization
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka:'
+	implementation 'com.google.guava:guava:31.1-jre'
+
+	// for API Request
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.12.1'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.1'
+  
+  // Redis caching : entity 정보의 serialization
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
 	// AOP
 	implementation 'org.springframework.boot:spring-boot-starter-aop'

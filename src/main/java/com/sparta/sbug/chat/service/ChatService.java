@@ -1,13 +1,13 @@
 package com.sparta.sbug.chat.service;
 
 import com.sparta.sbug.chat.dto.ChatResponseDto;
-import com.sparta.sbug.chat.entity.Chat;
 import com.sparta.sbug.chatroom.entity.ChatRoom;
-import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.user.entity.User;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Map;
 
 public interface ChatService {
 
@@ -20,23 +20,7 @@ public interface ChatService {
      * @param roomId   채팅방 아이디
      * @return List&lt;ChatResponseDto&gt;
      */
-    List<ChatResponseDto> readAllMessageInChatRoom(Long myUserId, Long roomId, PageDto pageDto);
-
-    /**
-     * 조회된 메세지의 수신자가 요청자인 메세지들을 읽음 상태로 변경하는 메서드
-     *
-     * @param requesterId 요청자의 ID
-     * @param chats       조호된 메세지 리스트
-     */
-    void convertToRead(Long requesterId, Page<Chat> chats);
-
-    /**
-     * 엔터티들을 DTO로 옮겨 담는 메서드
-     *
-     * @param pageChats 메세지 엔터티 리스트
-     * @return List&lt;ChatResponseDto&gt;
-     */
-    List<ChatResponseDto> getDtoListFromEntities(Page<Chat> pageChats);
+    Slice<ChatResponseDto> readAllMessageInChatRoom(Long myUserId, Long roomId, PageDto pageDto);
 
     /**
      * 메세지를 생성하는 메서드
@@ -49,37 +33,16 @@ public interface ChatService {
     ChatResponseDto createMessage(ChatRoom chatRoom, User sender, User receiver, String message);
 
     /**
-     * 메세지를 수정하는 메서드
+     * 채팅 중인 채팅방의 아래와 같은 정보들을 조회합니다.
+     * 1. 채팅방 ID
+     * 2. 채팅 상대방 ID
+     * 3. 채팅방에 아직 읽지 않은 메세지 개수
      *
-     * @param messageId 대상 메세지 ID
-     * @param user      요청자
-     * @param message   수정할 메세지 내용
+     * @param user 나(수신자)
+     * @return List&lt;NewMessageCountDto&gt;
      */
-    void updateMessage(Long messageId, User user, String message);
-
-    /**
-     * 메세지를 삭제하는 메서드
-     *
-     * @param messageId 대상 메세지 ID
-     * @param user      요청자
-     */
-    void deleteMessage(Long messageId, User user);
-
-    /**
-     * 메세지 ID로 메세지를 찾는 메서드
-     *
-     * @param messageId 메세지 ID
-     * @return Chat
-     */
-    Chat findChatById(Long messageId);
-
-    /**
-     * 채팅의 소유자가 요청자인지 확인하는 메서드
-     *
-     * @param chat 검증할채팅
-     * @param user 요청자
-     */
-    void validateUserIsSender(Chat chat, User user);
+    @Transactional(readOnly = true)
+    Map<Long, Long> countNewMessageByChatRoom(User user);
 
     /**
      * 요청자가 아직 읽지 않은 메세지의 개수를 찾는 메서드

@@ -1,6 +1,6 @@
 package com.sparta.sbug.thread.controller;
 
-import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.common.exceptions.ErrorCode;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;

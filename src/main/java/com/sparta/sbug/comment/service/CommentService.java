@@ -2,7 +2,7 @@ package com.sparta.sbug.comment.service;
 
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.entity.Comment;
-import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import org.springframework.data.domain.Slice;

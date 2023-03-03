@@ -1,6 +1,7 @@
 package com.sparta.sbug.chat.repository;
 
 import com.sparta.sbug.chat.entity.Chat;
+import com.sparta.sbug.chat.repository.query.ChatRepositoryQuery;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.RepositoryDefinition;
 

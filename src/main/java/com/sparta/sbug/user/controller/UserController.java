@@ -11,6 +11,7 @@ import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.service.UserServiceImpl;
 import com.sparta.sbug.userchannel.service.UserChannelService;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -104,15 +105,15 @@ public class UserController {
 
     /**
      * 대상 사용자의 유저 정보를 조회
-     * [GET] /api/users/{userId}
+     * [GET] /api/users/search
      *
-     * @param userId 대상 사용자
+     * @param email 대상 사용자
      * @return UserResponseDto
      */
-    @GetMapping("/users/{userId}")
-    public UserResponseDto getUser(@PathVariable Long userId) {
-        log.info("[GET] /api/users/" + userId);
-        return userService.getUser(userId);
+    @GetMapping("/users/search")
+    public UserResponseDto getUser(@PathParam(value = "email") String email) {
+        log.info("[GET] /api/users/search?email={}", email);
+        return userService.getUser(email);
     }
 
     /**
