@@ -90,6 +90,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     public void disableChannel(Long channelId) {
         userChannelRepository.disableAllUserChannelByChannelIdAndInUse(channelId);
         channelService.disableChannel(channelId);

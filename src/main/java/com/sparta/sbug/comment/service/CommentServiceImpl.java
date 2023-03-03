@@ -16,9 +16,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -61,7 +58,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.COMMENT, key = "#commentId")
     public Comment getComment(Long commentId) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
         if (optionalComment.isEmpty()) {
@@ -72,14 +68,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.COMMENT, key = "#commentId")
     public void updateComment(Long commentId, String content, User user) {
         Comment comment = validateUserAuth(commentId, user);
         comment.updateContent(content);
     }
 
     @Override
-    @CacheEvict(cacheNames = CacheNames.COMMENT, key = "#commentId")
     public void disableComment(Long commentId, User user) {
         Comment comment = validateUserAuth(commentId, user);
         commentRepository.disableCommentByCommentId(comment.getId());
