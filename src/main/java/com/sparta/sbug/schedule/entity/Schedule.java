@@ -36,6 +36,15 @@ public class Schedule extends Timestamp {
     @Enumerated(EnumType.STRING)
     private ScheduleStatus status = ScheduleStatus.UNDONE;
 
+    @Column(nullable = false)
+    private boolean studyMode = false;
+
+    @Column
+    private int reviewFreq;
+
+    @Column
+    private LocalDateTime goalDate;
+
     @Column
     private LocalDateTime doneAt;
 
@@ -86,5 +95,19 @@ public class Schedule extends Timestamp {
      */
     public void uncheckDoneSchedule() {
         this.status = ScheduleStatus.UNDONE;
+    }
+
+    /**
+     * 서비스 메소드
+     */
+    public void studyModeOn() {
+        this.studyMode = true;
+    }
+
+    /**
+     * 서비스 메소드
+     */
+    public void studyModeOff() {
+        this.studyMode = false;
     }
 }
