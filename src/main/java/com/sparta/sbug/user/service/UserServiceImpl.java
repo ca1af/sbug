@@ -20,10 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.util.List;
@@ -107,14 +103,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-//<<<<<<< feat/sentiment
-//    public UserResponseDto getUser(String email) {
-//        User user = getUserByEmail(email);
-//=======
-    @Cacheable(cacheNames = CacheNames.USER, key = "#id")
-    public UserResponseDto getUser(Long id) {
-        User user = getUserById(id);
-//>>>>>>> develop
+    public UserResponseDto getUser(String email) {
+        User user = getUserByEmail(email);
         return getUserResponseDto(user);
     }
 
@@ -174,6 +164,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
+            @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     public void AddOrSubtractTemperatureByConfidence(User user, String confidence) {
         Float temp = user.getTemperature();
         if (confidence.equals("positive")) {

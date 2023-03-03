@@ -12,6 +12,7 @@ import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.cache.CacheNames;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
