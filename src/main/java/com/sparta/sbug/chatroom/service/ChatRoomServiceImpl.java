@@ -52,6 +52,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             chatRoomDto.setProfileImage(s3Service.getObjectPreSignedUrl(s3Service.bucketName, chatRoomDto.getProfileImage(), preSigner));
         }
         preSigner.close();
-        return chatRoomRepository.getChatRoomListByUserId(user.getId());
+        return chatRoomDtoList;
     }
 }

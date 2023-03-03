@@ -9,9 +9,9 @@ import com.sparta.sbug.security.jwt.JwtProvider;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 // lombok
@@ -24,7 +24,8 @@ public class ChatMessageController {
     private final ChatService chatService;
     private final UserService userService;
     private final ChatRoomService chatRoomService;
-    private final KafkaTemplate<String, ChatResponseDto> kafkaTemplate;
+    private final SimpMessagingTemplate template;
+    //private final KafkaTemplate<String, ChatResponseDto> kafkaTemplate;
     private final JwtProvider jwtProvider;
 
     /**
@@ -58,7 +59,7 @@ public class ChatMessageController {
                        receiverId(받는 사람 ID), status(이미 읽은 메세지인지 상태) */
         ChatResponseDto responseDto = chatService.createMessage(room, sender, receiver, requestDto.getMessage());
 
-        //template.convertAndSend("/topic/chats/rooms/" + room.getId(), responseDto);
-        kafkaTemplate.send("kafka-sbug", responseDto);
+        template.convertAndSend("/topic/chats/rooms/" + room.getId(), responseDto);
+        //kafkaTemplate.send("kafka-sbug", responseDto);
     }
 }

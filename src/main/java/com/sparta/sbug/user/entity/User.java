@@ -44,6 +44,10 @@ public class User extends Timestamp {
     @Setter
     private String profileImage;
 
+    @Column(nullable = false)
+    @Setter
+    private Float temperature = 36.5f;
+
     /**
      * 생성자
      */
@@ -57,18 +61,9 @@ public class User extends Timestamp {
     /**
      * 서비스 메소드
      */
-    public void updateUser(String nickname, String password) {
-        this.nickname = nickname;
-        this.password = password;
-    }
-
     public User kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
         return this;
-    }
-
-    public void setUserRole(UserRole role) {
-        this.userRole = role;
     }
 
 }

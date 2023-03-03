@@ -40,6 +40,7 @@ public class ChatRepositoryQueryImpl implements ChatRepositoryQuery {
                         )
                 )
                 .from(chat)
+                .where(chat.room.id.eq(roomId))
                 .orderBy(new OrderSpecifier<>(Order.DESC, chat.createdAt))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)

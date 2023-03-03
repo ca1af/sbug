@@ -78,6 +78,11 @@ dependencies {
 	// kafka
 	implementation 'org.springframework.kafka:spring-kafka:'
 	implementation 'com.google.guava:guava:31.1-jre'
+
+	// for API Request
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.12.1'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.1'
 }
 
 	tasks.named('test') {

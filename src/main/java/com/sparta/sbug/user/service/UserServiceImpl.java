@@ -145,6 +145,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public void AddOrSubtractTemperatureByConfidence(User user, String confidence) {
+        Float temp = user.getTemperature();
+        if (confidence.equals("positive")) {
+            temp += 0.1f;
+        } else if (confidence.equals("negative")) {
+            temp -= 0.1f;
+        }
+        user.setTemperature(temp);
+        userRepository.save(user);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
         return userRepository.findByEmailAndInUseIsTrue(email).orElseThrow(

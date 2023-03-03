@@ -6,6 +6,7 @@ import com.sparta.sbug.user.dto.SignUpRequestDto;
 import com.sparta.sbug.user.dto.UserResponseDto;
 import com.sparta.sbug.user.dto.UserUpdateDto;
 import com.sparta.sbug.user.entity.User;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -87,6 +88,9 @@ public interface UserService {
      * @param user 사용자
      */
     void unregister(User user);
+
+    @Transactional
+    void AddOrSubtractTemperatureByConfidence(User user, String confidence);
 
     /**
      * 이메일로 사용자 엔터티  조회

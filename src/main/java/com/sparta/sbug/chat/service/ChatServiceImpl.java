@@ -7,6 +7,7 @@ import com.sparta.sbug.chat.repository.ChatRepository;
 import com.sparta.sbug.chatroom.entity.ChatRoom;
 import com.sparta.sbug.common.paging.PageDto;
 import com.sparta.sbug.user.entity.User;
+import com.sparta.sbug.user.service.UserService;
 import com.sparta.sbug.websocket.handler.ChatPreHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -25,6 +26,8 @@ import java.util.Set;
 public class ChatServiceImpl implements ChatService {
     
     private final ChatRepository chatRepository;
+    private final UserService userService;
+    private final ChatSentimentService chatSentimentService;
 
     @Override
     @Transactional
@@ -52,6 +55,10 @@ public class ChatServiceImpl implements ChatService {
             }
         }
         Chat savedChat = chatRepository.save(chat);
+
+        String sentiment = chatSentimentService.callSentimentApi(message);
+        userService.AddOrSubtractTemperatureByConfidence(sender, sentiment);
+
         return ChatResponseDto.of(savedChat);
     }
 

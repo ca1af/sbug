@@ -34,6 +34,7 @@ public class ChatRoomRepositoryQueryImpl implements ChatRoomRepositoryQuery {
         if (optionalChatRoom.isPresent()) {
             return optionalChatRoom.get().getId();
         }
+
         return -1L;
     }
 
