@@ -14,6 +14,6 @@ permissions:
 
 hooks:
   ApplicationStart:
-    - location: start.sh
+    - location: scripts/start.sh
       timeout: 60
       runas: ubuntu
