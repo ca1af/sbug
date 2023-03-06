@@ -81,8 +81,8 @@ cloud:
     stack:
       auto: false
     credentials:
-      accessKey:
-      secretKey:
+      accessKey: aaa
+      secretKey: aaa
       instanceProfile: true
 logging:
   level:
