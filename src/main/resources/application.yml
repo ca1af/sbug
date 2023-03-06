@@ -6,7 +6,7 @@ spring:
     url: jdbc:postgresql://sbug-postgresql.cftflnrmtk5t.ap-northeast-2.rds.amazonaws.com:5432/postgres
     #    url: jdbc:postgresql://localhost:5432/postgres
     username: super
-    password: czlubIFAcQ9bYk2mdOX9
+    password: x
   #    password: pass
   profiles: # server에 저장할 때 사용
     active: local
@@ -65,7 +65,7 @@ spring:
 # JWT
 jwt:
   secret:
-    key: 7Jqw66as64qU66qo65GQ67aV6rS07ZWY64qU67OE7J2Y64K067aA7JeQ7ISc7ZWp7ISx65CQ64uk6re465+s66+A66Gc7Jqw66as64qU67OE7J2Y7J6Q64WA64uk
+    key: x
   live:
     atk: 3600000  # 1000 milisecond = 1 second. atk = 1 hour , rtk = 24 hour
     rtk: 86400000 # batch size -> reformat collection data.
@@ -81,8 +81,8 @@ cloud:
     stack:
       auto: false
     credentials:
-      accessKey: aaa
-      secretKey: aaa
+      accessKey: x
+      secretKey: x
       instanceProfile: true
 logging:
   level:
