@@ -27,7 +27,7 @@ jobs:
       - name: Set yaml file
         uses: microsoft/variable-substitution@v1
         with:
-          file: ${{ env.RESOURCE_PATH }}
+          files: ${{ env.RESOURCE_PATH }}
         env:
           cloud.aws.s3.credentials.accessKey: ${{ secrets.IMAGE_S3_ACCESS_KEY_ID }}
           cloud.aws.s3.credentials.secretKey: ${{ secrets.IMAGE_S3_SECRET_ACCESS_KEY}}
