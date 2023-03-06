@@ -1,7 +1,10 @@
 name: CI-CD
 
 on:
-  push, pull_request:
+  push:
+    branches:
+      - develop
+  pull_request:
     branches:
       - develop
 
