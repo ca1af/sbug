@@ -77,7 +77,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleRepository.save(foundSchedule);
     }
 
-    //StudyMode로 전환(status 변경)
+    //StudyMode 켜기 
     @Override
     public void turnOnStudyMode(Long scheduleId, Long userId) {
         Schedule foundSchedule = validateSchedule(scheduleId);
@@ -86,7 +86,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleRepository.save(foundSchedule);
     }
 
-    //일반 Schedule로 전환(status 변경)
+    //StudyMode 끄기
     @Override
     public void turnOffStudyMode(Long scheduleId, Long userId) {
         Schedule foundSchedule = validateSchedule(scheduleId);

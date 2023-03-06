@@ -40,12 +40,6 @@ public class Schedule extends Timestamp {
     private boolean studyMode = false;
 
     @Column
-    private int reviewFreq;
-
-    @Column
-    private LocalDateTime goalDate;
-
-    @Column
     private LocalDateTime doneAt;
 
     /**
