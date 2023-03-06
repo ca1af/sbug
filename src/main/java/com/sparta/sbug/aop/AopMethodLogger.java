@@ -18,7 +18,8 @@ public class AopMethodLogger {
 
     // 패키지의 Controller 라는 이름으로 끝나는 패키지에 모두 적용 (매서드만)
     @Pointcut("within(*..*Controller)")
-    private void cut(){}
+    private void cut() {
+    }
 
     // Pointcut에 의해 필터링된 경로로 들어오는 경우 메서드 호출 전에 적용
     @Before("cut()")
@@ -43,9 +44,10 @@ public class AopMethodLogger {
         // 메서드 정보 받아오기
         Method method = getMethod(joinPoint);
         log.info("======= method name = {} =======", method.getName());
-
-        log.info("return type = {}", returnObj.getClass().getSimpleName());
-        log.info("return value = {}", returnObj);
+        if (returnObj != null) {
+            log.info("return type = {}", returnObj.getClass().getSimpleName());
+            log.info("return value = {}", returnObj);
+        }
     }
 
     // JoinPoint로 메서드 정보 가져오기

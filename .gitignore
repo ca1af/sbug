@@ -41,13 +41,5 @@ out/
 *.swp
 
 ### my ignore ###
-<<<<<<< HEAD
-src/main/resources/application.yml
-resources/aws.yml
-
-### Redis Cache ###
+# src/main/resources/application.yml
 dump.rdb
-=======
-/src/main/resources/application.yml
-resources/aws.yml
->>>>>>> bbcdbba0c7d1cd47e5dbee18f84455474e6e1d09

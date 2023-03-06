@@ -48,9 +48,6 @@ public class CommentController {
                                             @RequestBody @Valid CommentRequestDto requestDto,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        String logBuilder = "[POST] /api/channels/" + channelId + "/threads/" + threadId + "/comments";
-        log.info(logBuilder);
-
         if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
             throw new CustomException(USER_THREAD_FORBIDDEN);
         }
@@ -74,9 +71,6 @@ public class CommentController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @ModelAttribute PageDto pageDto) {
 
-        String logBuilder = "[GET] /api/channels/" + channelId + "/threads/" + threadId + "/comments";
-        log.info(logBuilder);
-
         if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
             throw new CustomException(USER_THREAD_FORBIDDEN);
         }
@@ -97,9 +91,6 @@ public class CommentController {
                               @RequestBody CommentRequestDto requestDto,
                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        String logBuilder = "[PATCH] /api/comments/" + commentId;
-        log.info(logBuilder);
-
         commentService.updateComment(commentId, requestDto.getContent(), userDetails.getUser());
     }
 
@@ -114,9 +105,6 @@ public class CommentController {
     public void disableComment(@PathVariable Long commentId,
                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        String logBuilder = "[PUT] /api/comments/" + commentId;
-        log.info(logBuilder);
-
         commentService.disableComment(commentId, userDetails.getUser());
     }
 
@@ -128,8 +116,6 @@ public class CommentController {
             @RequestBody String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        String infoLog = "[POST] /channels/" + channelId + "/threads/comments/" + commentId + "/emojis";
-        log.info(infoLog);
 
         if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
             throw new CustomException(USER_COMMENT_FORBIDDEN);

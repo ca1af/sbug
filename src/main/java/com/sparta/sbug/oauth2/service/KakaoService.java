@@ -31,7 +31,7 @@ public class KakaoService {
     private final JwtProvider jwtProvider;
 
     private final static String REST_API_KEY = "1ef0cf0c88ad6600843f2240a8dbc8b5";
-    private final static String REDIRECT_URI = "http://https://sbug-front-server-s3.s3.ap-northeast-2.amazonaws.com/frontdoor.html";
+    private final static String REDIRECT_URI = "http://sbug-front-server-s3.s3.ap-northeast-2.amazonaws.com/frontdoor.html";
 
     /**
      * 작동 방식은 다음과 같습니다.

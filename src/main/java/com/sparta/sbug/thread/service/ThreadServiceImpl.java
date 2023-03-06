@@ -1,6 +1,7 @@
 package com.sparta.sbug.thread.service;
 
 
+import com.sparta.sbug.aws.service.S3Service;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
 import com.sparta.sbug.cache.CacheNames;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -46,6 +49,8 @@ public class ThreadServiceImpl implements ThreadService {
      */
     private final ThreadEmojiService threadEmojiService;
 
+    private final S3Service s3Service;
+
 
     // CRUD
 
@@ -57,7 +62,7 @@ public class ThreadServiceImpl implements ThreadService {
                 .build();
         thread.setChannel(channel);
         Thread savedThread = threadRepository.save(thread);
-        return ThreadResponseDto.of(savedThread, null);
+        return makeThreadResponseDto(savedThread, null);
     }
 
     @Override
@@ -67,7 +72,16 @@ public class ThreadServiceImpl implements ThreadService {
         List<Long> threadIds = threads.getContent().stream().map(Thread::getId).toList();
         List<EmojiCountDto> emojiCountDtoList = threadEmojiService.getThreadsEmojiCount(threadIds);
         Map<Long, List<EmojiResponseDto>> threadEmojiCountMap = EmojiResponseDto.getEmojiCountMap(emojiCountDtoList);
-        return threads.map(thread -> ThreadResponseDto.of(thread, threadEmojiCountMap));
+
+        return threads.map(thread -> makeThreadResponseDto(thread, threadEmojiCountMap));
+    }
+
+    private ThreadResponseDto makeThreadResponseDto(Thread thread, Map<Long, List<EmojiResponseDto>> threadEmojiCountMap) {
+        ThreadResponseDto dto = ThreadResponseDto.of(thread, threadEmojiCountMap);
+        S3Presigner preSigner = s3Service.getPreSigner();
+        dto.setUserProfileImageUrl(s3Service.getObjectPreSignedUrl(s3Service.bucketName, thread.getUser().getProfileImage(), preSigner));
+        preSigner.close();
+        return dto;
     }
 
     @Override
@@ -77,7 +91,7 @@ public class ThreadServiceImpl implements ThreadService {
         Thread thread = findThreadById(threadId);
         List<EmojiCountDto> emojiCountDtoList = threadEmojiService.getThreadEmojiCount(threadId);
         Map<Long, List<EmojiResponseDto>> threadEmojiCountMap = EmojiResponseDto.getEmojiCountMap(emojiCountDtoList);
-        return ThreadResponseDto.of(thread, threadEmojiCountMap);
+        return makeThreadResponseDto(thread, threadEmojiCountMap);
     }
 
     @Override

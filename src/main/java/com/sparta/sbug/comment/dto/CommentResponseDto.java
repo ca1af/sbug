@@ -31,6 +31,9 @@ public class CommentResponseDto implements Serializable {
     private LocalDateTime createdAt;
     private Long userId;
     private String userNickname;
+
+    @Setter
+    private String userProfileImageUrl;
     private List<EmojiResponseDto> emojis;
 
     private CommentResponseDto(Comment comment, Map<Long, List<EmojiResponseDto>> commentEmojiCountMap) {
