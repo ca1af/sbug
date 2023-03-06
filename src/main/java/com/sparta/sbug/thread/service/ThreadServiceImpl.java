@@ -180,13 +180,13 @@ public class ThreadServiceImpl implements ThreadService {
     // 쓰레드 이미지 업로드
     @Override
     @Transactional
-    public String imageUploadOnThread(Long threadId, String keyName, User user) {
+    public String imageUploadOnThread(Long channelId, Long threadId, String keyName, User user) {
         Thread thread = findThreadById(threadId);
 
         // 디렉토리 이름
-        String dirName = "ThreadNo."+ threadId; // Thread No. -> url에서 Thread+No.로 보여짐 -> ThreadNo.로 변경
+        String dirName = "ChannelNo."+ channelId;
         // 파일 이름
-        String fileName = keyName + threadId + user.getId() + LocalDateTime.now(); // 모아보기 방식에 따라 threadId 불필요
+        String fileName = keyName + threadId + user.getId() + LocalDateTime.now(); // UUID 찾아보기
         // 저장경로가 포함된 파일 이름(key)
         String objKeyName = dirName + "/" + fileName;
 
