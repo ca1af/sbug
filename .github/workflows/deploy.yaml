@@ -31,7 +31,7 @@ jobs:
         env:
           cloud.aws.credentials.accessKey: ${{ secrets.IMAGE_S3_ACCESS_KEY_ID }}
           cloud.aws.credentials.secretKey: ${{ secrets.IMAGE_S3_SECRET_ACCESS_KEY}}
-          jwt.secret.key: $ {{ secrets.JWT_SECRET_KEY }}
+          #jwt.secret.key: $ {{ secrets.JWT_SECRET_KEY }}
           spring.datasource.password: ${{ secrets.POSTGRES_PASSWORD }}
 
       - name: Grant execute permission for gradlew
