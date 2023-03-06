@@ -66,7 +66,6 @@ public class AdminController {
     @PostMapping("/login")
     public TokenResponseDto loginAdmin(@RequestBody LoginRequestDto requestDto) {
         String infoLog = "[POST] /api/admins/login";
-        log.info(infoLog);
 
         AdminResponseDto responseDto = adminService.loginAdmin(requestDto.getEmail(), requestDto.getPassword());
         return jwtProvider.createTokenAdmin(responseDto.getEmail());
@@ -85,7 +84,6 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public Page<ChannelResponseDto> getAllChannels(@ModelAttribute PageDto pageDto) {
         String infoLog = "[GET] /api/admins/channels";
-        log.info(infoLog);
 
         return channelService.getAllChannelsToPage(pageDto);
     }
@@ -102,7 +100,6 @@ public class AdminController {
     public Slice<ThreadResponseDto> getAllThreadsInChannel(@PathVariable Long channelId,
                                                            @ModelAttribute PageDto pageDto) {
         String infoLog = "[GET] /api/admins/channels/" + channelId + "/threads/";
-        log.info(infoLog);
 
         return threadService.getAllThreadsInChannel(channelId, pageDto);
     }
@@ -123,7 +120,6 @@ public class AdminController {
             @ModelAttribute PageDto pageDto) {
 
         String infoLog = "[GET] /api/admins/channels/" + channelId + "/threads/" + threadId + "/comments";
-        log.info(infoLog);
 
         return commentService.getAllCommentsInThread(threadId, pageDto);
     }
@@ -161,7 +157,6 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public void disableChannel(@PathVariable Long channelId) {
         String infoLog = "[PATCH] /api/admins/channels/" + channelId;
-        log.info(infoLog);
 
         userChannelService.disableChannel(channelId);
     }
@@ -175,7 +170,6 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public void disableThread(@PathVariable Long threadId) {
         String infoLog = "[PATCH] /api/admins/threads/" + threadId;
-        log.info(infoLog);
 
         threadService.disableThread(threadId);
     }
@@ -189,7 +183,6 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public void disableComment(@PathVariable Long commentId) {
         String infoLog = "[PATCH] /api/admins/comments/" + commentId;
-        log.info(infoLog);
 
         commentService.disableCommentByAdmin(commentId);
     }

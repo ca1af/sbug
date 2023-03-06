@@ -41,8 +41,6 @@ public class ChannelController {
     @PostMapping("/channels")
     public ChannelResponseDto createChannel(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                             @RequestBody ChannelDto.ChannelRequest requestDto) {
-        log.info("[POST] /api/channels");
-
         // channel name check
         if (requestDto.getChannelName().trim().equals("")) {
             throw new CustomException(BAD_REQUEST_CHANNEL_NAME);
@@ -61,8 +59,6 @@ public class ChannelController {
      */
     @GetMapping("/users/channels")
     public List<ChannelResponseDto> getAllMyChannel(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("[GET] /api/users/channels");
-
         return userChannelService.getChannelsByUserId(userDetails.getUser().getId());
     }
 
@@ -78,9 +74,6 @@ public class ChannelController {
     public void inviteUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
                            @RequestBody ChannelDto.InvitationRequest requestDto,
                            @PathVariable Long channelId) {
-        String infoLog = "[POST] /api/channels/" + channelId + "/users";
-        log.info(infoLog);
-
         userChannelService.inviteUser(userDetails.getUser(), channelId, requestDto.getEmail());
     }
 }

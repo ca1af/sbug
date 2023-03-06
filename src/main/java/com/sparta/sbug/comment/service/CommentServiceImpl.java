@@ -1,5 +1,6 @@
 package com.sparta.sbug.comment.service;
 
+import com.sparta.sbug.aws.service.S3Service;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.entity.Comment;
 import com.sparta.sbug.comment.repository.CommentRepository;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -34,6 +36,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CommentEmojiService commentEmojiService;
 
+    private final S3Service s3Service;
 
    // CRUD
     
@@ -44,7 +47,7 @@ public class CommentServiceImpl implements CommentService {
                 .user(user)
                 .build();
         comment.setThread(thread);
-        return CommentResponseDto.of(commentRepository.save(comment), null);
+        return makeCommentResponseDto(commentRepository.save(comment), null);
     }
 
     @Override
@@ -54,7 +57,15 @@ public class CommentServiceImpl implements CommentService {
         List<Long> commentIds = comments.getContent().stream().map(Comment::getId).toList();
         List<EmojiCountDto> emojiCountDtoList = commentEmojiService.getCommentEmojiCount(commentIds);
         Map<Long, List<EmojiResponseDto>> commentEmojiCountMap = EmojiResponseDto.getEmojiCountMap(emojiCountDtoList);
-        return comments.map(comment -> CommentResponseDto.of(comment, commentEmojiCountMap));
+        return comments.map(comment -> makeCommentResponseDto(comment, commentEmojiCountMap));
+    }
+
+    private CommentResponseDto makeCommentResponseDto(Comment comment, Map<Long, List<EmojiResponseDto>> commentEmojiCountMap) {
+        CommentResponseDto dto = CommentResponseDto.of(comment, commentEmojiCountMap);
+        S3Presigner preSigner = s3Service.getPreSigner();
+        dto.setUserProfileImageUrl(s3Service.getObjectPreSignedUrl(s3Service.bucketName, comment.getUser().getProfileImage(), preSigner));
+        preSigner.close();
+        return dto;
     }
 
     @Override

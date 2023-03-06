@@ -37,6 +37,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     public ChannelResponseDto createChannel(User user, String channelName) {
         Channel channel = channelService.createChannel(channelName);
         if (userChannelRepository.existsByUserAndChannelAndInUseIsTrue(user, channel)) {
@@ -49,6 +50,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     public void inviteUser(User user, Long channelId, String email) {
         if (!isUserJoinedByChannel(user, channelId)) {
             throw new CustomException(USER_CHANNEL_FORBIDDEN);
