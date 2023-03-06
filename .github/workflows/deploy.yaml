@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - develop
-  pull_request:
-    types:
-      - closed
-    branches:
-      - develop
 
 env:
   S3_BUCKET_NAME: code-repository-s3
