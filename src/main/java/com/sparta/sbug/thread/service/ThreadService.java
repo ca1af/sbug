@@ -130,7 +130,7 @@ public interface ThreadService {
      */
     List<ThreadResponseDto> findThreadBySearchCondition(ThreadSearchCond threadSearchCond);
 
-    String imageUploadOnThread(Long threadId, String imageFileName, User user);
+    String imageUploadOnThread(Long channelId, Long threadId, String imageFileName, User user);
 
     S3Presigner getPreSigner();
 }
