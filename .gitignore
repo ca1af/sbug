@@ -40,6 +40,6 @@ out/
 *.vim
 *.swp
 
-### my ignore ###
+### my ignore ####
 src/main/resources/application.yml
 dump.rdb
