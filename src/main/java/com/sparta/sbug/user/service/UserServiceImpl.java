@@ -17,14 +17,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 // lombok
 @RequiredArgsConstructor
@@ -90,9 +88,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.ALLUSERS)
     public List<UserResponseDto> getUsers() {
-        return userRepository.findAll().stream().map(UserResponseDto::of).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(this::getUserResponseDto).toList();
     }
 
     @Override
@@ -120,7 +117,7 @@ public class UserServiceImpl implements UserService {
                 .where(qUserChannel.user.id.eq(user.getId()))
                 .fetch();
 
-        return fetch.stream().map(ChannelResponseDto::of).collect(Collectors.toList());
+        return fetch.stream().map(ChannelResponseDto::of).toList();
     }
 
     @Override
