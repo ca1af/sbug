@@ -37,7 +37,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
+//    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     public ChannelResponseDto createChannel(User user, String channelName) {
         Channel channel = channelService.createChannel(channelName);
         if (userChannelRepository.existsByUserAndChannelAndInUseIsTrue(user, channel)) {
@@ -48,9 +48,10 @@ public class UserChannelServiceImpl implements UserChannelService {
         return ChannelResponseDto.of(channel);
     }
 
+
     @Override
+//    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     public void inviteUser(User user, Long channelId, String email) {
         if (!isUserJoinedByChannel(user, channelId)) {
             throw new CustomException(USER_CHANNEL_FORBIDDEN);
@@ -64,9 +65,10 @@ public class UserChannelServiceImpl implements UserChannelService {
         userChannelRepository.save(userChannel);
     }
 
+
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CacheNames.CHANNELS, key = "#userId")
+//    @Cacheable(cacheNames = CacheNames.CHANNELS, key = "#userId")
     public List<ChannelResponseDto> getChannelsByUserId(Long userId) {
         List<UserChannel> UserChannels = userChannelRepository.findAllChannelByUserIdAndInUseIsTrue(userId);
         List<Channel> channels = new ArrayList<>();
@@ -78,7 +80,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
+//    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     public void exitChannel(User user, Long channelId) {
         UserChannel userChannel = userChannelRepository.findByUserAndChannelIdAndInUseIsTrue(user, channelId).orElseThrow(
                 () -> new CustomException(USER_CHANNEL_NOT_FOUND)
@@ -94,7 +96,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
+//    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     public void disableChannel(Long channelId) {
         userChannelRepository.disableAllUserChannelByChannelIdAndInUse(channelId);
         channelService.disableChannel(channelId);
