@@ -1,5 +1,6 @@
 package com.sparta.sbug.comment.controller;
 
+import com.sparta.sbug.aop.ExeTimer;
 import com.sparta.sbug.comment.dto.CommentRequestDto;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.comment.service.CommentService;
@@ -65,6 +66,7 @@ public class CommentController {
      * @return Slice&lt;CommentResponseDto&gt;
      */
     @GetMapping("/channels/{channelId}/threads/{threadId}/comments")
+    @ExeTimer
     public Slice<CommentResponseDto> getAllCommentsInThread(
             @PathVariable Long channelId,
             @PathVariable Long threadId,

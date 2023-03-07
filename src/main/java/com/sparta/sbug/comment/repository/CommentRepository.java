@@ -6,6 +6,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +22,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
      * @param pageable 페이징 정보
      * @return Page&lt;Comment&gt;
      */
-    Page<Comment> findCommentsByThreadIdAndInUseIsTrue(Long threadId, Pageable pageable);
+    @Query("select c from Comment c join fetch c.user u join fetch c.thread t where t.id = :threadId")
+    Slice<Comment> findCommentsByThreadIdAndInUseIsTrue(@Param("threadId") Long threadId, Pageable pageable);
 
     @Modifying(clearAutomatically = true)
 //    @Query("update Comment c set c.inUse = false where c.id = :commentId")
