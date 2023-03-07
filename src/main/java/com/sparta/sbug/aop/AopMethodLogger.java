@@ -15,6 +15,8 @@ import java.lang.reflect.Method;
 @Aspect
 @Component
 public class AopMethodLogger {
+    // 매서드를 랩핑하는 느낌의 친구이다. 객체지향개념과 좀 동떨어져 있다.
+    // 매서드 실패시, 재시도 하는 AOP? 생각했는데 < 에러 로깅이 안됨. 에러가 나더라도 트래킹이 안된다.
 
     // 패키지의 Controller 라는 이름으로 끝나는 패키지에 모두 적용 (매서드만)
     @Pointcut("within(*..*Controller)")

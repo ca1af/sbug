@@ -55,9 +55,11 @@ public class UserChannelServiceImpl implements UserChannelService {
         if (!isUserJoinedByChannel(user, channelId)) {
             throw new CustomException(USER_CHANNEL_FORBIDDEN);
         }
-
         Channel channel = channelService.getChannelById(channelId);
         User invitedUser = userService.getUserByEmail(email);
+        if (isUserJoinedByChannel(invitedUser, channelId)) {
+            throw new CustomException(USER_CHANNEL_DUPLICATED);
+        }
         UserChannel userChannel = UserChannel.builder().user(invitedUser).channel(channel).build();
         userChannelRepository.save(userChannel);
     }

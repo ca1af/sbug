@@ -25,6 +25,7 @@ public enum ErrorCode {
     CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, 2003, "채널을 찾을 수 없습니다."),
     DUPLICATE_USER_CHANNEL(HttpStatus.BAD_REQUEST, 2004, "중복된 유저-채널 리소스가 존재합니다."),
     USER_CHANNEL_NOT_FOUND(HttpStatus.NOT_FOUND, 2005, "유저가 채널의 구성원이 아닙니다."),
+    USER_CHANNEL_DUPLICATED(HttpStatus.BAD_REQUEST, 2006, "이미 초대했습니다."),
 
     // 쓰레드, 쓰레드 이모지 오류 (3000)
     BAD_REQUEST_THREAD_CONTENT(HttpStatus.BAD_REQUEST, 3001, "쓰레드 내용에 공백을 입력할 수 없습니다😨"),
