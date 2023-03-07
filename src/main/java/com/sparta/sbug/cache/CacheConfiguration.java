@@ -18,16 +18,16 @@ public class CacheConfiguration {
 
     @Bean
     public RedisCacheManager cacheManager(
-        RedisConnectionFactory connectionFactory
+            RedisConnectionFactory connectionFactory
     ) {
 
         RedisCacheConfiguration defaultConfig
-            = RedisCacheConfiguration.defaultCacheConfig()
+                = RedisCacheConfiguration.defaultCacheConfig()
                 .disableCachingNullValues()
                 .serializeValuesWith(
-                    RedisSerializationContext
-                    .SerializationPair
-                    .fromSerializer(new GenericJackson2JsonRedisSerializer())
+                        RedisSerializationContext
+                                .SerializationPair
+                                .fromSerializer(new GenericJackson2JsonRedisSerializer())
                 );
 /*                
         RedisCacheConfiguration elasticTtlconfig
@@ -41,37 +41,37 @@ public class CacheConfiguration {
 
         // 리소스 유형에 따라 만료 시간을 다르게 지정
         Map<String, RedisCacheConfiguration> redisCacheConfigMap
-            = new HashMap<>();
+                = new HashMap<>();
         redisCacheConfigMap.put(
-            CacheNames.USER,
-            defaultConfig.entryTtl(Duration.ofHours(4))
+                CacheNames.USER,
+                defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(
-            CacheNames.USERBYEMAIL,
-            defaultConfig.entryTtl(Duration.ofHours(4))
+                CacheNames.USERBYEMAIL,
+                defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(
-            CacheNames.ALLUSERS,
-            defaultConfig.entryTtl(Duration.ofHours(4))
+                CacheNames.ALLUSERS,
+                defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(
-            CacheNames.THREAD,
-            defaultConfig.entryTtl(Duration.ofHours(4))
+                CacheNames.THREAD,
+                defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(
-            CacheNames.COMMENT,
-            defaultConfig.entryTtl(Duration.ofHours(4))
+                CacheNames.COMMENT,
+                defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(
-            CacheNames.CHANNELS,
-            defaultConfig.entryTtl(Duration.ofHours(4))
+                CacheNames.CHANNELS,
+                defaultConfig.entryTtl(Duration.ofHours(4))
         );
 
         RedisCacheManager redisCacheManager
-            = RedisCacheManager.builder(connectionFactory)
+                = RedisCacheManager.builder(connectionFactory)
                 .withInitialCacheConfigurations(redisCacheConfigMap)
                 .build();
 
-			return redisCacheManager;
+        return redisCacheManager;
     }
 }
