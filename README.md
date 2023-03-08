@@ -41,8 +41,6 @@ SBUG은 혼자하는 공부, 함께하는 공부가 모두 가능한 Study Bug�
 ![서비스 아키텍쳐](https://user-images.githubusercontent.com/78391166/223591458-9692a98c-2245-406b-854d-7c16c45aca1e.png)
 
 
-## :sparkles: 프로젝트 시연
-
 ## :dizzy: 기술의 특장점
 * [Redis를 이용한 캐싱](https://github.com/ca1af/sbug/blob/573e3c4dd539a65dbbd58ccbda1ad75436735083/introduction/redis_caching.md)
 * [OAuth2를 사용한 카카오 로그인](https://github.com/ca1af/sbug/blob/595078c663d72e45844411846979c4eb8a833558/introduction/OAuth2(kakaologin).md)
