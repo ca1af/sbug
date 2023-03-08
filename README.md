@@ -47,5 +47,5 @@ SBUG은 혼자하는 공부, 함께하는 공부가 모두 가능한 Study Bug�
 * OAuth2를 사용한 카카오 로그인
 * 논리삭제
 * 실시간 채팅
-* Pre-SignedURL를 통한 이미지 업로드
+* [Pre-SignedURL를 통한 이미지 업로드](https://github.com/ca1af/sbug/blob/8eefbd496ded2c8ee96a5ef7820f6ea242e116f4/introduction/AWS%20S3%20Pre-SignedURL.md)
 
