@@ -5,6 +5,7 @@
 **도심 속 작은 스터디카페** <br>
 SBUG은 혼자하는 공부, 함께하는 공부가 모두 가능한 Study Bug들을 위한 플랫폼입니다.<br>   
 <a href="http://sbug-front-server-s3.s3-website.ap-northeast-2.amazonaws.com">SBUG 체험해보기:computer:</a>
+<a href="https://www.canva.com/design/DAFbR8Tl-7g/GL3y9KHwc7D6ro_Qj5Pygw/view?utm_content=DAFbR8Tl-7g&utm_campaign=designshare&utm_medium=link&utm_source=recording_view">SBUG 발표 영상
 </div>
 <br/>  
 
