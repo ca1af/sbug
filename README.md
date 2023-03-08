@@ -34,7 +34,7 @@ SBUG은 혼자하는 공부, 함께하는 공부가 모두 가능한 Study Bug�
 |  [백승범](https://github.com/deok-beom)  |  [김동균](https://github.com/ca1af)  |  [김송미](https://github.com/SONGMI-KIM)  |  [곽두영](https://github.com/youngfromnowhere)  |
 |:--------:|:--------:|:--------:|:--------:|
 |   <img src="https://user-images.githubusercontent.com/117061584/223433015-f6017b02-ddfa-4ce7-9b0f-a855ab6b402f.png"  width="200" height="200"/>   |   <img src="https://user-images.githubusercontent.com/117061584/223433015-f6017b02-ddfa-4ce7-9b0f-a855ab6b402f.png"  width="200" height="200"/>   |   <img src="https://user-images.githubusercontent.com/117061584/223433015-f6017b02-ddfa-4ce7-9b0f-a855ab6b402f.png"  width="200" height="200"/>   |   <img src="https://user-images.githubusercontent.com/117061584/223433015-f6017b02-ddfa-4ce7-9b0f-a855ab6b402f.png"  width="200" height="200"/>   |
-| 코멘트CRUD, 채팅,<br> CI/CD, 프론트 | 유저/어드민채널CRUD,<br> 채널CRUD, 카카오 로그인,<br> AOP 사용한 로깅, 논리삭제 | 쓰레드CRUD, 이모지CRUD,<br> S3 이미지업로드 | 일정CRUD, 캐싱 |  
+| 코멘트CRUD, 채팅,<br> CI/CD, 프론트 | 유저/어드민/채널CRUD<br>카카오 로그인,<br> AOP, 논리삭제 | 쓰레드CRUD, 이모지CRUD,<br> S3 이미지업로드 | 일정CRUD, 캐싱 |  
 
 ## :zap: 서비스 아키텍쳐
 ![서비스 아키텍쳐](https://user-images.githubusercontent.com/117061584/223418448-f996751a-9ada-46e5-a864-89f379e5eec4.png)
