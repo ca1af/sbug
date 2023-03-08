@@ -37,7 +37,7 @@ SBUG은 혼자하는 공부, 함께하는 공부가 모두 가능한 Study Bug�
 | 코멘트CRUD, 채팅,<br> CI/CD, 프론트 | 유저/어드민/채널CRUD<br>카카오 로그인,<br> AOP, 논리삭제 | 쓰레드CRUD, 이모지CRUD,<br> S3 이미지업로드 | 일정CRUD, <br> 레디스 이용한 캐싱 |  
 
 ## :zap: 서비스 아키텍쳐
-![서비스 아키텍쳐](https://user-images.githubusercontent.com/117061584/223418448-f996751a-9ada-46e5-a864-89f379e5eec4.png)
+![서비스 아키텍쳐](https://user-images.githubusercontent.com/78391166/223591458-9692a98c-2245-406b-854d-7c16c45aca1e.png)
 
 
 ## :sparkles: 프로젝트 시연
