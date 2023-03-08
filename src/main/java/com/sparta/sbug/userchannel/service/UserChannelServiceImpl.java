@@ -16,6 +16,8 @@ import com.sparta.sbug.cache.CacheNames;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
 
+import com.sparta.sbug.security.RedisDao;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +32,7 @@ import static com.sparta.sbug.common.exceptions.ErrorCode.*;
 public class UserChannelServiceImpl implements UserChannelService {
 
     private final UserChannelRepository userChannelRepository;
+    private final RedisDao redisDao;
     private final ChannelService channelService;
     private final UserService userService;
 
@@ -37,7 +40,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
-//    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
+    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     public ChannelResponseDto createChannel(User user, String channelName) {
         Channel channel = channelService.createChannel(channelName);
         if (userChannelRepository.existsByUserAndChannelAndInUseIsTrue(user, channel)) {
@@ -50,7 +53,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
 
     @Override
-//    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
+    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     @Transactional
     public void inviteUser(User user, Long channelId, String email) {
         if (!isUserJoinedByChannel(user, channelId)) {
@@ -63,12 +66,14 @@ public class UserChannelServiceImpl implements UserChannelService {
         }
         UserChannel userChannel = UserChannel.builder().user(invitedUser).channel(channel).build();
         userChannelRepository.save(userChannel);
+        //invitedUser 쪽의 CHANNELS cache data 삭제
+        redisDao.deleteValues("CACHE_CHANNELS::" + invitedUser.getId());
     }
 
 
     @Override
     @Transactional(readOnly = true)
-//    @Cacheable(cacheNames = CacheNames.CHANNELS, key = "#userId")
+    @Cacheable(cacheNames = CacheNames.CHANNELS, key = "#userId")
     public List<ChannelResponseDto> getChannelsByUserId(Long userId) {
         List<UserChannel> UserChannels = userChannelRepository.findAllChannelByUserIdAndInUseIsTrue(userId);
         List<Channel> channels = new ArrayList<>();
@@ -80,7 +85,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
-//    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
+    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     public void exitChannel(User user, Long channelId) {
         UserChannel userChannel = userChannelRepository.findByUserAndChannelIdAndInUseIsTrue(user, channelId).orElseThrow(
                 () -> new CustomException(USER_CHANNEL_NOT_FOUND)
@@ -96,7 +101,7 @@ public class UserChannelServiceImpl implements UserChannelService {
 
     @Override
     @Transactional
-//    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
+    @CacheEvict(cacheNames = CacheNames.CHANNELS, key = "#user.id")
     public void disableChannel(Long channelId) {
         userChannelRepository.disableAllUserChannelByChannelIdAndInUse(channelId);
         channelService.disableChannel(channelId);
