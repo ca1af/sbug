@@ -11,7 +11,7 @@ SBUG은 혼자하는 공부, 함께하는 공부가 모두 가능한 Study Bug�
 <div>
 
 ## :bulb: SBUG 주요기능
-채널생성, 스레드, 댓글, 이모지 반응, 실시간 채팅, 일정등록, 복습일정 자동생성
+### 채널생성, 스레드, 댓글, 이모지 반응, 실시간 채팅, 일정등록, 복습일정 자동생성
 </div>
 <br> 
 
@@ -43,9 +43,9 @@ SBUG은 혼자하는 공부, 함께하는 공부가 모두 가능한 Study Bug�
 ## :sparkles: 프로젝트 시연
 
 ## :dizzy: 기술의 특장점
-* Redis를 이용한 캐싱
-* OAuth2를 사용한 카카오 로그인
-* 논리삭제
-* 실시간 채팅
+* [Redis를 이용한 캐싱](https://github.com/ca1af/sbug/blob/573e3c4dd539a65dbbd58ccbda1ad75436735083/introduction/redis_caching.md)
+* [OAuth2를 사용한 카카오 로그인](https://github.com/ca1af/sbug/blob/595078c663d72e45844411846979c4eb8a833558/introduction/OAuth2(kakaologin).md)
+* [논리삭제](https://github.com/ca1af/sbug/blob/573e3c4dd539a65dbbd58ccbda1ad75436735083/introduction/Soft%20Delete.md)
+* [실시간 채팅](https://github.com/ca1af/sbug/blob/595078c663d72e45844411846979c4eb8a833558/introduction/Live%20Chat.md)
 * [Pre-SignedURL를 통한 이미지 업로드](https://github.com/ca1af/sbug/blob/8eefbd496ded2c8ee96a5ef7820f6ea242e116f4/introduction/AWS%20S3%20Pre-SignedURL.md)
 
