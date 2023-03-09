@@ -131,7 +131,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = CacheNames.COMMENT, key = "#commentId")
     public boolean reactCommentEmoji(String emojiType, User user, Long commentId) {
         Comment comment = getComment(commentId);
         return commentEmojiService.reactCommentEmoji(emojiType, user, comment);
