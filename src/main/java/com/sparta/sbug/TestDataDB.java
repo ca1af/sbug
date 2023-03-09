@@ -11,6 +11,7 @@ import com.sparta.sbug.emoji.repository.ThreadEmojiRepository;
 import com.sparta.sbug.schedule.entity.Schedule;
 import com.sparta.sbug.schedule.entity.ScheduleStatus;
 import com.sparta.sbug.schedule.repository.ScheduleRepository;
+import com.sparta.sbug.security.RedisDao;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.user.entity.User;
@@ -50,9 +51,9 @@ public class TestDataDB {
         private final ThreadEmojiRepository threadEmojiRepository;
         private final AdminRepository adminRepository;
         private final ScheduleRepository scheduleRepository;
-        private final RedisConnection redisConnection;
+        private final RedisDao redisDao;
         public void init() {
-            redisConnection.serverCommands().flushAll();
+            redisDao.flushAll();
             // 유저 생성
             User user1 = User.builder().email("user1@naver.com").password(getEncode("password1")).nickname("뽀로로")
                     .build();

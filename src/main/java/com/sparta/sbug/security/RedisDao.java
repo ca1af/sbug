@@ -52,4 +52,7 @@ public class RedisDao {
     public void deleteValues(String key) {
         redisTemplate.delete(key);
     }
+    public void flushAll(){
+        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();
+    }
 }
