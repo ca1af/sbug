@@ -19,6 +19,7 @@ import com.sparta.sbug.userchannel.enttiy.UserChannel;
 import com.sparta.sbug.userchannel.repository.UserChannelRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,9 @@ public class TestDataDB {
         private final ThreadEmojiRepository threadEmojiRepository;
         private final AdminRepository adminRepository;
         private final ScheduleRepository scheduleRepository;
+        private final RedisConnection redisConnection;
         public void init() {
+            redisConnection.serverCommands().flushAll();
             // 유저 생성
             User user1 = User.builder().email("user1@naver.com").password(getEncode("password1")).nickname("뽀로로")
                     .build();
