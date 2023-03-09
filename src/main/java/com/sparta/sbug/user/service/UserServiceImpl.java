@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(cacheNames = CacheNames.ALLUSERS)
+    @Cacheable(CacheNames.ALLUSERS)
     @Transactional(readOnly = true)
     public List<UserResponseDto> getUsers() {
         return userRepository.findAll().stream().map(this::getUserResponseDto).toList();
