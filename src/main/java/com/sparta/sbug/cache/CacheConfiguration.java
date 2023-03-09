@@ -43,10 +43,6 @@ public class CacheConfiguration {
         Map<String, RedisCacheConfiguration> redisCacheConfigMap
             = new HashMap<>();
         redisCacheConfigMap.put(
-            CacheNames.USER,
-            defaultConfig.entryTtl(Duration.ofHours(4))
-        );
-        redisCacheConfigMap.put(
             CacheNames.USERBYEMAIL,
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
@@ -56,10 +52,6 @@ public class CacheConfiguration {
         );
         redisCacheConfigMap.put(
             CacheNames.THREAD,
-            defaultConfig.entryTtl(Duration.ofHours(4))
-        );
-        redisCacheConfigMap.put(
-            CacheNames.COMMENT,
             defaultConfig.entryTtl(Duration.ofHours(4))
         );
         redisCacheConfigMap.put(

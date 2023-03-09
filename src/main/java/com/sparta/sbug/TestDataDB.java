@@ -65,7 +65,7 @@ public class TestDataDB {
             User user3 = User.builder().email("user3@naver.com").password(getEncode("password3")).nickname("펭구")
                     .build();
             user3.setProfileImage("default.png");
-            userRepository.save(user3);
+            User savedUser3 = userRepository.save(user3);
 
             User user4 = User.builder().email("user4@naver.com").password(getEncode("password4")).nickname("뿡뿡이")
                     .build();
@@ -94,7 +94,7 @@ public class TestDataDB {
 
             // 쓰레드 생성
             Thread thread = new Thread(savedChannel1, savedUser1, "안녕하세요");
-            Thread thread2 = new Thread(savedChannel2, savedUser1, "안녕하세요2");
+            Thread thread2 = new Thread(savedChannel2, savedUser3, "안녕하세요2");
 
             Thread savedThread = threadRepository.save(thread);
             Thread savedThread2 = threadRepository.save(thread2);

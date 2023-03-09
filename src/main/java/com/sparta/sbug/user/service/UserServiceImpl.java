@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -80,13 +81,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Caching(evict = {
         @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "'SimpleKey []'"),
-        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
         @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     public void unregister(User user) {
         userRepository.disableInUseByEmail(user.getEmail());
     }
 
     @Override
+    @Cacheable(cacheNames = CacheNames.ALLUSERS)
     @Transactional(readOnly = true)
     public List<UserResponseDto> getUsers() {
         return userRepository.findAll().stream().map(this::getUserResponseDto).toList();
@@ -124,7 +125,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Caching(evict = {
         @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "'SimpleKey []'"),
-        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
         @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     public void updateNickname(User user, UserUpdateDto.Nickname dto) {
         User user1 = getUserById(user.getId());
@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Caching(evict = {
-        @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
+        @CacheEvict(cacheNames = CacheNames.ALLUSERS, key = "#user.id"),
         @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
     @Transactional
     public String changeProfileImage(User user, String key) {
@@ -161,9 +161,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    @Caching(evict = {
-            @CacheEvict(cacheNames = CacheNames.USER, key = "#user.id"),
-            @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")})
+    @CacheEvict(cacheNames = CacheNames.USERBYEMAIL, key = "#user.email")
     public void AddOrSubtractTemperatureByConfidence(User user, String confidence) {
         Float temp = user.getTemperature();
         if (confidence.equals("positive")) {
