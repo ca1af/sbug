@@ -35,7 +35,7 @@ public class CacheConfiguration {
                 .serializeValuesWith(
                         RedisSerializationContext
                                 .SerializationPair
-                                .fromSerializer(new JdkSerializationRedisSerializer())
+                                .fromSerializer(new GenericJackson2JsonRedisSerializer())
                 );
 /*                
         RedisCacheConfiguration elasticTtlconfig
