@@ -50,13 +50,20 @@ public class CacheConfiguration {
         // 리소스 유형에 따라 만료 시간을 다르게 지정
         Map<String, RedisCacheConfiguration> redisCacheConfigMap
                 = new HashMap<>();
+
         redisCacheConfigMap.put(
                 CacheNames.USERBYEMAIL,
                 defaultConfig.entryTtl(Duration.ofHours(4))
         );
+        // ALLUSERS에 대해서만 다른 Serializer 적용
         redisCacheConfigMap.put(
                 CacheNames.ALLUSERS,
                 defaultConfig.entryTtl(Duration.ofHours(4))
+                .serializeValuesWith(
+                    RedisSerializationContext
+                        .SerializationPair
+                        .fromSerializer(new JdkSerializationRedisSerializer())
+                )
         );
         redisCacheConfigMap.put(
                 CacheNames.THREAD,
