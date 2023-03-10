@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     /**
@@ -30,4 +31,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void disableInUseByEmail(@Param("email") String email);
 
     Optional<User> findByKakaoIdAndInUseIsTrue(Long kakaoId);
+
+    /**
+     * InUse 상태의 모든 유저를 반환
+     */
+    List<User> findByInUseTrue();
 }
