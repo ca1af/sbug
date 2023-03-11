@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
     @Cacheable(cacheNames = CacheNames.ALLUSERS)
     @Transactional(readOnly = true)
     public List<UserResponseDto> getUsers() {
-        return userRepository.findAll().stream().map(this::getUserResponseDto).toList();
+        return userRepository.findByInUseTrue().stream().map(this::getUserResponseDto).toList();
     }
 
     @Override
