@@ -3,6 +3,7 @@ package com.sparta.sbug.user.entity;
 import com.sparta.sbug.common.entity.Timestamp;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 // lombok
 @Getter

@@ -27,8 +27,8 @@ public interface ThreadRepository extends JpaRepository<Thread, Long>, ThreadQue
      * @param channelId : 대상 채널 ID
      * @param pageable  : 페이저블
      */
-
-    Slice<Thread> findThreadsByChannelIdAndInUseIsTrue(Long channelId, Pageable pageable);
+    @Query("select c from Thread c join fetch c.user u where c.channel.id = :channelId and c.inUse = true")
+    Slice<Thread> findThreadsByChannelIdAndInUseIsTrue(@Param("channelId") Long channelId, Pageable pageable);
 
     @Modifying(clearAutomatically = true)
     @Query("update Thread t set t.inUse = false where t.id = :threadId")

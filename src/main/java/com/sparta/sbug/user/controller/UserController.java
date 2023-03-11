@@ -42,8 +42,6 @@ public class UserController {
      */
     @PostMapping("/users/sign-up")
     public void signUp(@RequestBody @Valid SignUpRequestDto requestDto) {
-        log.info("[POST] /api/users/sign-up");
-
         userService.signUp(requestDto);
     }
 
@@ -57,8 +55,6 @@ public class UserController {
     @PostMapping("/users/login")
     @ExeTimer
     public TokenResponseDto login(@RequestBody LoginRequestDto requestDto) {
-        log.info("[POST] /api/users/login");
-
         UserResponseDto responseDto = userService.login(requestDto);
         return jwtProvider.createTokensByLogin(responseDto);
     }
@@ -72,8 +68,6 @@ public class UserController {
      */
     @PostMapping("/users/logout")
     public void logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("[POST] /api/users/logout");
-
         jwtProvider.deleteRtk(userDetails.getUser().getEmail());
     }
 
@@ -85,8 +79,6 @@ public class UserController {
      */
     @GetMapping("/users")
     public List<UserResponseDto> getUsers() {
-        log.info("[GET] /api/users");
-
         return userService.getUsers();
     }
 
@@ -99,7 +91,6 @@ public class UserController {
      */
     @GetMapping("/users/my-page")
     public UserResponseDto myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("[GET] /api/users/my-page");
         return userService.getMyPage(userDetails.getUser());
     }
 
@@ -112,7 +103,6 @@ public class UserController {
      */
     @GetMapping("/users/search")
     public UserResponseDto getUser(@PathParam(value = "email") String email) {
-        log.info("[GET] /api/users/search?email={}", email);
         return userService.getUser(email);
     }
 
@@ -125,8 +115,6 @@ public class UserController {
      */
     @PatchMapping("/users/nickname")
     public void updateNickname(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid UserUpdateDto.Nickname dto) {
-        log.info("[PATCH] /api/users/nickname");
-
         userService.updateNickname(userDetails.getUser(), dto);
     }
 
@@ -139,8 +127,6 @@ public class UserController {
      */
     @PatchMapping("/users/password")
     public void changePassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid UserUpdateDto.Password dto) {
-        log.info("[PATCH] /api/users/password");
-
         userService.changePassword(userDetails.getUser(), dto);
     }
 
@@ -153,8 +139,6 @@ public class UserController {
      */
     @PatchMapping("/users/image")
     public String updateProfileImage(@RequestBody String key, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("[GET] /api/users/test");
-
         return userService.changeProfileImage(userDetails.getUser(), key);
     }
 
@@ -166,8 +150,6 @@ public class UserController {
      */
     @PutMapping("/users")
     public void unregister(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("[PUT] /api/users");
-
         userChannelService.disableUser(userDetails.getUser());
     }
 

@@ -40,14 +40,6 @@ out/
 *.vim
 *.swp
 
-### my ignore ###
-<<<<<<< HEAD
+### my ignore ####
 src/main/resources/application.yml
-resources/aws.yml
-
-### Redis Cache ###
 dump.rdb
-=======
-/src/main/resources/application.yml
-resources/aws.yml
->>>>>>> bbcdbba0c7d1cd47e5dbee18f84455474e6e1d09

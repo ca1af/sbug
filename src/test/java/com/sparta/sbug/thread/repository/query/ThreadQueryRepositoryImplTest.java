@@ -14,8 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class ThreadQueryRepositoryImplTest {
     @Autowired
     ThreadQueryRepositoryImpl threadQueryRepository;
-    @Autowired
-    ThreadRepository threadRepository;
 
     @Test
     void findThreadBySearchCondition() {

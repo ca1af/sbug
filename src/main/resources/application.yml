@@ -1,0 +1,92 @@
+spring:
+
+  # PostgreSQL, RDB
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    #url: jdbc:postgresql://sbug-postgresql.cftflnrmtk5t.ap-northeast-2.rds.amazonaws.com:5432/postgres
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: super
+    password: pass
+  profiles: # server에 저장할 때 사용
+    active: local
+    group:
+      "local": "local, common"
+      "development": "development,common"
+  servlet:
+    multipart:
+      maxFileSize: 10MB #최대 파일 사이즈
+      maxRequestSize: 30MB #최대 요청 사이즈
+      # 즉 한파일에 10MB 이하 총 30MB이하의 이미지를 올려야 한다는 의미
+
+  # JPA
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 100
+    open-in-view: false
+
+  mvc:
+    hidden-method:
+      filter:
+        enabled: true
+
+  main:
+    allow-bean-definition-overriding: true
+
+  # Redis
+  data:
+    redis:
+      #host: 172.31.59.16
+      host: localhost
+      port: 6379
+
+  # Kafka
+  kafka:
+    consumer:
+      #bootstrap-servers: 172.31.36.158:9092 #카프카 서버 정보
+      bootstrap-servers: localhost:9092
+      group-id: kafka-sbug #Consumer의 그룹 ID
+      enable-auto-commit: true #데이터를 어디까지 읽었다는 Offset을 주기적으로 저장할지 여부
+      auto-offset-reset: latest #Offset에 오류가 있을 경우 어디서부터 다시 할지 여부
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer #데이터를 Kafka에서 받아서 사용하는 Key Decoder
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer #데이터를 Kafka에서 받아서 사용하는 Value Decoder
+      max-poll-records: 1000 #Consumer가 한번에 가져올 수 있는 Message 개수
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer #데이터를 Kafka로 전달할 때 사용하는 Key Encoder
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer #데이터를 Kafka로 전달할 때 사용하는 Value Encoder
+    template:
+      default-topic: kafka-sbug #기본 설정 Topic
+
+# JWT
+jwt:
+  secret:
+    key: 7Jqw66as64qU66qo65GQ67aV6rS07ZWY64qU67OE7J2Y64K067aA7JeQ7ISc7ZWp7ISx65CQ64uk6re465+s66+A66Gc7Jqw66as64qU67OE7J2Y7J6Q64WA64uk
+  live:
+    atk: 3600000  # 1000 milisecond = 1 second. atk = 1 hour , rtk = 24 hour
+    rtk: 86400000 # batch size -> reformat collection data.
+
+# AWS
+cloud:
+  aws:
+    s3:
+      bucket: sbug-bucket
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+    credentials:
+      accessKey: x
+      secretKey: x
+      instanceProfile: true
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: ERROR
+

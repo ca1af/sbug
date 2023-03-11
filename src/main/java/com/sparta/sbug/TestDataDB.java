@@ -11,6 +11,7 @@ import com.sparta.sbug.emoji.repository.ThreadEmojiRepository;
 import com.sparta.sbug.schedule.entity.Schedule;
 import com.sparta.sbug.schedule.entity.ScheduleStatus;
 import com.sparta.sbug.schedule.repository.ScheduleRepository;
+import com.sparta.sbug.security.RedisDao;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
 import com.sparta.sbug.user.entity.User;
@@ -19,6 +20,7 @@ import com.sparta.sbug.userchannel.enttiy.UserChannel;
 import com.sparta.sbug.userchannel.repository.UserChannelRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +51,9 @@ public class TestDataDB {
         private final ThreadEmojiRepository threadEmojiRepository;
         private final AdminRepository adminRepository;
         private final ScheduleRepository scheduleRepository;
+        private final RedisDao redisDao;
         public void init() {
+            redisDao.flushAll();
             // 유저 생성
             User user1 = User.builder().email("user1@naver.com").password(getEncode("password1")).nickname("뽀로로")
                     .build();
@@ -65,7 +69,7 @@ public class TestDataDB {
             User user3 = User.builder().email("user3@naver.com").password(getEncode("password3")).nickname("펭구")
                     .build();
             user3.setProfileImage("default.png");
-            userRepository.save(user3);
+            User savedUser3 = userRepository.save(user3);
 
             User user4 = User.builder().email("user4@naver.com").password(getEncode("password4")).nickname("뿡뿡이")
                     .build();
@@ -94,7 +98,7 @@ public class TestDataDB {
 
             // 쓰레드 생성
             Thread thread = new Thread(savedChannel1, savedUser1, "안녕하세요");
-            Thread thread2 = new Thread(savedChannel2, savedUser1, "안녕하세요2");
+            Thread thread2 = new Thread(savedChannel2, savedUser3, "안녕하세요2");
 
             Thread savedThread = threadRepository.save(thread);
             Thread savedThread2 = threadRepository.save(thread2);

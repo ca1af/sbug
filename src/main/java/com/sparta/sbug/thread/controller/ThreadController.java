@@ -114,9 +114,6 @@ public class ThreadController {
                                           @RequestBody ThreadRequestDto threadRequestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        String logBuilder = "[PATCH] /api/threads/" + threadId;
-        log.info(logBuilder);
-
         threadService.editThread(threadId, threadRequestDto.getContent(), userDetails.getUser());
     }
 
@@ -130,9 +127,6 @@ public class ThreadController {
     @PutMapping("/threads/{threadId}")
     public void disableThread(@PathVariable Long threadId,
                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        String logBuilder = "[PUT] /api/threads/" + threadId;
-        log.info(logBuilder);
 
         threadService.disableThread(threadId, userDetails.getUser());
     }
@@ -157,8 +151,6 @@ public class ThreadController {
             @RequestBody String emojiType,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        String infoLog = "[POST] /api/channels/" + channelId + "/threads/" + threadId +"/emojis";
-        log.info(infoLog);
 
         if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
             throw new CustomException(USER_THREAD_FORBIDDEN);
