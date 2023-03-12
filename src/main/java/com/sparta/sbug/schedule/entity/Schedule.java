@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.LinkedList;
 
 // lombok
 @Getter
@@ -34,14 +36,18 @@ public class Schedule extends Timestamp {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private ScheduleStatus status = ScheduleStatus.UNDONE;
+    private ScheduleStatus status;
 
     @Column(nullable = false)
-    @Enumerated
-    private ScheduleMode mode = ScheduleMode.NORMAL;
+    @Enumerated(EnumType.STRING)
+    private ScheduleMode mode;
 
     @Column
     private LocalDateTime doneAt;
+
+    @Column(nullable = false)
+    @Setter
+    private List<Long> reviewIdList = new LinkedList<Long>();
 
     /**
      * 생성자
@@ -52,12 +58,13 @@ public class Schedule extends Timestamp {
      */
     @Builder
     public Schedule(
-        User user, String content, LocalDateTime date, ScheduleStatus status
+        User user, String content, LocalDateTime date, ScheduleStatus status, ScheduleMode mode
     ) {
         this.user = user;
         this.content = content;
         this.date = date;
         this.status = status;
+        this.mode = mode;
     }
 
     /**

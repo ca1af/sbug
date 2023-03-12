@@ -31,8 +31,8 @@ public enum ScheduleMode {
      * 일정 Mode를 문자열로 저장하는 내부 클래스
      */
     public static class Mode {
-        public static final String normal = "MODE_NORMAL"
-        public static final String studyplan = "MODE_STUDYPLAN"
-        public static final String review = "MODE_REVIEW"
+        public static final String NORMAL = "MODE_NORMAL";
+        public static final String STUDYPLAN = "MODE_STUDYPLAN";
+        public static final String REVIEW = "MODE_REVIEW";
     }
 }
