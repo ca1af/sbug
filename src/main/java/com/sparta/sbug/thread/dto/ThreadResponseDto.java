@@ -5,6 +5,7 @@ import com.sparta.sbug.emoji.dto.EmojiResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class ThreadResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private List<EmojiResponseDto> emojis;
+    @Setter
+    private String imageFileUrl;
 
     private ThreadResponseDto(Thread thread, Map<Long, List<EmojiResponseDto>> threadEmojiCountMap) {
         this.threadId = thread.getId();
@@ -55,6 +58,9 @@ public class ThreadResponseDto {
         return new ThreadResponseDto(thread, threadEmojiCountMap);
     }
 
+    public static ThreadResponseDto of() {
+        return new ThreadResponseDto();
+    }
     public void setEmojis(List<EmojiResponseDto> emojis) {
         this.emojis = emojis;
     }

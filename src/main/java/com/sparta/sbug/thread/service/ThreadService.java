@@ -3,11 +3,13 @@ package com.sparta.sbug.thread.service;
 import com.sparta.sbug.channel.entity.Channel;
 import com.sparta.sbug.comment.dto.CommentResponseDto;
 import com.sparta.sbug.common.dto.PageDto;
+import com.sparta.sbug.thread.dto.ImageResponseDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
 import com.sparta.sbug.user.entity.User;
 import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.util.List;
@@ -133,4 +135,6 @@ public interface ThreadService {
     String imageUploadOnThread(Long channelId, Long threadId, String imageFileName, User user);
 
     S3Presigner getPreSigner();
+
+    ImageResponseDto getImageOnThread(Long threadId);
 }

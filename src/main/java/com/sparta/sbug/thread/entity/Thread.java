@@ -32,6 +32,7 @@ public class Thread extends Timestamp {
     @Setter
     private boolean inUse = true;
 
+
     @Column
     @Setter
     private String imageFile;

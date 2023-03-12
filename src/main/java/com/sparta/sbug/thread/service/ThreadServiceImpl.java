@@ -10,6 +10,7 @@ import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.emoji.dto.EmojiCountDto;
 import com.sparta.sbug.emoji.dto.EmojiResponseDto;
 import com.sparta.sbug.emoji.service.ThreadEmojiService;
+import com.sparta.sbug.thread.dto.ImageResponseDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.entity.Thread;
 import com.sparta.sbug.thread.repository.ThreadRepository;
@@ -26,6 +27,7 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -177,29 +179,6 @@ public class ThreadServiceImpl implements ThreadService {
         return threadRepository.findThreadBySearchCondition(threadSearchCond);
     }
 
-    // 쓰레드 이미지 업로드
-    @Override
-    @Transactional
-    public String imageUploadOnThread(Long channelId, Long threadId, String keyName, User user) {
-        Thread thread = findThreadById(threadId);
-
-        // 디렉토리 이름
-        String dirName = "ChannelNo."+ channelId;
-        // 파일 이름
-        String fileName = keyName + threadId + user.getId() + LocalDateTime.now(); // UUID 찾아보기
-        // 저장경로가 포함된 파일 이름(key)
-        String objKeyName = dirName + "/" + fileName;
-
-        S3Presigner preSigner = getPreSigner();
-        String url = s3Service.imageObjectPreSignedUrl(bucketName, objKeyName, preSigner);
-        preSigner.close();
-
-        thread.setImageFile(objKeyName);
-        threadRepository.save(thread);
-        return url;
-    }
-
-
     @Override
     public S3Presigner getPreSigner(){
         AwsCredentialsProvider awsCredentialsProvider;
@@ -211,5 +190,39 @@ public class ThreadServiceImpl implements ThreadService {
                 .region(region)
                 .credentialsProvider(awsCredentialsProvider)
                 .build();
+    }
+
+    // 쓰레드 이미지 업로드
+    @Override
+    @Transactional
+    public String imageUploadOnThread(Long threadId, Long channelId, String keyName, User user) {
+        Thread thread = findThreadById(threadId);
+        // 디렉토리 이름_ 채널에 유저 별 이미지 폴더 생성
+        String dirName = "ch" + channelId + "/" + user.getId();
+        // 저장경로가 포함된 객체 이름(key)
+        String objKeyName = dirName + "/" + keyName; // ch1/1/test.png
+
+        S3Presigner preSigner = getPreSigner();
+        String url = s3Service.imageObjectPreSignedUrl(bucketName, objKeyName, preSigner);
+        preSigner.close();
+
+        thread.setImageFile(objKeyName);
+        threadRepository.save(thread);
+
+        return url;
+    }
+
+    @Override
+    @Transactional
+    public ImageResponseDto getImageOnThread(Long threadId) {
+        Thread thread = findThreadById(threadId);
+        ImageResponseDto responseDto = ImageResponseDto.of();
+
+        S3Presigner preSigner = getPreSigner();
+        responseDto.setImageFileUrl(s3Service.getImageObjectPreSignedUrl(bucketName, thread.getImageFile(), preSigner));
+
+        preSigner.close();
+        return responseDto;
+
     }
 }

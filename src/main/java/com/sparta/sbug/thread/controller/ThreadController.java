@@ -4,6 +4,7 @@ import com.sparta.sbug.common.dto.PageDto;
 import com.sparta.sbug.common.exceptions.CustomException;
 import com.sparta.sbug.common.exceptions.ErrorCode;
 import com.sparta.sbug.security.userDetails.UserDetailsImpl;
+import com.sparta.sbug.thread.dto.ImageResponseDto;
 import com.sparta.sbug.thread.dto.ThreadRequestDto;
 import com.sparta.sbug.thread.dto.ThreadResponseDto;
 import com.sparta.sbug.thread.repository.query.ThreadSearchCond;
@@ -15,8 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 // lombok
 @RequiredArgsConstructor
@@ -70,7 +73,7 @@ public class ThreadController {
         log.info(logBuilder);
 
         if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
-             throw new CustomException(ErrorCode.USER_CHANNEL_FORBIDDEN);
+            throw new CustomException(ErrorCode.USER_CHANNEL_FORBIDDEN);
         }
 
         return threadService.getAllThreadsInChannel(channelId, pageDto);
@@ -109,37 +112,13 @@ public class ThreadController {
      */
     @PatchMapping("/threads/{threadId}")
     public void updateThread(@PathVariable Long threadId,
-                                          @RequestBody ThreadRequestDto threadRequestDto,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                             @RequestBody ThreadRequestDto threadRequestDto,
+                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String logBuilder = "[PATCH] /api/threads/" + threadId;
         log.info(logBuilder);
 
         threadService.editThread(threadId, threadRequestDto.getContent(), userDetails.getUser());
-    }
-
-    /**
-     * 작성자가 대상 쓰레드에 이미지를 업로드
-     * [POST] /api/channels/{channelId}/threads/{threadId}/images
-     *
-     * @param channelId        대상 채널 ID
-     * @param threadId         대상 쓰레드 ID
-     * @param imageFileName    요청 파일 이름
-     * @param userDetails      요청자 정보
-     */
-    @PostMapping("/channels/{channelId}/threads/{threadId}/images")
-    public String imageUploadOnThread(@PathVariable Long channelId,
-                                      @PathVariable Long threadId,
-                                      @RequestBody String imageFileName,
-                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        String logBuilder = "[POST] /api/channels/" + channelId + " /threads/" + threadId + "/images/";
-        log.info(logBuilder);
-
-        if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
-            throw new CustomException(ErrorCode.USER_CHANNEL_FORBIDDEN);
-        }
-        return threadService.imageUploadOnThread(channelId, threadId, imageFileName, userDetails.getUser());
     }
 
     /**
@@ -158,8 +137,38 @@ public class ThreadController {
 
         threadService.disableThread(threadId, userDetails.getUser());
     }
+
     @GetMapping("/threads/search")
-    public List<ThreadResponseDto> searchByCond(@RequestBody ThreadSearchCond threadSearchCond){
+    public List<ThreadResponseDto> searchByCond(@RequestBody ThreadSearchCond threadSearchCond) {
         return threadService.findThreadBySearchCondition(threadSearchCond);
     }
+
+    /**
+     * 작성자가 대상 쓰레드에 이미지를 업로드
+     * [POST] /api/channels/{channelId}/threads/{threadId}/images
+     *
+     * @param channelId     대상 채널 ID
+     * @param threadId      대상 쓰레드 ID
+     * @param imageFileName 요청 파일 이름
+     * @param userDetails   요청자 정보
+     */
+    @PostMapping("/channels/{channelId}/threads/{threadId}/images")
+    public String imageUploadOnThread(@PathVariable Long channelId,
+                                      @PathVariable Long threadId,
+                                      @RequestBody String imageFileName,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        String logBuilder = "[POST] /api/channels/" + channelId + " /threads/" + threadId + "/images/";
+        log.info(logBuilder);
+
+        if (!userChannelService.isUserJoinedByChannel(userDetails.getUser(), channelId)) {
+            throw new CustomException(ErrorCode.USER_CHANNEL_FORBIDDEN);
+        }
+        return threadService.imageUploadOnThread(channelId, threadId, imageFileName, userDetails.getUser());
+    }
+
+    @GetMapping("/threads/{threadId}/images")
+    public ImageResponseDto getImageOnThread(@PathVariable Long threadId) {
+        return threadService.getImageOnThread(threadId);}
+
 }
