@@ -37,7 +37,8 @@ public class Schedule extends Timestamp {
     private ScheduleStatus status = ScheduleStatus.UNDONE;
 
     @Column(nullable = false)
-    private boolean studyMode = false;
+    @Enumerated
+    private ScheduleMode mode = ScheduleMode.NORMAL;
 
     @Column
     private LocalDateTime doneAt;
@@ -94,14 +95,14 @@ public class Schedule extends Timestamp {
     /**
      * 서비스 메소드
      */
-    public void studyModeOn() {
-        this.studyMode = true;
+    public void studyPlanModeOn() {
+        this.mode = ScheduleMode.STUDYPLAN;
     }
 
     /**
      * 서비스 메소드
      */
-    public void studyModeOff() {
-        this.studyMode = false;
+    public void studyPlanModeOff() {
+        this.mode = ScheduleMode.NORMAL;
     }
 }
