@@ -168,6 +168,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         if (reviewIdList != null) {
             foundSchedule.getReviewIdList().stream().forEach(scheduleRepository::deleteById);
+        }
         scheduleRepository.delete(foundSchedule);
     }
 
