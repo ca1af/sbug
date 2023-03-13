@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 // lombok
 @Getter
@@ -47,7 +47,7 @@ public class Schedule extends Timestamp {
 
     @Column(nullable = false)
     @Setter
-    private List<Long> reviewIdList = new LinkedList<Long>();
+    private List<Long> reviewIdList = new ArrayList<Long>();
 
     /**
      * 생성자

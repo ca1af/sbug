@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 // lombok
 @RequiredArgsConstructor
@@ -108,7 +108,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             foundSchedule.getReviewIdList().stream().forEach(scheduleRepository::deleteById);
         }
 
-        foundSchedule.setReviewIdList(new LinkedList<Long>());
+        foundSchedule.setReviewIdList(new ArrayList<Long>());
 
         scheduleRepository.save(foundSchedule);
     }
@@ -163,6 +163,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     public void deleteSchedule(Long scheduleId, Long userId) {
         Schedule foundSchedule = validateSchedule(scheduleId);
         validateRequester(foundSchedule.getUser().getId(), userId);
+
+        List<Long> reviewIdList = foundSchedule.getReviewIdList();
+
+        if (reviewIdList != null) {
+            foundSchedule.getReviewIdList().stream().forEach(scheduleRepository::deleteById);
         scheduleRepository.delete(foundSchedule);
     }
 
