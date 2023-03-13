@@ -1,6 +1,7 @@
 package com.sparta.sbug.schedule.dto;
 
 import com.sparta.sbug.schedule.entity.Schedule;
+import com.sparta.sbug.schedule.entity.ScheduleMode;
 import com.sparta.sbug.schedule.entity.ScheduleStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,8 @@ public class ScheduleResponseDto {
 
     private final ScheduleStatus status;
 
+    private final ScheduleMode mode;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime doneAt;
 
@@ -37,6 +40,7 @@ public class ScheduleResponseDto {
         this.content = schedule.getContent();
         this.date = schedule.getDate();
         this.status = schedule.getStatus();
+        this.mode = schedule.getMode();
         this.doneAt = schedule.getDoneAt();
     }
 

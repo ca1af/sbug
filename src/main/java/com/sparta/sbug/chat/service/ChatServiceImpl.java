@@ -49,8 +49,8 @@ public class ChatServiceImpl implements ChatService {
                 .message(message)
                 .receiver(receiver).build();
         if (ChatPreHandler.CHAT_ROOM_USER_MAP.containsKey("/topic/chats/rooms/" + chatRoom.getId())) {
-            Set<String> tests = ChatPreHandler.CHAT_ROOM_USER_MAP.get("/topic/chats/rooms/" + chatRoom.getId());
-            if (tests.size() > 1) {
+            Set<String> subscribers = ChatPreHandler.CHAT_ROOM_USER_MAP.get("/topic/chats/rooms/" + chatRoom.getId());
+            if (subscribers.size() > 1) {
                 chat.setStatus(ChatStatus.READ);
             }
         }

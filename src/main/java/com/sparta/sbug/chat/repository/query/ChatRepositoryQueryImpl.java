@@ -72,7 +72,7 @@ public class ChatRepositoryQueryImpl implements ChatRepositoryQuery {
                 .having(
                         chat.receiver.id.eq(userId).and(chat.status.eq(ChatStatus.NEW))
                 ).fetch();
-        System.out.println("test");
+
         return countDtoList.stream()
                 .collect(Collectors.toMap(NewMessageCountDto::getChatRoomId, NewMessageCountDto::getNewMessageCount));
     }
