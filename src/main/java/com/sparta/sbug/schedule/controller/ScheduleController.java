@@ -61,6 +61,14 @@ public class ScheduleController {
         scheduleService.updateSchedule(requestDto, id, userId);
     }
 
+    /**
+     * 대상 일정의 내용을 수정하는 메서드
+     * [PUT] /api/users/schedules/{id}/content
+     *
+     * @param requestDto  요청 DTO (내용)
+     * @param id          대상 일정 ID
+     * @param userDetails 요청자 정보
+     */
     @PutMapping("/{id}/content")
     public void updateScheduleContent(
             @RequestBody @Valid ScheduleRequestDto.ContentUpdate requestDto,
@@ -71,6 +79,14 @@ public class ScheduleController {
         scheduleService.updateScheduleContent(requestDto.getContent(), id, userId);
     }
 
+    /**
+     * 대상 일정의 예정일을 수정하는 메서드
+     * [PUT] /api/users/schedules/{id}/date
+     *
+     * @param requestDto  요청 DTO (예정일)
+     * @param id          대상 일정 ID
+     * @param userDetails 요청자 정보
+     */
     @PutMapping("/{id}/date")
     public void updateScheduleDate(
             @RequestBody ScheduleRequestDto.DateUpdate requestDto,
@@ -81,7 +97,13 @@ public class ScheduleController {
         scheduleService.updateScheduleDate(requestDto.getDate(), id, userId);
     }
 
-    //일정 완료 표시
+    /**
+     * 대상 일정의 상태를 완료로 표시하는 메서드
+     * [PUT] /api/users/schedules/{id}/done
+     *
+     * @param id          대상 일정 ID
+     * @param userDetails 요청자 정보
+     */
     @PutMapping("/{id}/done")
     public void completeSchedule(
         @PathVariable Long id,
@@ -91,7 +113,13 @@ public class ScheduleController {
         scheduleService.completeSchedule(id, userId);
     }
 
-    //일정 미완 표시
+    /**
+     * 대상 일정의 상태를 미완으로 표시하는 메서드
+     * [PUT] /api/users/schedules/{id}/undone
+     *
+     * @param id          대상 일정 ID
+     * @param userDetails 요청자 정보
+     */
     @PutMapping("/{id}/undone")
     public void incompleteSchedule(
         @PathVariable Long id,
@@ -99,6 +127,38 @@ public class ScheduleController {
     ) {
         Long userId = userDetails.getUser().getId();
         scheduleService.incompleteSchedule(id, userId);
+    }
+
+    /**
+     * 대상 일정의 Mode를 STUDYPLAN으로 표시하는 메서드
+     * [PUT] /api/users/schedules/{id}/studyplan
+     *
+     * @param id          대상 일정 ID
+     * @param userDetails 요청자 정보
+     */
+    @PutMapping("/{id}/studyplan")
+    public void turnOnStudyPlanMode(
+        @PathVariable Long id,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long userId = userDetails.getUser().getId();
+        scheduleService.turnOnStudyPlanMode(id, userId);
+    }
+
+    /**
+     * 대상 일정의 Mode를 NORMAL으로 표시하는 메서드
+     * [PUT] /api/users/schedules/{id}/normal
+     *
+     * @param id          대상 일정 ID
+     * @param userDetails 요청자 정보
+     */
+    @PutMapping("/{id}/normal")
+    public void turnOffStudyPlanMode(
+        @PathVariable Long id,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long userId = userDetails.getUser().getId();
+        scheduleService.turnOffStudyPlanMode(id, userId);
     }
 
     /**

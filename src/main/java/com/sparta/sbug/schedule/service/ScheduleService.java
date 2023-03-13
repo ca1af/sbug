@@ -47,21 +47,36 @@ public interface ScheduleService {
     );
 
     /**
-    * 대상 일정의 상태를 완료로 표시
-    * 
-    * @param scheduleId 수정할 일정의 ID
-    * @param userId 요청자 ID
-    */
+     * 대상 일정의 상태를 완료로 표시
+     * 
+     * @param scheduleId 수정할 일정의 ID
+     * @param userId 요청자 ID
+     */
     void completeSchedule(Long scheduleId, Long userId);
 
+    /**
+     * 대상 일정의 상태를 미완으로 표시
+     *
+     * @param scheduleId 수정할 일정의 ID
+     * @param userId 요청자 ID
+     */
+    void incompleteSchedule(Long scheduleId, Long userId);
 
     /**
-    * 대상 일정의 상태를 미완으로 표시
-    *
-    * @param scheduleId 수정할 일정의 ID
-    * @param userId 요청자 ID
-    */
-    void incompleteSchedule(Long scheduleId, Long userId);
+     * 일정 Mode를 STUDYPLAN으로 표시
+     *
+     * @param scheduleId 수정할 일정의 ID
+     * @param userId 요청자 ID
+     */
+    public void turnOnStudyPlanMode(Long scheduleId, Long userId);
+
+    /**
+     * 일정 Mode를 NORMAL로 표시
+     *
+     * @param scheduleId 수정할 일정의 ID
+     * @param userId 요청자 ID
+     */
+    public void turnOffStudyPlanMode(Long scheduleId, Long userId);
 
     /**
      * 대상 일정을 삭제
@@ -102,5 +117,16 @@ public interface ScheduleService {
             PeriodRequestDto periodDto
     );
 
+    /**
+     * 내 특정 월 일정 조회
+     *
+     * @param year 일정 조회 년도
+     * @param month 일정 조회 월
+     * @param user 요청자
+     * @return List<ScheduleResponseDto>
+     */
     List<ScheduleResponseDto> getSchedulesThisMonth(int year, int month, User user);
+
+
+
 }

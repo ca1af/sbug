@@ -6,7 +6,7 @@ spring:
     url: jdbc:postgresql://sbug-postgresql.cftflnrmtk5t.ap-northeast-2.rds.amazonaws.com:5432/postgres
     #url: jdbc:postgresql://localhost:5432/postgres
     username: super
-    password: x
+    password: pass
   profiles: # server에 저장할 때 사용
     active: local
     group:
@@ -47,8 +47,8 @@ spring:
   # Kafka
   kafka:
     consumer:
-      #bootstrap-servers: 172.31.36.158:9092 #카프카 서버 정보
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: 172.31.36.158:9092 #카프카 서버 정보
+      #bootstrap-servers: localhost:9092
       group-id: kafka-sbug #Consumer의 그룹 ID
       enable-auto-commit: true #데이터를 어디까지 읽었다는 Offset을 주기적으로 저장할지 여부
       auto-offset-reset: latest #Offset에 오류가 있을 경우 어디서부터 다시 할지 여부

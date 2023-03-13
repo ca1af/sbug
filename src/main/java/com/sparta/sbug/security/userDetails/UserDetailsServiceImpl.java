@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
-    private final RedisDao redisDao;
-    private final GenericJackson2JsonRedisSerializer redisSerializer;
 
     /**
      * 이메일로 사용자 객체를 찾아 UserDetails 구현체에 담습니다.

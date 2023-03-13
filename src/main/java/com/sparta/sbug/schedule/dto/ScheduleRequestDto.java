@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Getter
 @NoArgsConstructor
 public class ScheduleRequestDto {
-    @Size(min = 4, max = 20)
+    @Size(min = 4, max = 200)
     private String content;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

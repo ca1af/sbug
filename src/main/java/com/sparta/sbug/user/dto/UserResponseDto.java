@@ -1,16 +1,19 @@
 package com.sparta.sbug.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.sparta.sbug.user.entity.User;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.io.Serializable;
 
 /**
  * 유저 정보 응답 DTO
  */
 @Getter
 @NoArgsConstructor
-public class UserResponseDto {
+public class UserResponseDto implements Serializable {
     Long userId;
     String email;
     String nickname;
