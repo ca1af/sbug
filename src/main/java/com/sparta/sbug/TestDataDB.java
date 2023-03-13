@@ -10,6 +10,7 @@ import com.sparta.sbug.emoji.entity.ThreadEmoji;
 import com.sparta.sbug.emoji.repository.ThreadEmojiRepository;
 import com.sparta.sbug.schedule.entity.Schedule;
 import com.sparta.sbug.schedule.entity.ScheduleStatus;
+import com.sparta.sbug.schedule.entity.ScheduleMode;
 import com.sparta.sbug.schedule.repository.ScheduleRepository;
 import com.sparta.sbug.security.RedisDao;
 import com.sparta.sbug.thread.entity.Thread;
@@ -141,18 +142,21 @@ public class TestDataDB {
                     .content("1번 스케쥴")
                     .date(LocalDateTime.of(2023, 1, 5, 14, 40))
                     .status(ScheduleStatus.UNDONE)
+                    .mode(ScheduleMode.NORMAL)
                     .build();
             Schedule schedule2 = Schedule.builder()
                     .user(user1)
                     .content("2번 스케쥴")
                     .date(LocalDateTime.of(2023, 2, 7, 14, 40))
                     .status(ScheduleStatus.UNDONE)
+                    .mode(ScheduleMode.NORMAL)
                     .build();
             Schedule schedule3 = Schedule.builder()
                     .user(user1)
                     .content("3번 스케쥴")
                     .date(LocalDateTime.of(2023, 3, 9, 14, 40))
                     .status(ScheduleStatus.UNDONE)
+                    .mode(ScheduleMode.NORMAL)
                     .build();
             scheduleRepository.save(schedule1);
             scheduleRepository.save(schedule2);

@@ -3,6 +3,7 @@ package com.sparta.sbug.schedule.service;
 import com.sparta.sbug.user.entity.User;
 import com.sparta.sbug.schedule.entity.Schedule;
 import com.sparta.sbug.schedule.entity.ScheduleStatus;
+import com.sparta.sbug.schedule.entity.ScheduleMode;
 import com.sparta.sbug.schedule.repository.ScheduleRepository;
 import com.sparta.sbug.schedule.dto.ScheduleRequestDto;
 import com.sparta.sbug.schedule.dto.ScheduleResponseDto;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.ArrayList;
 
 // lombok
 @RequiredArgsConstructor
@@ -39,6 +41,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .content(requestDto.getContent())
                 .date(requestDto.getDate())
                 .status(ScheduleStatus.UNDONE)
+                .mode(ScheduleMode.NORMAL)
                 .build();
         scheduleRepository.save(newSchedule);
     }
@@ -59,24 +62,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleRepository.save(foundSchedule);
     }
 
-    //일정 완료 표시(status 변경)
-    @Override
-    public void completeSchedule(Long scheduleId, Long userId) {
-        Schedule foundSchedule = validateSchedule(scheduleId);
-        validateRequester(foundSchedule.getUser().getId(), userId);
-        foundSchedule.checkDoneSchedule();
-        scheduleRepository.save(foundSchedule);
-    }
-
-    //일정 미완 표시(status 변경)
-    @Override
-    public void incompleteSchedule(Long scheduleId, Long userId) {
-        Schedule foundSchedule = validateSchedule(scheduleId);
-        validateRequester(foundSchedule.getUser().getId(), userId);
-        foundSchedule.uncheckDoneSchedule();
-        scheduleRepository.save(foundSchedule);
-    }
-
     @Override
     public void updateScheduleContent(String content, Long scheduleId, Long userId) {
         Schedule foundSchedule = validateSchedule(scheduleId);
@@ -91,11 +76,99 @@ public class ScheduleServiceImpl implements ScheduleService {
         foundSchedule.setDate(date);
     }
 
+    //일정 완료 표시(status 변경)
+    //STUDYPLAN mode일 경우, generateReview 호출
+    @Override
+    public void completeSchedule(Long scheduleId, Long userId) {
+        Schedule foundSchedule = validateSchedule(scheduleId);
+        User requester = foundSchedule.getUser();
+        validateRequester(requester.getId(), userId);
+        foundSchedule.checkDoneSchedule();
+
+        if (foundSchedule.getMode() == ScheduleMode.STUDYPLAN) {
+            generateReview(foundSchedule, requester, foundSchedule.getDoneAt().plusDays(1));
+            generateReview(foundSchedule, requester, foundSchedule.getDoneAt().plusWeeks(1));
+            generateReview(foundSchedule, requester, foundSchedule.getDoneAt().plusMonths(1));
+        }
+
+        scheduleRepository.save(foundSchedule);
+    }
+
+    //일정 미완 표시(status 변경)
+    //reviewIdList가 있을 경우, reviewIdList에 속한 Review들을 삭제
+    @Override
+    public void incompleteSchedule(Long scheduleId, Long userId) {
+        Schedule foundSchedule = validateSchedule(scheduleId);
+        validateRequester(foundSchedule.getUser().getId(), userId);
+
+        foundSchedule.uncheckDoneSchedule();
+        List<Long> reviewIdList = foundSchedule.getReviewIdList();
+
+        if (reviewIdList != null) {
+            foundSchedule.getReviewIdList().stream().forEach(scheduleRepository::deleteById);
+        }
+
+        foundSchedule.setReviewIdList(new ArrayList<Long>());
+
+        scheduleRepository.save(foundSchedule);
+    }
+
+    //buildReview 호출하여 새 review 일정 build하고 repository에 save
+    //새 review의 Id를 schedule의 reviewIdList에 추가
+    public void generateReview(Schedule schedule, User user, LocalDateTime date) {
+        String reviewContent = "[Review] : " + System.lineSeparator() + schedule.getContent();
+
+        Schedule savedReview = scheduleRepository.save(
+            buildReview(user, reviewContent, date)
+        );
+
+        List<Long> reviewIdList = schedule.getReviewIdList();
+        reviewIdList.add(savedReview.getId());
+        schedule.setReviewIdList(reviewIdList);
+    }
+
+    public Schedule buildReview(User user, String content, LocalDateTime date) {
+        Schedule newReview = Schedule.builder()
+            .user(user)
+            .content(content)
+            .date(date)
+            .status(ScheduleStatus.UNDONE)
+            .mode(ScheduleMode.REVIEW)
+            .build();
+        return newReview;
+    }
+
+
+    //StudyPlan Mode 설정 
+    @Override
+    public void turnOnStudyPlanMode(Long scheduleId, Long userId) {
+        Schedule foundSchedule = validateSchedule(scheduleId);
+        validateRequester(foundSchedule.getUser().getId(), userId);
+        foundSchedule.studyPlanModeOn();
+        scheduleRepository.save(foundSchedule);
+    }
+
+    //Normal Mode로 되돌리기 
+    @Override
+    public void turnOffStudyPlanMode(Long scheduleId, Long userId) {
+        Schedule foundSchedule = validateSchedule(scheduleId);
+        validateRequester(foundSchedule.getUser().getId(), userId);
+        foundSchedule.studyPlanModeOff();
+        scheduleRepository.save(foundSchedule);
+    }
+
+
     //일정 삭제
     @Override
     public void deleteSchedule(Long scheduleId, Long userId) {
         Schedule foundSchedule = validateSchedule(scheduleId);
         validateRequester(foundSchedule.getUser().getId(), userId);
+
+        List<Long> reviewIdList = foundSchedule.getReviewIdList();
+
+        if (reviewIdList != null) {
+            foundSchedule.getReviewIdList().stream().forEach(scheduleRepository::deleteById);
+        }
         scheduleRepository.delete(foundSchedule);
     }
 
